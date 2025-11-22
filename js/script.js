@@ -579,5 +579,101 @@ function closeImageModal() {
     document.body.style.overflow = ''; // Restore scrolling
 }
 
-console.log('Portfolio loaded successfully! ✨');
+// ==========================================
+// PROJECT TILE WATERMARKS (DYNAMIC SVG)
+// ==========================================
 
+const watermarkSVGs = [
+  // 1. Four squares connected
+  `<svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="10" width="30" height="30" rx="6" fill="#fff" fill-opacity="0.13"/>
+    <rect x="70" y="10" width="30" height="30" rx="6" fill="#fff" fill-opacity="0.13"/>
+    <rect x="70" y="70" width="30" height="30" rx="6" fill="#fff" fill-opacity="0.13"/>
+    <rect x="10" y="70" width="30" height="30" rx="6" fill="#fff" fill-opacity="0.13"/>
+    <path d="M40 25 L70 25" stroke="#fff" stroke-opacity="0.18" stroke-width="3"/>
+    <path d="M25 40 L25 70" stroke="#fff" stroke-opacity="0.18" stroke-width="3"/>
+    <path d="M40 85 L70 85" stroke="#fff" stroke-opacity="0.18" stroke-width="3"/>
+    <path d="M85 40 L85 70" stroke="#fff" stroke-opacity="0.18" stroke-width="3"/>
+    <circle cx="25" cy="25" r="4" fill="#fff" fill-opacity="0.18"/>
+    <circle cx="85" cy="25" r="4" fill="#fff" fill-opacity="0.18"/>
+    <circle cx="25" cy="85" r="4" fill="#fff" fill-opacity="0.18"/>
+    <circle cx="85" cy="85" r="4" fill="#fff" fill-opacity="0.18"/>
+  </svg>`,
+  // 2. Flowing arrows and circles
+  `<svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="25" cy="25" r="18" fill="#fff" fill-opacity="0.10"/>
+    <circle cx="85" cy="25" r="10" fill="#fff" fill-opacity="0.13"/>
+    <circle cx="55" cy="85" r="15" fill="#fff" fill-opacity="0.10"/>
+    <path d="M25 25 Q55 55 85 25" stroke="#fff" stroke-opacity="0.15" stroke-width="3" fill="none"/>
+    <path d="M55 85 Q70 55 85 25" stroke="#fff" stroke-opacity="0.13" stroke-width="2" fill="none"/>
+    <polygon points="80,30 90,25 80,20" fill="#fff" fill-opacity="0.18"/>
+  </svg>`,
+  // 3. Zigzag flow with dots
+  `<svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polyline points="15,95 35,65 55,95 75,65 95,95" stroke="#fff" stroke-opacity="0.15" stroke-width="3" fill="none"/>
+    <circle cx="15" cy="95" r="5" fill="#fff" fill-opacity="0.13"/>
+    <circle cx="35" cy="65" r="5" fill="#fff" fill-opacity="0.13"/>
+    <circle cx="55" cy="95" r="5" fill="#fff" fill-opacity="0.13"/>
+    <circle cx="75" cy="65" r="5" fill="#fff" fill-opacity="0.13"/>
+    <circle cx="95" cy="95" r="5" fill="#fff" fill-opacity="0.13"/>
+  </svg>`,
+  // 4. Central node with radiating lines
+  `<svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="55" cy="55" r="18" fill="#fff" fill-opacity="0.10"/>
+    <line x1="55" y1="55" x2="55" y2="10" stroke="#fff" stroke-opacity="0.15" stroke-width="3"/>
+    <line x1="55" y1="55" x2="100" y2="55" stroke="#fff" stroke-opacity="0.15" stroke-width="3"/>
+    <line x1="55" y1="55" x2="55" y2="100" stroke="#fff" stroke-opacity="0.15" stroke-width="3"/>
+    <line x1="55" y1="55" x2="10" y2="55" stroke="#fff" stroke-opacity="0.15" stroke-width="3"/>
+    <circle cx="55" cy="10" r="5" fill="#fff" fill-opacity="0.13"/>
+    <circle cx="100" cy="55" r="5" fill="#fff" fill-opacity="0.13"/>
+    <circle cx="55" cy="100" r="5" fill="#fff" fill-opacity="0.13"/>
+    <circle cx="10" cy="55" r="5" fill="#fff" fill-opacity="0.13"/>
+  </svg>`,
+  // 5. Diagonal flow with arrows
+  `<svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="15" y="15" width="20" height="20" rx="5" fill="#fff" fill-opacity="0.10"/>
+    <rect x="75" y="75" width="20" height="20" rx="5" fill="#fff" fill-opacity="0.10"/>
+    <path d="M35 35 L75 75" stroke="#fff" stroke-opacity="0.15" stroke-width="3"/>
+    <polygon points="70,80 85,85 80,70" fill="#fff" fill-opacity="0.18"/>
+  </svg>`,
+  // 6. Concentric circles with connecting lines
+  `<svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="55" cy="55" r="35" fill="#fff" fill-opacity="0.07"/>
+    <circle cx="55" cy="55" r="20" fill="#fff" fill-opacity="0.10"/>
+    <line x1="55" y1="20" x2="55" y2="90" stroke="#fff" stroke-opacity="0.13" stroke-width="2"/>
+    <line x1="20" y1="55" x2="90" y2="55" stroke="#fff" stroke-opacity="0.13" stroke-width="2"/>
+  </svg>`,
+  // 7. L-shaped flow
+  `<svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="15" y="15" width="25" height="25" rx="6" fill="#fff" fill-opacity="0.13"/>
+    <rect x="15" y="70" width="25" height="25" rx="6" fill="#fff" fill-opacity="0.13"/>
+    <rect x="70" y="70" width="25" height="25" rx="6" fill="#fff" fill-opacity="0.13"/>
+    <path d="M27.5 40 L27.5 82.5 L82.5 82.5" stroke="#fff" stroke-opacity="0.15" stroke-width="3"/>
+    <polygon points="77,87 87,82.5 77,78" fill="#fff" fill-opacity="0.18"/>
+  </svg>`,
+  // 8. Tree/branch flow
+  `<svg width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="55" cy="20" r="10" fill="#fff" fill-opacity="0.13"/>
+    <circle cx="35" cy="60" r="8" fill="#fff" fill-opacity="0.10"/>
+    <circle cx="75" cy="60" r="8" fill="#fff" fill-opacity="0.10"/>
+    <circle cx="55" cy="90" r="7" fill="#fff" fill-opacity="0.10"/>
+    <path d="M55 30 L35 60" stroke="#fff" stroke-opacity="0.13" stroke-width="2.5"/>
+    <path d="M55 30 L75 60" stroke="#fff" stroke-opacity="0.13" stroke-width="2.5"/>
+    <path d="M35 68 L55 90 L75 68" stroke="#fff" stroke-opacity="0.13" stroke-width="2.5"/>
+  </svg>`
+];
+
+window.addEventListener('DOMContentLoaded', () => {
+  const watermarks = document.querySelectorAll('.project-watermark');
+  // Shuffle SVGs for uniqueness per tile
+  const shuffled = watermarkSVGs.slice();
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  watermarks.forEach((el, idx) => {
+    el.innerHTML = shuffled[idx % shuffled.length];
+  });
+});
+
+console.log('Portfolio loaded successfully! ✨');

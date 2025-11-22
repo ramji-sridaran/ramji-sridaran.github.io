@@ -8,6 +8,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        .visually-hidden {
+          position: absolute !important;
+          height: 1px; width: 1px;
+          overflow: hidden;
+          clip: rect(1px, 1px, 1px, 1px);
+          white-space: nowrap;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -203,8 +212,19 @@
             <div class="projects-grid">
                 <article class="project-card" data-project="1">
                     <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html" data-page-num="0">
+                        <div class="project-watermark"></div>
                         <div class="image-overlay">
-                            <span>🔗🔍 Open Flow Diagram</span>
+                            <span style="display: flex; align-items: center; gap: 0.5em; font-size: 1.1em;">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
+                                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                                    <path d="M7 7l3 3m4-3l3 3m-3 4l3 3m-7-3l-3 3"/>
+                                </svg>
+                                <span style="font-size:0.98em;opacity:0.85;">What’s under the hood?</span>
+                                <span class="curiosity-arrow">➔</span>
+                            </span>
                         </div>
                     </div>
                     <div class="project-info">
@@ -231,9 +251,19 @@
 
                 <article class="project-card" data-project="2">
                     <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html" data-page-num="1">
-                        <!--<img src="Resources/IoT_Flow.png" alt="IoT Flow Diagram">-->
+                        <div class="project-watermark"></div>
                         <div class="image-overlay">
-                            <span>🔍 Open Flow Diagram</span>
+                            <span style="display: flex; align-items: center; gap: 0.5em; font-size: 1.1em;">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
+                                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                                    <path d="M7 7l3 3m4-3l3 3m-3 4l3 3m-7-3l-3 3"/>
+                                </svg>
+                                <span style="font-size:0.98em;opacity:0.85;">What’s under the hood?</span>
+                                <span class="curiosity-arrow">➔</span>
+                            </span>
                         </div>
                     </div>
                     <div class="project-info">
@@ -257,9 +287,19 @@
 
                 <article class="project-card" data-project="3">
                     <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html" data-page-num="2">
-                        <!--<img src="Resources/IoT_Flow.png" alt="IoT Flow Diagram">-->
+                        <div class="project-watermark"></div>
                         <div class="image-overlay">
-                            <span>🔍 Open Flow Diagram</span>
+                            <span style="display: flex; align-items: center; gap: 0.5em; font-size: 1.1em;">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
+                                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                                    <path d="M7 7l3 3m4-3l3 3m-3 4l3 3m-7-3l-3 3"/>
+                                </svg>
+                                <span style="font-size:0.98em;opacity:0.85;">What’s under the hood?</span>
+                                <span class="curiosity-arrow">➔</span>
+                            </span>
                         </div>
                     </div>
                     <div class="project-info">
@@ -283,11 +323,21 @@
                     </div>
                 </article>
 
-                <article class="project-card" data-project="4">
+                <article class="project-card" data-project="4" id="databridge">
                     <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html" data-page-num="3">
-                        <!--<img src="IoT_Flow.png" alt="IoT Flow Diagram">-->
+                        <div class="project-watermark"></div>
                         <div class="image-overlay">
-                            <span>🔗🔍 Open Flow Diagram</span>
+                            <span style="display: flex; align-items: center; gap: 0.5em; font-size: 1.1em;">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
+                                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                                    <path d="M7 7l3 3m4-3l3 3m-3 4l3 3m-7-3l-3 3"/>
+                                </svg>
+                                <span style="font-size:0.98em;opacity:0.85;">What’s under the hood?</span>
+                                <span class="curiosity-arrow">➔</span>
+                            </span>
                         </div>
                     </div>
                     <div class="project-info">
@@ -324,18 +374,20 @@
 
                 <div class="timeline-item">
                     <div class="timeline-marker"></div>
+                    <a href="#databridge" style="text-decoration: none; color: inherit;">
                     <div class="timeline-content">
                         <h3>TECHNICAL LEAD</h3>
                         <p class="company">Dentsu Global Services</p>
                         <p class="year">2021—Present</p>
-                        <!--<p>
+                        <p>
                             Large scale application development Ad-Tech platform for programmatic advertising
                             hosted on AWS and data hosted on Snowflake. Leading a team of 5 members,
                             managing the feature development activities with automated continuous integration
                             and deployment strategies using Jenkins and Kubernetes.
                             Mentoring team members on best practices in coding, design patterns, and cloud-native development.
-                        </p>-->
+                        </p>
                     </div>
+                    </a>
                 </div>
 
                 <div class="timeline-item">
@@ -453,16 +505,20 @@
                     <input type="hidden" name="redirect" value="https://web3forms.com/success">
 
                     <div class="form-group">
-                        <input type="text" name="name" placeholder="Your Name" required>
+                        <label for="contactName" class="visually-hidden">Name</label>
+                        <input type="text" id="contactName" name="name" placeholder="Your Name" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" name="email" placeholder="Your Email" required>
+                        <label for="contactEmail" class="visually-hidden">Email</label>
+                        <input type="email" id="contactEmail" name="email" placeholder="Your Email" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="subject" placeholder="What's this about?" required>
+                        <label for="contactSubject" class="visually-hidden">Subject</label>
+                        <input type="text" id="contactSubject" name="subject" placeholder="What's this about?" required>
                     </div>
                     <div class="form-group">
-                        <textarea name="message" placeholder="Tell me your thoughts... (I promise to read every message!)" rows="5" required></textarea>
+                        <label for="contactMessage" class="visually-hidden">Message</label>
+                        <textarea id="contactMessage" name="message" placeholder="Tell me your thoughts... (I promise to read every message!)" rows="5" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Send Message</button>
                 </form>
