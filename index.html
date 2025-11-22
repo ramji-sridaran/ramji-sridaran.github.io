@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ramji Sridaran - Technical Lead</title>
-    <link id="theme-stylesheet" rel="stylesheet" href="styles-dark.css">
+    <link id="theme-stylesheet" rel="stylesheet" href="css/styles-dark.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -62,7 +62,7 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="Ramji.jpg" alt="Ramji Sridaran" style="width: 300px; height: 300px; border-radius: 20px; object-fit: cover; object-position: center top; box-shadow: 0 10px 40px rgba(45, 90, 140, 0.3);">
+                <img src="Resources/Ramji.jpg" alt="Ramji Sridaran" style="width: 300px; height: 300px; border-radius: 20px; object-fit: cover; object-position: center top; box-shadow: 0 10px 40px rgba(45, 90, 140, 0.3);">
             </div>
         </div>
     </section>
@@ -202,10 +202,10 @@
             <h2 class="section-title">Featured Projects</h2>
             <div class="projects-grid">
                 <article class="project-card" data-project="1">
-                    <div class="project-image project-image-clickable" data-image="IoT_Flow.png">
-                        <img src="IoT_Flow.png" alt="IoT Flow Diagram">
+                    <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html" data-page-num="0">
+                        <!--<img src="IoT_Flow.png" alt="IoT Flow Diagram">-->
                         <div class="image-overlay">
-                            <span>🔍 Click to enlarge</span>
+                            <span>🔗 Open Project</span>
                         </div>
                     </div>
                     <div class="project-info">
@@ -231,8 +231,8 @@
                 </article>
 
                 <article class="project-card" data-project="2">
-                    <div class="project-image project-image-clickable" data-image="IoT_Flow.png">
-                        <img src="IoT_Flow.png" alt="IoT Flow Diagram">
+                    <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html" data-page-num="1">
+                        <img src="Resources/IoT_Flow.png" alt="IoT Flow Diagram">
                         <div class="image-overlay">
                             <span>🔍 Click to enlarge</span>
                         </div>
@@ -250,8 +250,8 @@
                 </article>
 
                 <article class="project-card" data-project="3">
-                    <div class="project-image project-image-clickable" data-image="IoT_Flow.png">
-                        <img src="IoT_Flow.png" alt="IoT Flow Diagram">
+                    <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html" data-page-num="2">
+                        <img src="Resources/IoT_Flow.png" alt="IoT Flow Diagram">
                         <div class="image-overlay">
                             <span>🔍 Click to enlarge</span>
                         </div>
@@ -283,7 +283,7 @@
                     <div class="timeline-content">
                         <h3>TECHNICAL LEAD</h3>
                         <p class="company">Dentsu Global Services</p>
-                        <p class="year">2021 - Present</p>
+                        <p class="year">2021—Present</p>
                         <!--<p>
                             Large scale application development Ad-Tech platform for programmatic advertising
                             hosted on AWS and data hosted on Snowflake. Leading a team of 5 members,
@@ -482,14 +482,14 @@
         </div>
     </div>
 
-    <!-- Image Popup Modal -->
+    <!-- Image/Page Modal -->
     <div id="imageModal" class="image-modal">
         <span class="image-modal-close">&times;</span>
-        <img class="image-modal-content" id="imageModalImg">
+        <iframe id="pageModalFrame" class="image-modal-content" title="Project Page" style="display: none; width: 100%; height: 100%; border: 0; border-radius: 8px;" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+        <img class="image-modal-content" id="imageModalImg" style="display: none;" alt="Project Image" src="">
         <div class="image-modal-caption"></div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="js/script.js" defer></script>
 </body>
 </html>
-

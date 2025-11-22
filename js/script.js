@@ -300,9 +300,9 @@ function applyTheme(theme, isCompact = false) {
     let stylePath;
 
     if (isCompact) {
-        stylePath = isDark ? 'styles-dark-compact.css' : 'styles-light-compact.css';
+        stylePath = isDark ? 'css/styles-dark-compact.css' : 'css/styles-light-compact.css';
     } else {
-        stylePath = isDark ? 'styles-dark.css' : 'styles-light.css';
+        stylePath = isDark ? 'css/styles-dark.css' : 'css/styles-light.css';
     }
 
     themeStylesheet.href = stylePath;
@@ -477,23 +477,77 @@ function closeModal() {
 }
 
 // ==========================================
-// IMAGE POPUP FUNCTIONALITY
+// IMAGE & PAGE MODAL FUNCTIONALITY
 // ==========================================
 const imageModal = document.getElementById('imageModal');
 const imageModalImg = document.getElementById('imageModalImg');
+const pageModalFrame = document.getElementById('pageModalFrame');
 const imageModalClose = document.querySelector('.image-modal-close');
 const clickableImages = document.querySelectorAll('.project-image-clickable');
 
-// Open image modal when project image is clicked
+// Page names must match the diagram names in Resources/FlowCharts.html
+// Page number to page index mapping (0-based for the embedded page attribute)
+const pageIndexMap = {
+    '0': '0',  // IoT
+    '1': '1',  // Insurance - BigData migration
+    '2': '2',  // Retail - Cloud Migration
+    '3': '3'   // Databridge
+};
+
+// Open image/page modal when project image is clicked
 clickableImages.forEach(imageContainer => {
-    imageContainer.addEventListener('click', function(e) {
+    imageContainer.addEventListener('click', async function(e) {
         // Prevent project card modal from opening
         e.stopPropagation();
 
+        let pageSrc = this.getAttribute('data-page');
+        const pageNum = this.getAttribute('data-page-num') || '0'; // Default to page 0 if not specified
         const imageSrc = this.getAttribute('data-image');
         const imgElement = this.querySelector('img');
 
-        if (imageSrc && imgElement) {
+        if (pageSrc) {
+            // Open page modal with iframe
+            imageModalImg.style.display = 'none';
+            pageModalFrame.style.display = 'block';
+
+            // Remove any existing hash from pageSrc
+            if (pageSrc.includes('#')) {
+                pageSrc = pageSrc.split('#')[0];
+            }
+
+            try {
+                // Fetch the HTML file
+                const response = await fetch(pageSrc);
+                let htmlContent = await response.text();
+
+                // Get the desired page index from the map
+                const pageIndex = pageIndexMap[pageNum] || pageIndexMap['0'];
+
+                // Replace the page number in the data-mxgraph attribute
+                // Pattern: "page":X where X is the current page number
+                htmlContent = htmlContent.replace(
+                    /"page":\d+/,
+                    `"page":${pageIndex}`
+                );
+
+                // Create a blob and object URL for the modified HTML
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const blobUrl = URL.createObjectURL(blob);
+
+                // Load the modified HTML in the iframe
+                pageModalFrame.src = blobUrl;
+            } catch (error) {
+                console.error('Error loading page:', error);
+                // Fallback: just load the page as-is
+                pageModalFrame.src = pageSrc;
+            }
+
+            imageModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        } else if (imageSrc && imgElement) {
+            // Open image modal
+            pageModalFrame.style.display = 'none';
+            imageModalImg.style.display = 'block';
             imageModalImg.src = imageSrc;
             imageModalImg.alt = imgElement.alt || 'Project Image';
             imageModal.classList.add('active');
@@ -502,17 +556,17 @@ clickableImages.forEach(imageContainer => {
     });
 });
 
-// Close image modal when X is clicked
+// Close image/page modal when X is clicked
 imageModalClose.addEventListener('click', closeImageModal);
 
-// Close image modal when clicking outside the image
+// Close image/page modal when clicking outside
 imageModal.addEventListener('click', function(e) {
     if (e.target === imageModal || e.target === imageModalClose) {
         closeImageModal();
     }
 });
 
-// Close image modal with Escape key
+// Close image/page modal with Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && imageModal.classList.contains('active')) {
         closeImageModal();
@@ -521,6 +575,7 @@ document.addEventListener('keydown', function(e) {
 
 function closeImageModal() {
     imageModal.classList.remove('active');
+    pageModalFrame.src = ''; // Clear iframe
     document.body.style.overflow = ''; // Restore scrolling
 }
 
