@@ -960,9 +960,71 @@ body {
     color: var(--text-muted);
 }
 
-@keyframes pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7); }
-    50% { box-shadow: 0 0 0 10px rgba(236, 72, 153, 0); }
+/* EXPERIENCE POPUP FIXES */
+.timeline-item .experience-popup,
+.experience-popup {
+  animation: none;
+  filter: none;
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.27), 0 0 60px 10px rgba(59,130,246,0.10);
+  z-index: 9999;
+}
+.timeline-item:nth-child(odd) .experience-popup {
+  left: auto;
+  right: 100%;
+  top: 50%;
+  transform: translate(0, -50%) scale(0.95);
+}
+.timeline-item:nth-child(even) .experience-popup {
+  left: 100%;
+  right: auto;
+  top: 50%;
+  transform: translate(0, -50%) scale(0.95);
+}
+.experience-popup {
+  display: none;
+  position: absolute;
+  min-width: 320px;
+  max-width: 420px;
+  background: rgba(31,38,135,0.97);
+  border-radius: 32px 38px 32px 38px/38px 32px 38px 32px;
+  padding: 28px 32px 24px 32px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 1.08em;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.4,0,0.2,1), transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.experience-popup-trigger {
+  position: relative;
+  z-index: 10;
+}
+.experience-popup-trigger:hover .experience-popup {
+  display: block;
+  opacity: 1;
+  transform: translate(0, -50%) scale(1.04);
+  pointer-events: auto;
+}
+@media (max-width: 900px) {
+  .timeline-item .experience-popup,
+  .experience-popup {
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 0 !important;
+    transform: translate(-50%, 0) scale(1.04) !important;
+    min-width: 98vw !important;
+    max-width: 98vw !important;
+    position: fixed !important;
+    margin-top: 0 !important;
+    border-radius: 24px 24px 0 0/24px 24px 0 0 !important;
+    box-shadow: 0 -4px 32px 0 rgba(31,38,135,0.27), 0 0 60px 10px rgba(59,130,246,0.10);
+    z-index: 99999 !important;
+  }
+  .experience-popup-trigger:hover .experience-popup {
+    transform: translate(-50%, 0) scale(1.04) !important;
+  }
 }
 
 /* ==========================================
@@ -1594,6 +1656,7 @@ body {
         height: 250px;
     }
 }
+
 /* ==========================================
    CURIOUS ARROW ANIMATION
    ========================================== */

@@ -7,215 +7,226 @@
     <link id="theme-stylesheet" rel="stylesheet" href="css/styles-dark.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
     <style>
         .visually-hidden {
-          position: absolute !important;
-          height: 1px; width: 1px;
-          overflow: hidden;
-          clip: rect(1px, 1px, 1px, 1px);
-          white-space: nowrap;
+            position: absolute !important;
+            height: 1px;
+            width: 1px;
+            overflow: hidden;
+            clip: rect(1px, 1px, 1px, 1px);
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <a href="#home" class="logo">Portfolio</a>
+<!-- Navigation -->
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <a href="#home" class="logo">Portfolio</a>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="#home" class="nav-link">Home</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#skills" class="nav-link">Skills</a></li>
+            <li><a href="#projects" class="nav-link">Projects</a></li>
+            <li><a href="#experience" class="nav-link">Experience</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+        <div class="toggle-buttons">
+            <div class="theme-toggle" id="themeToggle" title="Toggle Theme">
+                <span class="theme-icon">🌙</span>
             </div>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#skills" class="nav-link">Skills</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
-                <li><a href="#experience" class="nav-link">Experience</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-            </ul>
-            <div class="toggle-buttons">
-                <div class="theme-toggle" id="themeToggle" title="Toggle Theme">
-                    <span class="theme-icon">🌙</span>
-                </div>
-                <div class="compact-toggle" id="compactToggle" title="Toggle Compact Mode">
-                    <span class="compact-icon">⚡</span>
-                </div>
-            </div>
-            <div class="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+            <div class="compact-toggle" id="compactToggle" title="Toggle Compact Mode">
+                <span class="compact-icon">⚡</span>
             </div>
         </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1 class="hero-title">Welcome to Ramji's Portfolio</h1>
-                    <p class="hero-subtitle">Tech Lead at DGS | Snowflake Certified | AWS | BigData Engineer | Microservices | IoT | Agentic AI Enthusiast</p>
-                    <!--<p class="hero-description">
-                        My core specialization spans Java-based backend engineering using Spring Boot, microservices architecture, and cloud-native development across AWS and Snowflake. I also bring hands-on expertise in Big Data ecosystems and IoT platform engineering.
-                    </p>
-
-                    <p class="hero-description">
-                        I have applied these capabilities across multiple domains, including Advertising Technology, Fintech, IoT sensor analytics, and large-scale data processing, delivering scalable, resilient, and high-performance solutions.
-                    </p>-->
-
-                    <div class="hero-buttons">
-                        <a href="#projects" class="btn btn-primary">View My Work</a>
-                        <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-image">
-                <img src="Resources/Ramji.jpg" alt="Ramji Sridaran" style="width: 300px; height: 300px; border-radius: 20px; object-fit: cover; object-position: center top; box-shadow: 0 10px 40px rgba(45, 90, 140, 0.3);">
-            </div>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
-    </section>
+    </div>
+</nav>
 
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>
-                        I'm a results-driven engineer specializing in <strong>Java</strong>, <strong>AWS</strong>, <strong>Snowflake</strong>, and <strong>Distributed Systems</strong>. I build scalable cloud-native applications and data pipelines that power real-world impact across <strong>AdTech</strong>, <strong>FinTech</strong>, and <strong>IoT</strong>.
-                    </p>
-                    <p>
-                        My expertise spans <strong>Microservices</strong>, <strong>Production Stability</strong>, and <strong>Team Leadership</strong>. I'm passionate about solving complex technical challenges and delivering solutions that are reliable, performant, and production-ready.
-                    </p>
-                </div>
-                <div class="about-stats">
-                    <a href="#projects" class="stat-card">
-                        <h3>9+</h3>
-                        <p>Projects Completed</p>
-                    </a>
-                    <a href="#experience" class="stat-card">
-                        <h3>11+</h3>
-                        <p>Years Experience</p>
-                    </a>
-                    <a href="#skills" class="stat-card">
-                        <h3>30+</h3>
-                        <p>Skills</p>
-                    </a>
+<!-- Hero Section -->
+<section id="home" class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">Welcome to Ramji's Portfolio</h1>
+                <p class="hero-subtitle">Tech Lead at DGS | Snowflake Certified | AWS | BigData Engineer | Microservices
+                    | IoT | Agentic AI Enthusiast</p>
+                <!--<p class="hero-description">
+                    My core specialization spans Java-based backend engineering using Spring Boot, microservices architecture, and cloud-native development across AWS and Snowflake. I also bring hands-on expertise in Big Data ecosystems and IoT platform engineering.
+                </p>
+
+                <p class="hero-description">
+                    I have applied these capabilities across multiple domains, including Advertising Technology, Fintech, IoT sensor analytics, and large-scale data processing, delivering scalable, resilient, and high-performance solutions.
+                </p>-->
+
+                <div class="hero-buttons">
+                    <a href="#projects" class="btn btn-primary">View My Work</a>
+                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
                 </div>
             </div>
         </div>
-    </section>
-
-
-
-    <!-- Skills Section -->
-    <section id="skills" class="skills">
-        <div class="container">
-            <h2 class="section-title">Skills & Expertise</h2>
-            <div class="skill-legend">
-                <div class="legend-item">
-                    <span class="badge expert-badge">Expert</span>
-                    <p>Advanced proficiency with 5+ years experience</p>
-                </div>
-                <div class="legend-item">
-                    <span class="badge advanced-badge">Advanced</span>
-                    <p>Strong working knowledge and proven expertise</p>
-                </div>
-                <div class="legend-item">
-                    <span class="badge intermediate-badge">Intermediate</span>
-                    <p>Good working knowledge and practical experience</p>
-                </div>
-                <div class="legend-item">
-                    <span class="badge beginner-badge">Beginner</span>
-                    <p>Basic knowledge and ongoing learning</p>
-                </div>
-            </div>
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h3>Backend & Cloud</h3>
-                    <div class="skill-list">
-                        <span class="skill-tag expert">Java</span>
-                        <span class="skill-tag expert">Spring Boot</span>
-                        <span class="skill-tag expert">AWS</span>
-                        <span class="skill-tag advanced">Snowflake</span>
-                        <span class="skill-tag intermediate">Python</span>
-                        <span class="skill-tag intermediate">SQL</span>
-                        <span class="skill-tag intermediate">Scala</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Big Data & IoT</h3>
-                    <div class="skill-list">
-                        <span class="skill-tag expert">Kafka</span>
-                        <span class="skill-tag expert">MQTT</span>
-                        <span class="skill-tag advanced">IoT pipelining</span>
-                        <span class="skill-tag advanced">HBase</span>
-                        <span class="skill-tag advanced">Solr</span>
-                        <span class="skill-tag advanced">Hadoop</span>
-                        <span class="skill-tag advanced">Sqoop</span>
-                        <span class="skill-tag intermediate">Spark</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Architecture & DevOps</h3>
-                    <div class="skill-list">
-                        <span class="skill-tag expert">REST APIs</span>
-                        <span class="skill-tag advanced">Microservices</span>
-                        <span class="skill-tag advanced">System Design</span>
-                        <span class="skill-tag advanced">Docker</span>
-                        <span class="skill-tag intermediate">CI/CD</span>
-                        <span class="skill-tag beginner">Kubernetes</span>
-                        <span class="skill-tag beginner">Jenkins</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Frontend & Tools</h3>
-                    <div class="skill-list">
-                        <span class="skill-tag intermediate">HTML/CSS</span>
-                        <span class="skill-tag intermediate">JavaScript</span>
-                        <span class="skill-tag intermediate">GIT</span>
-                        <span class="skill-tag beginner">AngularJS</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Specialized Domains</h3>
-                    <div class="skill-list">
-                        <span class="skill-tag expert">Incident Management</span>
-                        <span class="skill-tag expert">Production Support</span>
-                        <span class="skill-tag advanced">Team Leadership</span>
-                        <span class="skill-tag advanced">Ad-Tech</span>
-                        <span class="skill-tag intermediate">Migration</span>
-                        <span class="skill-tag intermediate">IoT Analytics</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Certifications & Specializations</h3>
-                    <div class="skill-list">
-                        <span class="skill-tag cert">Snowflake Certified</span>
-                        <span class="skill-tag cert">ITIL</span>
-                        <span class="skill-tag cert">Java Certified</span>
-                        <span class="skill-tag advanced">System Design</span>
-                        <span class="skill-tag advanced">Technical Leadership</span>
-                        <span class="skill-tag intermediate">Agentic AI</span>
-                    </div>
-                </div>
-            </div>
-
+        <div class="hero-image">
+            <img src="Resources/Ramji.jpg" alt="Ramji Sridaran"
+                 style="width: 300px; height: 300px; border-radius: 20px; object-fit: cover; object-position: center top; box-shadow: 0 10px 40px rgba(45, 90, 140, 0.3);">
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
-        <div class="container">
-            <h2 class="section-title">Featured Projects</h2>
-            <div class="projects-grid">
-                <article class="project-card" data-project="1" id="chiller">
-                    <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html" data-page-num="0">
-                        <div class="project-watermark"></div>
-                        <div class="image-overlay">
+<!-- About Section -->
+<section id="about" class="about">
+    <div class="container">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p>
+                    I'm a results-driven engineer specializing in <strong>Java</strong>, <strong>AWS</strong>, <strong>Snowflake</strong>,
+                    and <strong>Distributed Systems</strong>. I build scalable cloud-native applications and data
+                    pipelines that power real-world impact across <strong>AdTech</strong>, <strong>FinTech</strong>, and
+                    <strong>IoT</strong>.
+                </p>
+                <p>
+                    My expertise spans <strong>Microservices</strong>, <strong>Production Stability</strong>, and
+                    <strong>Team Leadership</strong>. I'm passionate about solving complex technical challenges and
+                    delivering solutions that are reliable, performant, and production-ready.
+                </p>
+            </div>
+            <div class="about-stats">
+                <a href="#projects" class="stat-card">
+                    <h3>9+</h3>
+                    <p>Projects Completed</p>
+                </a>
+                <a href="#experience" class="stat-card">
+                    <h3>11+</h3>
+                    <p>Years Experience</p>
+                </a>
+                <a href="#skills" class="stat-card">
+                    <h3>30+</h3>
+                    <p>Skills</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Skills Section -->
+<section id="skills" class="skills">
+    <div class="container">
+        <h2 class="section-title">Skills & Expertise</h2>
+        <div class="skill-legend">
+            <div class="legend-item">
+                <span class="badge expert-badge">Expert</span>
+                <p>Advanced proficiency with 5+ years experience</p>
+            </div>
+            <div class="legend-item">
+                <span class="badge advanced-badge">Advanced</span>
+                <p>Strong working knowledge and proven expertise</p>
+            </div>
+            <div class="legend-item">
+                <span class="badge intermediate-badge">Intermediate</span>
+                <p>Good working knowledge and practical experience</p>
+            </div>
+            <div class="legend-item">
+                <span class="badge beginner-badge">Beginner</span>
+                <p>Basic knowledge and ongoing learning</p>
+            </div>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-category">
+                <h3>Backend & Cloud</h3>
+                <div class="skill-list">
+                    <span class="skill-tag expert">Java</span>
+                    <span class="skill-tag expert">Spring Boot</span>
+                    <span class="skill-tag expert">AWS</span>
+                    <span class="skill-tag advanced">Snowflake</span>
+                    <span class="skill-tag intermediate">Python</span>
+                    <span class="skill-tag intermediate">SQL</span>
+                    <span class="skill-tag intermediate">Scala</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>Big Data & IoT</h3>
+                <div class="skill-list">
+                    <span class="skill-tag expert">Kafka</span>
+                    <span class="skill-tag expert">MQTT</span>
+                    <span class="skill-tag advanced">IoT pipelining</span>
+                    <span class="skill-tag advanced">HBase</span>
+                    <span class="skill-tag advanced">Solr</span>
+                    <span class="skill-tag advanced">Hadoop</span>
+                    <span class="skill-tag advanced">Sqoop</span>
+                    <span class="skill-tag intermediate">Spark</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>Architecture & DevOps</h3>
+                <div class="skill-list">
+                    <span class="skill-tag expert">REST APIs</span>
+                    <span class="skill-tag advanced">Microservices</span>
+                    <span class="skill-tag advanced">System Design</span>
+                    <span class="skill-tag advanced">Docker</span>
+                    <span class="skill-tag intermediate">CI/CD</span>
+                    <span class="skill-tag beginner">Kubernetes</span>
+                    <span class="skill-tag beginner">Jenkins</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>Frontend & Tools</h3>
+                <div class="skill-list">
+                    <span class="skill-tag intermediate">HTML/CSS</span>
+                    <span class="skill-tag intermediate">JavaScript</span>
+                    <span class="skill-tag intermediate">GIT</span>
+                    <span class="skill-tag beginner">AngularJS</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>Specialized Domains</h3>
+                <div class="skill-list">
+                    <span class="skill-tag expert">Incident Management</span>
+                    <span class="skill-tag expert">Production Support</span>
+                    <span class="skill-tag advanced">Team Leadership</span>
+                    <span class="skill-tag advanced">Ad-Tech</span>
+                    <span class="skill-tag intermediate">Migration</span>
+                    <span class="skill-tag intermediate">IoT Analytics</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>Certifications & Specializations</h3>
+                <div class="skill-list">
+                    <span class="skill-tag cert">Snowflake Certified</span>
+                    <span class="skill-tag cert">ITIL</span>
+                    <span class="skill-tag cert">Java Certified</span>
+                    <span class="skill-tag advanced">System Design</span>
+                    <span class="skill-tag advanced">Technical Leadership</span>
+                    <span class="skill-tag intermediate">Agentic AI</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Projects Section -->
+<section id="projects" class="projects">
+    <div class="container">
+        <h2 class="section-title">Featured Projects</h2>
+        <div class="projects-grid">
+            <article class="project-card" data-project="1" id="chiller">
+                <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html"
+                     data-page-num="0">
+                    <div class="project-watermark"></div>
+                    <div class="image-overlay">
                             <span style="display: flex; align-items: center; gap: 0.5em; font-size: 1.1em;">
-                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                                     viewBox="0 0 24 24"
+                                     style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
                                     <rect x="3" y="3" width="7" height="7" rx="1.5"/>
                                     <rect x="14" y="3" width="7" height="7" rx="1.5"/>
                                     <rect x="14" y="14" width="7" height="7" rx="1.5"/>
@@ -225,36 +236,39 @@
                                 <span style="font-size:0.98em;opacity:0.85;">What’s under the hood?</span>
                                 <span class="curiosity-arrow">➔</span>
                             </span>
-                        </div>
                     </div>
-                    <div class="project-info">
-                        <h3>Remote Chiller Monitoring System</h3>
-                        <p>An Internet of Things (IoT) solution to bring the smart building capability in Intel offices.
-                            The various sensor parameters will be monitored and analyzed by building managers to
-                            visualize information and make fast and precise decisions.</p>
-                        <div class="project-tags">
-                            <span>Java</span>
-                            <span>REST APIs</span>
-                            <span>Kafka</span>
-                            <span>MQTT</span>
-                            <span>PostgreSQL</span>
-                            <span>Redis</span>
-                            <span>Spark</span>
-                            <span>Hbase</span>
-                            <span>Maven</span>
-                            <span>Tomcat</span>
-                            <span>Springboot</span>
-                        </div>
-                        <a href="#" class="project-link">View Details →</a>
+                </div>
+                <div class="project-info">
+                    <h3>Remote Chiller Monitoring System</h3>
+                    <p>An Internet of Things (IoT) solution to bring the smart building capability in Intel offices.
+                        The various sensor parameters will be monitored and analyzed by building managers to
+                        visualize information and make fast and precise decisions.</p>
+                    <div class="project-tags">
+                        <span>Java</span>
+                        <span>REST APIs</span>
+                        <span>Kafka</span>
+                        <span>MQTT</span>
+                        <span>PostgreSQL</span>
+                        <span>Redis</span>
+                        <span>Spark</span>
+                        <span>Hbase</span>
+                        <span>Maven</span>
+                        <span>Tomcat</span>
+                        <span>Springboot</span>
                     </div>
-                </article>
+                    <a href="#" class="project-link">View Details →</a>
+                </div>
+            </article>
 
-                <article class="project-card" data-project="2" id="datamigration">
-                    <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html" data-page-num="1">
-                        <div class="project-watermark"></div>
-                        <div class="image-overlay">
+            <article class="project-card" data-project="2" id="datamigration">
+                <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html"
+                     data-page-num="1">
+                    <div class="project-watermark"></div>
+                    <div class="image-overlay">
                             <span style="display: flex; align-items: center; gap: 0.5em; font-size: 1.1em;">
-                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                                     viewBox="0 0 24 24"
+                                     style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
                                     <rect x="3" y="3" width="7" height="7" rx="1.5"/>
                                     <rect x="14" y="3" width="7" height="7" rx="1.5"/>
                                     <rect x="14" y="14" width="7" height="7" rx="1.5"/>
@@ -264,33 +278,37 @@
                                 <span style="font-size:0.98em;opacity:0.85;">What’s under the hood?</span>
                                 <span class="curiosity-arrow">➔</span>
                             </span>
-                        </div>
                     </div>
-                    <div class="project-info">
-                        <h3>Data Migration into Bigdata</h3>
-                        <p>Big-data solution to migrate data from legacy systems and to provide insights and perform analytics on the
-                            ways to improve the business.
-                            Moving data from legacy systems into Big-data ecosystem using ecosystem tools and
-                            periodically synchronizing the data from RDBMS systems through change data files received
-                            through Informatica tool</p>
-                        <div class="project-tags">
-                            <span>Sqoop</span>
-                            <span>Scala</span>
-                            <span>Spark</span>
-                            <span>Hbase</span>
-                            <span>Shell-Script</span>
-                            <span>Hadoop</span>
-                        </div>
-                        <a href="#" class="project-link">View Details →</a>
+                </div>
+                <div class="project-info">
+                    <h3>Data Migration into Bigdata</h3>
+                    <p>Big-data solution to migrate data from legacy systems and to provide insights and perform
+                        analytics on the
+                        ways to improve the business.
+                        Moving data from legacy systems into Big-data ecosystem using ecosystem tools and
+                        periodically synchronizing the data from RDBMS systems through change data files received
+                        through Informatica tool</p>
+                    <div class="project-tags">
+                        <span>Sqoop</span>
+                        <span>Scala</span>
+                        <span>Spark</span>
+                        <span>Hbase</span>
+                        <span>Shell-Script</span>
+                        <span>Hadoop</span>
                     </div>
-                </article>
+                    <a href="#" class="project-link">View Details →</a>
+                </div>
+            </article>
 
-                <article class="project-card" data-project="3" id="mf2c">
-                    <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html" data-page-num="2">
-                        <div class="project-watermark"></div>
-                        <div class="image-overlay">
+            <article class="project-card" data-project="3" id="mf2c">
+                <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html"
+                     data-page-num="2">
+                    <div class="project-watermark"></div>
+                    <div class="image-overlay">
                             <span style="display: flex; align-items: center; gap: 0.5em; font-size: 1.1em;">
-                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                                     viewBox="0 0 24 24"
+                                     style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
                                     <rect x="3" y="3" width="7" height="7" rx="1.5"/>
                                     <rect x="14" y="3" width="7" height="7" rx="1.5"/>
                                     <rect x="14" y="14" width="7" height="7" rx="1.5"/>
@@ -300,35 +318,38 @@
                                 <span style="font-size:0.98em;opacity:0.85;">What’s under the hood?</span>
                                 <span class="curiosity-arrow">➔</span>
                             </span>
-                        </div>
                     </div>
-                    <div class="project-info">
-                        <h3>MF2C</h3>
-                        <p>Migration of projects from Mainframe systems to cloud using AGILE methodology & monitoring
-                            the day-to-day production jobs. Setting up data channels using Kafka with Spring batch
-                            to process data files that are required for the day-to-day financial services of the client
-                            in both Azure & Client Native Cloud Platforms</p>
-                        <div class="project-tags">
-                            <span>Java</span>
-                            <span>Springbatch</span>
-                            <span>Liquibase</span>
-                            <span>MySQL</span>
-                            <span>Kafka</span>
-                            <span>KITT</span>
-                            <span>Kubernetes</span>
-                            <span>Splunk</span>
-                            <span>Dynatrace</span>
-                        </div>
-                        <a href="#" class="project-link">View Details →</a>
+                </div>
+                <div class="project-info">
+                    <h3>MF2C</h3>
+                    <p>Migration of projects from Mainframe systems to cloud using AGILE methodology & monitoring
+                        the day-to-day production jobs. Setting up data channels using Kafka with Spring batch
+                        to process data files that are required for the day-to-day financial services of the client
+                        in both Azure & Client Native Cloud Platforms</p>
+                    <div class="project-tags">
+                        <span>Java</span>
+                        <span>Springbatch</span>
+                        <span>Liquibase</span>
+                        <span>MySQL</span>
+                        <span>Kafka</span>
+                        <span>KITT</span>
+                        <span>Kubernetes</span>
+                        <span>Splunk</span>
+                        <span>Dynatrace</span>
                     </div>
-                </article>
+                    <a href="#" class="project-link">View Details →</a>
+                </div>
+            </article>
 
-                <article class="project-card" data-project="4" id="databridge">
-                    <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html" data-page-num="3">
-                        <div class="project-watermark"></div>
-                        <div class="image-overlay">
+            <article class="project-card" data-project="4" id="databridge">
+                <div class="project-image project-image-clickable" data-page="Resources/FlowCharts.html"
+                     data-page-num="3">
+                    <div class="project-watermark"></div>
+                    <div class="image-overlay">
                             <span style="display: flex; align-items: center; gap: 0.5em; font-size: 1.1em;">
-                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                                     viewBox="0 0 24 24"
+                                     style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
                                     <rect x="3" y="3" width="7" height="7" rx="1.5"/>
                                     <rect x="14" y="3" width="7" height="7" rx="1.5"/>
                                     <rect x="14" y="14" width="7" height="7" rx="1.5"/>
@@ -338,264 +359,289 @@
                                 <span style="font-size:0.98em;opacity:0.85;">What’s under the hood?</span>
                                 <span class="curiosity-arrow">➔</span>
                             </span>
-                        </div>
                     </div>
-                    <div class="project-info">
-                        <h3>Databridge</h3>
-                        <p>Large scale application development which is part of the product used in the advertising
-                            domain hosted on AWS and data hosted on Snowflake. Leading a team of 5 members, managing
-                            the feature development activities with automated continuous integration and deployment
-                            strategies using Jenkins and Kubernetes.</p>
-                        <div class="project-tags">
-                            <span>Java</span>
-                            <span>REST APIs</span>
-                            <span>Snowflake</span>
-                            <span>Springboot</span>
-                            <span>Amazon Web Services</span>
-                            <span>MySQL</span>
-                            <span>Jenkins</span>
-                            <span>Wildfly</span>
-                            <span>Datadog</span>
-                            <span>Kubernetes</span>
-                        </div>
-                        <a href="#" class="project-link">View Details →</a>
+                </div>
+                <div class="project-info">
+                    <h3>Databridge</h3>
+                    <p>Large scale application development which is part of the product used in the advertising
+                        domain hosted on AWS and data hosted on Snowflake. Leading a team of 5 members, managing
+                        the feature development activities with automated continuous integration and deployment
+                        strategies using Jenkins and Kubernetes.</p>
+                    <div class="project-tags">
+                        <span>Java</span>
+                        <span>REST APIs</span>
+                        <span>Snowflake</span>
+                        <span>Springboot</span>
+                        <span>Amazon Web Services</span>
+                        <span>MySQL</span>
+                        <span>Jenkins</span>
+                        <span>Wildfly</span>
+                        <span>Datadog</span>
+                        <span>Kubernetes</span>
                     </div>
-                </article>
+                    <a href="#" class="project-link">View Details →</a>
+                </div>
+            </article>
 
-            </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Experience Section -->
-    <section id="experience" class="experience">
-        <div class="container">
-            <h2 class="section-title">Professional Experience</h2>
-            <div class="timeline">
+<!-- Experience Section -->
+<section id="experience" class="experience">
+    <div class="container">
+        <h2 class="section-title">Professional Experience</h2>
+        <div class="timeline">
 
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <a href="#databridge" style="text-decoration: none; color: inherit;">
-                    <div class="timeline-content">
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <a href="#databridge" style="text-decoration: none; color: inherit;">
+                    <div class="timeline-content experience-popup-trigger">
                         <h3>TECHNICAL LEAD</h3>
                         <p class="company">Dentsu Global Services</p>
                         <p class="year">2021—Present</p>
-                        <p>
-                            Large scale application development Ad-Tech platform for programmatic advertising
-                            hosted on AWS and data hosted on Snowflake. Leading a team of 5 members,
-                            managing the feature development activities with automated continuous integration
-                            and deployment strategies using Jenkins and Kubernetes.
-                            Mentoring team members on best practices in coding, design patterns, and cloud-native development.
-                        </p>
+                        <div class="experience-popup" role="dialog" aria-modal="true"
+                             aria-label="Roles and Responsibilities">
+                            <p>
+                                Large scale application development Ad-Tech platform for programmatic advertising
+                                hosted on AWS and data hosted on Snowflake. Leading a team of 5 members,
+                                managing the feature development activities with automated continuous integration
+                                and deployment strategies using Jenkins and Kubernetes.
+                                Mentoring team members on best practices in coding, design patterns, and cloud-native
+                                development.
+                            </p>
+                        </div>
                     </div>
-                    </a>
-                </div>
+                </a>
+            </div>
 
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <a href="#mf2c" style="text-decoration: none; color: inherit;">
-                    <div class="timeline-content">
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <a href="#mf2c" style="text-decoration: none; color: inherit;">
+                    <div class="timeline-content experience-popup-trigger">
                         <h3>JAVA/CLOUD DEVELOPER</h3>
                         <p class="company">Cognizant Technology Solutions</p>
                         <p class="year">2020 - 2021</p>
-                        <!--<p>
-                            Migration of projects from Mainframe systems to cloud using AGILE methodology &
-                            monitoring the day-to-day production jobs.
-                        </p>-->
+                        <div class="experience-popup" role="dialog" aria-modal="true"
+                             aria-label="Roles and Responsibilities">
+                            <p>
+                                Migration of projects from Mainframe systems to cloud using AGILE methodology &
+                                monitoring the day-to-day production jobs.
+                            </p>
+                        </div>
                     </div>
-                    </a>
-                </div>
+                </a>
+            </div>
 
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <a href="#datamigration" style="text-decoration: none; color: inherit;">
-                    <div class="timeline-content">
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <a href="#datamigration" style="text-decoration: none; color: inherit;">
+                    <div class="timeline-content experience-popup-trigger">
                         <h3>BIG-DATA DEVELOPER</h3>
                         <p class="company">Cognizant Technology Solutions</p>
                         <p class="year">2018 - 2020</p>
-                        <!--<p>
-                            Big-data solution to migrate data from legacy systems and to provide insights and
-                            perform analytics on the ways to improve the business
-                        </p>-->
+                        <div class="experience-popup" role="dialog" aria-modal="true"
+                             aria-label="Roles and Responsibilities">
+                            <p>
+                                Big-data solution to migrate data from legacy systems and to provide insights and
+                                perform analytics on the ways to improve the business
+                            </p>
+                        </div>
                     </div>
-                    </a>
-                </div>
+                </a>
+            </div>
 
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <a href="#chiller" style="text-decoration: none; color: inherit;">
-                    <div class="timeline-content">
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <a href="#chiller" style="text-decoration: none; color: inherit;">
+                    <div class="timeline-content experience-popup-trigger">
                         <h3>IoT – JAVA/BIG-DATA DEVELOPER</h3>
                         <p class="company">Tata Consultancy Services</p>
                         <p class="year">2015 - 2018</p>
-                        <!--<p>
-                            An Internet of Things (IoT) solution to bring the smart building capability in Intel offices.
-                            The various sensor parameters will be monitored and analyzed by building managers to visualize information and make fast and precise decisions.
-                        </p>-->
+                        <div class="experience-popup" role="dialog" aria-modal="true"
+                             aria-label="Roles and Responsibilities">
+                            <p>
+                                An Internet of Things (IoT) solution to bring the smart building capability in Intel
+                                offices.
+                                The various sensor parameters will be monitored and analyzed by building managers to
+                                visualize information and make fast and precise decisions.
+                            </p>
+                        </div>
                     </div>
-                    </a>
-                </div>
+                </a>
+            </div>
 
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <h3>PRODUCTION SUPPORT ANALYST</h3>
-                        <p class="company">Tata Consultancy Services</p>
-                        <p class="year">2014 - 2015</p>
-                        <!--<p>
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <h3>PRODUCTION SUPPORT ANALYST</h3>
+                    <p class="company">Tata Consultancy Services</p>
+                    <p class="year">2014 - 2015</p>
+                    <div class="experience-popup">
+                        <p>
                             Performed Tier 2 application support working as production analyst in the Retail Services
                             division for one of the biggest bank with multiple clients. Also engaged in several
-                            responsibilities which includes the coordination of support teams in other Line of businesses in the Production Management
-                        </p>-->
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-content">
-                        <h3>PLACEMENT TRAINER</h3>
-                        <p class="company">M.KUMARASAMY COLLEGE OF ENGINEERING</p>
-                        <p class="year">2013-2014</p>
-                        <!--<p>
-                            Performed Tier 2 application support working as production analyst in the Retail Services
-                            division for one of the biggest bank with multiple clients. Also engaged in several
-                            responsibilities which includes the coordination of support teams in other Line of businesses in the Production Management
-                        </p>-->
+                            responsibilities which includes the coordination of support teams in other Line of
+                            businesses in the Production Management
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2 class="section-title">Let's Connect & Create Magic ✨</h2>
-            <div class="contact-intro">
-                <p class="contact-tagline">Have an exciting opportunity? Want to collaborate on something amazing? Or just want to chat about tech, design patterns, and innovation?</p>
-                <p class="contact-subtitle">I'm just one message away. Let's build something incredible together!</p>
-            </div>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h3>Reach Out</h3>
-                    <p class="contact-description">Whether it's a full-time role, a cool project, or just a coffee chat, I'm excited to hear from you. Let's explore how we can create impact together.</p>
-
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <span class="contact-icon">✉</span>
-                            <div class="contact-item-content">
-                                <h4>Email</h4>
-                                <a href="mailto:ramjisridaran@gmail.com">ramjisridaran@gmail.com</a>
-                            </div>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-icon">☎</span>
-                            <div class="contact-item-content">
-                                <h4>Phone</h4>
-                                <a href="tel:+919443322527">+91 94433-22527</a>
-                            </div>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-icon">⌘</span>
-                            <div class="contact-item-content">
-                                <h4>Location</h4>
-                                <p>Coimbatore, India</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <form class="contact-form" id="contactForm" action="https://api.web3forms.com/submit" method="POST">
-                    <!-- Replace with your access key from https://web3forms.com -->
-                    <input type="hidden" name="access_key" value="c71935f4-bf9a-4171-98ad-d29fe292cdaf">
-                    <input type="hidden" name="subject" value="New Contact Form Submission from Portfolio">
-                    <input type="hidden" name="redirect" value="https://web3forms.com/success">
-
-                    <div class="form-group">
-                        <label for="contactName" class="visually-hidden">Name</label>
-                        <input type="text" id="contactName" name="name" placeholder="Your Name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contactEmail" class="visually-hidden">Email</label>
-                        <input type="email" id="contactEmail" name="email" placeholder="Your Email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contactSubject" class="visually-hidden">Subject</label>
-                        <input type="text" id="contactSubject" name="subject" placeholder="What's this about?" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contactMessage" class="visually-hidden">Message</label>
-                        <textarea id="contactMessage" name="message" placeholder="Tell me your thoughts... (I promise to read every message!)" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                </form>
-            </div>
-
-            <div class="social-section">
-                <p class="social-label">Connect on Social</p>
-                <div class="social-links">
-                    <a href="https://www.linkedin.com/in/ramji-sridaran/" class="social-link" title="LinkedIn">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.475-2.236-1.986-2.236-1.081 0-1.722.731-2.004 1.438-.103.249-.129.597-.129.946v5.421h-3.554s.05-8.797 0-9.714h3.554v1.377c.43-.664 1.202-1.61 2.923-1.61 2.136 0 3.736 1.393 3.736 4.388v5.559zM5.337 8.855c-1.144 0-1.915-.758-1.915-1.706 0-.968.771-1.71 1.954-1.71 1.182 0 1.915.742 1.94 1.71 0 .948-.758 1.706-1.979 1.706zm1.581 11.597H3.635V9.738h3.283v10.714zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
-                        </svg>
-                    </a>
-                    <a href="https://www.facebook.com/ramjisridaran" class="social-link" title="Facebook">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-                        </svg>
-                    </a>
-                    <a href="https://www.instagram.com/ramji.bhargavi/" class="social-link" title="Instagram">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; Some rights reserved 2025.</p>
-            <p>Crafted with <span class="heart">♥</span> by <strong>Ramji</strong> with help from <span class="ai-emoji">✨</span> <strong>AI</strong></p>
-        </div>
-    </footer>
-
-    <!-- Project Modal -->
-    <div id="projectModal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <div class="modal-body">
-                <h2 id="modalTitle"></h2>
-                <div id="modalDescription"></div>
-                <div class="modal-section">
-                    <h3>Technologies Used</h3>
-                    <div id="modalTechnologies" class="modal-tags"></div>
-                </div>
-                <div class="modal-section">
-                    <h3>Key Features</h3>
-                    <ul id="modalFeatures"></ul>
-                </div>
-                <div class="modal-section">
-                    <h3>Challenges & Solutions</h3>
-                    <p id="modalChallenges"></p>
-                </div>
-                <div class="modal-actions">
-                    <a id="modalLiveLink" href="#" class="btn btn-primary" target="_blank">View Live Demo</a>
-                    <a id="modalGithubLink" href="#" class="btn btn-secondary" target="_blank">View on GitHub</a>
+            <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                    <h3>PLACEMENT TRAINER</h3>
+                    <p class="company">M.KUMARASAMY COLLEGE OF ENGINEERING</p>
+                    <p class="year">2013-2014</p>
+                    <!--<p>
+                        Performed Tier 2 application support working as production analyst in the Retail Services
+                        division for one of the biggest bank with multiple clients. Also engaged in several
+                        responsibilities which includes the coordination of support teams in other Line of businesses in the Production Management
+                    </p>-->
                 </div>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- Image/Page Modal -->
-    <div id="imageModal" class="image-modal">
-        <span class="image-modal-close">&times;</span>
-        <iframe id="pageModalFrame" class="image-modal-content" title="Project Page" style="display: none; width: 100%; height: 100%; border: 0; border-radius: 8px;" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
-        <img class="image-modal-content" id="imageModalImg" style="display: none;" alt="Project Image" src="">
-        <div class="image-modal-caption"></div>
+<!-- Contact Section -->
+<section id="contact" class="contact">
+    <div class="container">
+        <h2 class="section-title">Let's Connect & Create Magic ✨</h2>
+        <div class="contact-intro">
+            <p class="contact-tagline">Have an exciting opportunity? Want to collaborate on something amazing? Or just
+                want to chat about tech, design patterns, and innovation?</p>
+            <p class="contact-subtitle">I'm just one message away. Let's build something incredible together!</p>
+        </div>
+        <div class="contact-content">
+            <div class="contact-info">
+                <h3>Reach Out</h3>
+                <p class="contact-description">Whether it's a full-time role, a cool project, or just a coffee chat, I'm
+                    excited to hear from you. Let's explore how we can create impact together.</p>
+
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <span class="contact-icon">✉</span>
+                        <div class="contact-item-content">
+                            <h4>Email</h4>
+                            <a href="mailto:ramjisridaran@gmail.com">ramjisridaran@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">☎</span>
+                        <div class="contact-item-content">
+                            <h4>Phone</h4>
+                            <a href="tel:+919443322527">+91 94433-22527</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">⌘</span>
+                        <div class="contact-item-content">
+                            <h4>Location</h4>
+                            <p>Coimbatore, India</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form class="contact-form" id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+                <!-- Replace with your access key from https://web3forms.com -->
+                <input type="hidden" name="access_key" value="c71935f4-bf9a-4171-98ad-d29fe292cdaf">
+                <input type="hidden" name="subject" value="New Contact Form Submission from Portfolio">
+                <input type="hidden" name="redirect" value="https://web3forms.com/success">
+
+                <div class="form-group">
+                    <label for="contactName" class="visually-hidden">Name</label>
+                    <input type="text" id="contactName" name="name" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactEmail" class="visually-hidden">Email</label>
+                    <input type="email" id="contactEmail" name="email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactSubject" class="visually-hidden">Subject</label>
+                    <input type="text" id="contactSubject" name="subject" placeholder="What's this about?" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactMessage" class="visually-hidden">Message</label>
+                    <textarea id="contactMessage" name="message"
+                              placeholder="Tell me your thoughts... (I promise to read every message!)" rows="5"
+                              required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+
+        <div class="social-section">
+            <p class="social-label">Connect on Social</p>
+            <div class="social-links">
+                <a href="https://www.linkedin.com/in/ramji-sridaran/" class="social-link" title="LinkedIn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.475-2.236-1.986-2.236-1.081 0-1.722.731-2.004 1.438-.103.249-.129.597-.129.946v5.421h-3.554s.05-8.797 0-9.714h3.554v1.377c.43-.664 1.202-1.61 2.923-1.61 2.136 0 3.736 1.393 3.736 4.388v5.559zM5.337 8.855c-1.144 0-1.915-.758-1.915-1.706 0-.968.771-1.71 1.954-1.71 1.182 0 1.915.742 1.94 1.71 0 .948-.758 1.706-1.979 1.706zm1.581 11.597H3.635V9.738h3.283v10.714zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/>
+                    </svg>
+                </a>
+                <a href="https://www.facebook.com/ramjisridaran" class="social-link" title="Facebook">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                </a>
+                <a href="https://www.instagram.com/ramji.bhargavi/" class="social-link" title="Instagram">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
     </div>
+</section>
 
-    <script src="js/script.js" defer></script>
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; Some rights reserved 2025.</p>
+        <p>Crafted with <span class="heart">♥</span> by <strong>Ramji</strong> with help from <span
+                class="ai-emoji">✨</span> <strong>AI</strong></p>
+    </div>
+</footer>
+
+<!-- Project Modal -->
+<div id="projectModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <div class="modal-body">
+            <h2 id="modalTitle"></h2>
+            <div id="modalDescription"></div>
+            <div class="modal-section">
+                <h3>Technologies Used</h3>
+                <div id="modalTechnologies" class="modal-tags"></div>
+            </div>
+            <div class="modal-section">
+                <h3>Key Features</h3>
+                <ul id="modalFeatures"></ul>
+            </div>
+            <div class="modal-section">
+                <h3>Challenges & Solutions</h3>
+                <p id="modalChallenges"></p>
+            </div>
+            <div class="modal-actions">
+                <a id="modalLiveLink" href="#" class="btn btn-primary" target="_blank">View Live Demo</a>
+                <a id="modalGithubLink" href="#" class="btn btn-secondary" target="_blank">View on GitHub</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image/Page Modal -->
+<div id="imageModal" class="image-modal">
+    <span class="image-modal-close">&times;</span>
+    <iframe id="pageModalFrame" class="image-modal-content" title="Project Page"
+            style="display: none; width: 100%; height: 100%; border: 0; border-radius: 8px;"
+            sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+    <img class="image-modal-content" id="imageModalImg" style="display: none;" alt="Project Image" src="">
+    <div class="image-modal-caption"></div>
+</div>
+
+<script src="js/script.js" defer></script>
 </body>
 </html>

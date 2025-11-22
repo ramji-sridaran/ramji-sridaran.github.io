@@ -1468,3 +1468,44 @@ body {
   0% { transform: translateX(0); opacity: 0.7; }
   100% { transform: translateX(8px); opacity: 1; }
 }
+
+/* ==========================================
+   EXPERIENCE POPUP - COMPACT
+   ========================================== */
+.experience-popup {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, 10px) scale(0.95);
+  min-width: 260px;
+  max-width: 340px;
+  background: rgba(31,38,135,0.18);
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.27), 0 0 60px 10px rgba(59,130,246,0.10);
+  border-radius: 32px 38px 32px 38px/38px 32px 38px 32px;
+  padding: 18px 20px 16px 20px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 1em;
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1);
+  filter: blur(0.5px) drop-shadow(0 2px 16px #3B82F6);
+  animation: cloud-float 6s ease-in-out infinite alternate;
+}
+.experience-popup-trigger {
+  position: relative;
+}
+.experience-popup-trigger:hover .experience-popup {
+  display: block;
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1.04);
+  pointer-events: auto;
+}
+@keyframes cloud-float {
+  0% { filter: blur(0.5px) drop-shadow(0 2px 16px #3B82F6); }
+  50% { filter: blur(1.5px) drop-shadow(0 8px 32px #06B6D4); }
+  100% { filter: blur(0.5px) drop-shadow(0 2px 16px #3B82F6); }
+}
+
