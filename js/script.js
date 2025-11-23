@@ -357,56 +357,77 @@ if (compactToggle) {
 // ==========================================
 const projectData = {
     1: {
-        title: 'E-Commerce Platform',
-        description: 'A comprehensive full-stack e-commerce solution built with modern web technologies. Features real-time inventory management, secure payment processing, and an intuitive analytics dashboard for tracking sales and user behavior.',
-        technologies: ['React', 'Node.js', 'MongoDB', 'Stripe', 'Redis', 'AWS'],
+        title: 'Remote Chiller Monitoring System',
+        description: 'A real-time IoT analytics platform for monitoring chiller performance across distributed locations. The system processes high-frequency sensor data, delivers actionable insights, and enables significant improvements in energy efficiency and operational responsiveness.',
+        technologies: ['Apache Spark', 'Scala', 'Apache Kafka', 'Mosquitto MQTT', 'Redis', 'HBase', 'PostgreSQL', 'Java Spring', 'REST APIs', 'AngularJS', 'HTML/CSS', 'Apache Tomcat', 'Git', 'Maven'],
         features: [
-            'Real-time inventory tracking and automatic stock alerts',
-            'Secure payment processing with Stripe integration',
-            'Advanced product search with filters and sorting',
-            'Customer authentication and profile management',
-            'Comprehensive admin dashboard with sales analytics',
-            'Order tracking and email notifications',
-            'Responsive design for mobile and desktop',
-            'Cart persistence and saved items functionality'
+            'Real-time ingestion of sensor data from MQTT brokers into Kafka and Spark Streaming workflows',
+            'Batch and streaming analytics using Scala–Spark for aggregations, anomaly detection, and performance trends',
+            'RESTful APIs for data acquisition, reporting, and consumption by dashboards and analyst tools',
+            'Customizable UI components for live monitoring and operational dashboards',
+            'Downloadable analytical reports for engineers and data analysts',
+            'Production support including multi-node cluster management and coordination with on-site engineering teams',
+            'Continuous enhancements through requirement analysis, client walkthroughs, and iterative bug fixing'
         ],
-        challenges: 'Implementing real-time inventory updates across multiple concurrent users required careful state management and optimistic UI updates. Solved by implementing WebSocket connections with fallback polling and leveraging Redis for caching frequently accessed product data.',
+        challenges: 'Building a reliable, low-latency streaming pipeline that could handle large volumes of high-frequency IoT sensor data across multiple distributed sites. Addressed by optimizing Spark Streaming jobs, decoupling MQTT–Kafka ingestion flows, implementing efficient Redis-based caching, and tuning HBase storage for fast reads and writes.',
         liveLink: '#',
         githubLink: '#'
     },
     2: {
-        title: 'Task Management App',
-        description: 'A collaborative task management platform designed for teams to organize work efficiently. Built with real-time synchronization, allowing team members to see updates instantly without page refreshes.',
-        technologies: ['React', 'Firebase', 'TypeScript', 'Material-UI', 'WebSockets'],
+        title: 'Insights – Dental (Big Data Migration & Search Platform Modernization)',
+        description: 'A two-phase modernization program transforming legacy dental insurance systems into a scalable big-data ecosystem, followed by building a high-performance search and analytics platform on Apache Solr and HBase. The solution significantly improved data availability, search speed, and operational efficiency for customer support and analytics teams.',
+        technologies: ['Apache Spark', 'Scala', 'Sqoop', 'HBase', 'Apache Solr', 'Lucene', 'Informatica', 'PostgreSQL/RDBMS', 'Shell Scripting', 'Java', 'Eclipse', 'Maven', 'Bitbucket', 'Bamboo'],
         features: [
-            'Real-time collaboration with live updates',
-            'Drag-and-drop task organization',
-            'Team workspaces with role-based permissions',
-            'Task assignments and due date reminders',
-            'File attachments and comments on tasks',
-            'Activity timeline and audit logs',
-            'Custom task labels and priority levels',
-            'Dark mode and customizable themes'
+            'Migration of large volumes of legacy data into a robust big-data environment using Sqoop, Spark, and Informatica CDC files',
+            'End-to-end development of Spark–Scala pipelines for data transformation, table merging, and loading into HBase and Solr',
+            'Automated data ingestion workflows through shell scripting for QA validation and recurring data refresh requirements',
+            'Solr schema design and optimization enabling fast, accurate policy search for customer support applications',
+            'Performance tuning including HFile-based bulk loading into HBase and optimized Sqoop split configurations',
+            'Requirements analysis, design documentation, and continuous enhancements across multiple release cycles',
+            'Coordination with onsite teams for change requests, solution walkthroughs, and multi-team alignment',
+            'QA collaboration for defect analysis, test support, and quality-oriented release governance',
+            'Production support including troubleshooting, cluster-level issue resolution, and risk/estimation reporting',
+            'Preparation of release plans, cross-application integration reviews, and post-deployment validation'
         ],
-        challenges: 'Managing real-time sync conflicts when multiple users edit the same task simultaneously. Implemented operational transformation algorithms and conflict resolution strategies using Firebase\'s transaction system to ensure data consistency.',
+        challenges: 'Delivering low-latency search over a constantly evolving insurance dataset required optimizing both ingestion and query layers. Key challenges included handling heterogeneous source data, ensuring reliable synchronization with RDBMS systems, and tuning HBase–Solr integration for bulk loads and high-throughput searches. These were addressed by re-architecting data flows, adopting HFile bulk-load strategies, refining Solr schemas, and automating ingestion pipelines for consistent, high-quality data availability.',
         liveLink: '#',
         githubLink: '#'
     },
     3: {
-        title: 'Analytics Dashboard',
-        description: 'An advanced data visualization platform that transforms complex datasets into interactive, actionable insights. Features customizable reports, real-time data processing, and export capabilities for business intelligence.',
-        technologies: ['React', 'D3.js', 'Python', 'PostgreSQL', 'FastAPI', 'Docker'],
+        title: 'MF2C – Financial Services Mainframe to Cloud Migration',
+        description: 'A large-scale modernization initiative to migrate core financial-service workloads from legacy Mainframe systems to Azure and client-owned cloud platforms. The project implemented real-time data channels, Spring Boot microservices, automated testing suites, and cloud-native infrastructure to support day-to-day financial operations with improved reliability, scalability, and data quality.',
+        technologies: ['Spring Boot', 'Java', 'Apache Kafka', 'Liquibase', 'Azure Cloud', 'Kubernetes', 'Maven', 'Splunk', 'Dynatrace', 'SonarQube', 'REST APIs'],
         features: [
-            'Interactive charts with D3.js visualizations',
-            'Real-time data streaming and updates',
-            'Customizable dashboard layouts',
-            'Advanced filtering and data aggregation',
-            'Export reports as PDF, CSV, or Excel',
-            'Historical data comparison and trends',
-            'Automated scheduled reports via email',
-            'Role-based access control for data security'
+            'Designed and implemented Kafka-based data channels integrated with Spring Boot services for generating daily financial data files',
+            'Led requirement analysis and documentation efforts using Confluence, ensuring clear technical alignment across teams',
+            'Designed database schemas and implemented version-controlled migrations using Liquibase',
+            'Developed Spring Boot REST APIs, schedulers, and microservices supporting cloud data workflows',
+            'Built utilities to validate data quality and compare outputs between Mainframe-generated files and cloud-generated equivalents',
+            'Maintained high engineering standards with code coverage consistently above 80% per commit',
+            'Developed automated test suites to ensure stability and correctness of deployed services',
+            'Provisioned and managed cloud clusters across Azure and client-specific cloud environments',
+            'Performed end-to-end data quality testing to ensure functional and regulatory compliance',
+            'Conducted code reviews, walkthroughs, and sprint demos for stakeholders in an Agile delivery model'
         ],
-        challenges: 'Rendering large datasets (100K+ records) without performance degradation. Implemented data virtualization, server-side pagination, and progressive data loading. Optimized SQL queries and added database indexing to reduce query times from 5s to under 200ms.',
+        challenges: 'Migrating financial workloads from tightly coupled Mainframe systems to distributed cloud platforms required ensuring absolute data accuracy, consistent daily file generation, and seamless integration with existing downstream services. These challenges were addressed by building robust Kafka pipelines, enforcing strict version control with Liquibase, implementing comprehensive automated testing suites, and establishing strong observability through Splunk and Dynatrace.',
+        liveLink: '#',
+        githubLink: '#'
+    },
+    4: {
+        title: 'Databridge – Audience Data Integration & Publishing Platform',
+        description: 'A large-scale, cloud-hosted data integration platform used in the advertising domain to ingest client datasets, process audience segments, and publish them to major social media channels. Built on AWS with Snowflake as the data backbone, the system supports continuous delivery through Jenkins and Kubernetes. Led a team of five engineers, driving feature development, platform enhancements, and reliable automation at scale.',
+        technologies: ['AWS', 'Snowflake', 'Airflow', 'Liquibase', 'Jenkins', 'Kubernetes', 'Java', 'REST APIs'],
+        features: [
+            'Designed and maintained AWS Simple Workflows to process high-volume client datasets and deliver accurate audience segments to activation platforms',
+            'Integrated multiple social media ecosystems (Facebook, Google Ads, LinkedIn, etc.) and managed periodic SDK upgrades to ensure long-term platform compatibility',
+            'Onboarded new advertisers and publishing destinations, expanding ecosystem reach and customer adoption',
+            'Implemented support for new ingestion data types, improving flexibility and reducing onboarding friction',
+            'Developed REST APIs enabling new features, simplifying cross-platform communication and accelerating rollout cycles',
+            'Led feature and version upgrade strategies, optimizing performance and improving data throughput',
+            'Enhanced file-processing pipelines to handle diverse input formats at scale, resulting in lower processing time and reduced error rates',
+            'Directed development activities for a 5-member engineering team, overseeing CI/CD via Jenkins and Kubernetes for smooth deployment cycles'
+        ],
+        challenges: 'Supporting diverse client datasets and multiple social media platforms required a highly resilient integration layer capable of handling schema variability, frequent API/SDK changes, and strict SLAs for data accuracy. These complexities were addressed through robust workflow orchestration on AWS, schema-managed evolution via Liquibase, scalable processing in Snowflake, and rigorous automation across the entire CI/CD pipeline.',
         liveLink: '#',
         githubLink: '#'
     }
@@ -444,8 +465,8 @@ projectCards.forEach(card => {
             document.getElementById('modalChallenges').textContent = project.challenges;
 
             // Links
-            document.getElementById('modalLiveLink').href = project.liveLink;
-            document.getElementById('modalGithubLink').href = project.githubLink;
+            // document.getElementById('modalLiveLink').href = project.liveLink;
+            // document.getElementById('modalGithubLink').href = project.githubLink;
 
             // Show modal
             modal.classList.add('active');
