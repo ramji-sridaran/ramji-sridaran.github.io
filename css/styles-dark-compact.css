@@ -343,8 +343,8 @@ body {
 
 .about-content {
     display: grid;
-    grid-template-columns: 1.3fr 0.7fr;
-    gap: 40px;
+    grid-template-columns: 1fr;
+    gap: 30px;
     align-items: start;
 }
 
@@ -365,7 +365,7 @@ body {
 
 .about-stats {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 15px;
 }
 
