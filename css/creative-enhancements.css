@@ -221,15 +221,28 @@
 .tech-highlight {
     color: #60a5fa;
     font-weight: 600;
-    padding: 2px 6px;
+    padding: 2px 8px;
     border-radius: 4px;
-    background: rgba(96, 165, 250, 0.1);
+    background: rgba(96, 165, 250, 0.15);
     transition: all 0.3s ease;
+    display: inline;
+    white-space: nowrap;
 }
 
 .tech-highlight:hover {
-    background: rgba(96, 165, 250, 0.2);
+    background: rgba(96, 165, 250, 0.25);
     transform: translateY(-2px);
+}
+
+/* Hero Subtitle with Typing Effect */
+.hero-subtitle {
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.8;
+    margin-bottom: 30px;
+    opacity: 0;
+    min-height: 60px;
+    transition: opacity 0.3s ease;
 }
 
 /* Hero Stats */

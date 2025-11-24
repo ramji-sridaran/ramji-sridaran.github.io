@@ -442,6 +442,30 @@ document.addEventListener('DOMContentLoaded', function() {
         chatWindow.classList.remove('active');
     });
 
+    // Intelligent scroll lock: Only lock main page scroll when cursor is inside chatbot
+    chatWindow.addEventListener('mouseenter', function() {
+        // Lock main page scroll when cursor enters chatbot
+        document.body.style.overflow = 'hidden';
+    });
+
+    chatWindow.addEventListener('mouseleave', function() {
+        // Unlock main page scroll when cursor leaves chatbot
+        document.body.style.overflow = '';
+    });
+
+    // Also handle when chatbot closes - ensure scroll is unlocked
+    const unlockScroll = function() {
+        document.body.style.overflow = '';
+    };
+
+    toggleBtn.addEventListener('click', function() {
+        if (!chatWindow.classList.contains('active')) {
+            unlockScroll();
+        }
+    });
+
+    minimizeBtn.addEventListener('click', unlockScroll);
+
     // Send message
     function sendMessage() {
         const message = input.value.trim();

@@ -30,6 +30,134 @@ document.addEventListener('click', (e) => {
 });
 
 // ==========================================
+// HERO TYPING ANIMATION
+// ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+    const typingTextElement = document.getElementById('typingText');
+    const heroSubtitle = document.querySelector('.hero-subtitle');
+
+    // Roles to type
+    const roles = [
+        'Technical Lead',
+        'Java Expert',
+        'AWS Cloud Engineer',
+        'Big Data Developer',
+        'IoT Developer',
+        'Agentic AI Enthusiast'
+    ];
+
+    let roleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    let typingSpeed = 100;
+
+    function typeRole() {
+        const currentRole = roles[roleIndex];
+
+        if (isDeleting) {
+            typingTextElement.textContent = currentRole.substring(0, charIndex - 1);
+            charIndex--;
+            typingSpeed = 50;
+        } else {
+            typingTextElement.textContent = currentRole.substring(0, charIndex + 1);
+            charIndex++;
+            typingSpeed = 100;
+        }
+
+        if (!isDeleting && charIndex === currentRole.length) {
+            // Pause at end
+            typingSpeed = 2000;
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            roleIndex = (roleIndex + 1) % roles.length;
+            typingSpeed = 500;
+        }
+
+        setTimeout(typeRole, typingSpeed);
+    }
+
+    // Start typing after a short delay
+    setTimeout(typeRole, 800);
+
+    // Typing effect for hero-subtitle
+    if (heroSubtitle) {
+        // Store original HTML and extract text only
+        const originalHTML = heroSubtitle.innerHTML.trim();
+
+        // Parse the text with spans
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(`<div>${originalHTML}</div>`, 'text/html');
+        const container = doc.querySelector('div');
+
+        // Extract all text nodes and their parent info
+        const textSegments = [];
+
+        function extractText(node, parentClass = null) {
+            node.childNodes.forEach(child => {
+                if (child.nodeType === Node.TEXT_NODE) {
+                    const text = child.textContent;
+                    if (text.trim()) {
+                        textSegments.push({
+                            text: text,
+                            className: parentClass
+                        });
+                    }
+                } else if (child.nodeType === Node.ELEMENT_NODE) {
+                    extractText(child, child.className || parentClass);
+                }
+            });
+        }
+
+        extractText(container);
+
+        // Clear and prepare for typing
+        heroSubtitle.innerHTML = '';
+        heroSubtitle.style.opacity = '1';
+
+        let segmentIndex = 0;
+        let charIndex = 0;
+        let currentSpan = null;
+
+        function typeSubtitle() {
+            if (segmentIndex < textSegments.length) {
+                const segment = textSegments[segmentIndex];
+
+                if (charIndex === 0) {
+                    // Start new segment
+                    if (segment.className) {
+                        currentSpan = document.createElement('span');
+                        currentSpan.className = segment.className;
+                        heroSubtitle.appendChild(currentSpan);
+                    }
+                }
+
+                if (charIndex < segment.text.length) {
+                    // Add next character
+                    const char = segment.text.charAt(charIndex);
+                    if (segment.className && currentSpan) {
+                        currentSpan.textContent += char;
+                    } else {
+                        heroSubtitle.appendChild(document.createTextNode(char));
+                    }
+                    charIndex++;
+                    setTimeout(typeSubtitle, 15);  // Reduced from 30ms to 15ms (2x faster)
+                } else {
+                    // Move to next segment
+                    segmentIndex++;
+                    charIndex = 0;
+                    currentSpan = null;
+                    setTimeout(typeSubtitle, 10);  // Reduced from 30ms to 10ms for smoother transitions
+                }
+            }
+        }
+
+        // Start hero-subtitle typing after role typing starts
+        setTimeout(typeSubtitle, 1200);  // Reduced from 2500ms to 1200ms (starts sooner)
+    }
+});
+
+// ==========================================
 // SMOOTH SCROLLING & ACTIVE NAV HIGHLIGHT
 // ==========================================
 window.addEventListener('scroll', () => {
