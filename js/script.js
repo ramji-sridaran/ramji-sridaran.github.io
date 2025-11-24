@@ -284,35 +284,45 @@ if (heroSection) {
 // ==========================================
 const themeToggle = document.getElementById('themeToggle');
 const compactToggle = document.getElementById('compactToggle');
+const bwToggle = document.getElementById('bwToggle');
 const themeStylesheet = document.getElementById('theme-stylesheet');
 
 // Initialize theme and compact mode based on localStorage
 function initializeTheme() {
     const savedTheme = localStorage.getItem('theme') || 'light';
     const savedCompact = localStorage.getItem('compactMode');
+    const savedBW = localStorage.getItem('bwMode') === 'true';
     // Default to compact mode (true) if not set
     const isCompact = savedCompact === null ? true : savedCompact === 'true';
-    applyTheme(savedTheme, isCompact);
+    applyTheme(savedTheme, isCompact, savedBW);
 }
 
-function applyTheme(theme, isCompact = false) {
-    const isDark = theme === 'dark';
+function applyTheme(theme, isCompact = false, isBW = false) {
     let stylePath;
 
-    if (isCompact) {
-        stylePath = isDark ? 'css/styles-dark-compact.css' : 'css/styles-light-compact.css';
+    // Black & White mode overrides other themes (only in compact)
+    if (isBW) {
+        stylePath = 'css/styles-bw-compact.css';
     } else {
-        stylePath = isDark ? 'css/styles-dark.css' : 'css/styles-light.css';
+        const isDark = theme === 'dark';
+        if (isCompact) {
+            stylePath = isDark ? 'css/styles-dark-compact.css' : 'css/styles-light-compact.css';
+        } else {
+            stylePath = isDark ? 'css/styles-dark.css' : 'css/styles-light.css';
+        }
     }
 
     themeStylesheet.href = stylePath;
     localStorage.setItem('theme', theme);
     localStorage.setItem('compactMode', isCompact);
+    localStorage.setItem('bwMode', isBW);
 
     // Update theme toggle icon
     if (themeToggle) {
+        const isDark = theme === 'dark';
         themeToggle.querySelector('.theme-icon').textContent = isDark ? '☀️' : '🌙';
         themeToggle.title = isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme';
+        themeToggle.style.opacity = isBW ? '0.5' : '1';
     }
 
     // Update compact toggle state
@@ -324,20 +334,52 @@ function applyTheme(theme, isCompact = false) {
             compactToggle.classList.remove('active');
             compactToggle.title = 'Switch to Compact Mode';
         }
+        compactToggle.style.opacity = isBW ? '0.5' : '1';
+    }
+
+    // Update B&W toggle state
+    if (bwToggle) {
+        if (isBW) {
+            bwToggle.classList.add('active');
+            bwToggle.title = 'Disable Black & White Mode';
+        } else {
+            bwToggle.classList.remove('active');
+            bwToggle.title = 'Enable Black & White Mode';
+        }
     }
 }
 
 function toggleTheme() {
     const currentTheme = localStorage.getItem('theme') || 'dark';
     const isCompact = localStorage.getItem('compactMode') === 'true';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    applyTheme(newTheme, isCompact);
+    const isBW = localStorage.getItem('bwMode') === 'true';
+    if (!isBW) {
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        applyTheme(newTheme, isCompact, false);
+    }
 }
 
 function toggleCompactMode() {
     const currentTheme = localStorage.getItem('theme') || 'dark';
     const isCompact = localStorage.getItem('compactMode') === 'true';
-    applyTheme(currentTheme, !isCompact);
+    const isBW = localStorage.getItem('bwMode') === 'true';
+    if (!isBW) {
+        applyTheme(currentTheme, !isCompact, false);
+    }
+}
+
+function toggleBWMode() {
+    const isBW = localStorage.getItem('bwMode') === 'true';
+
+    if (isBW) {
+        // Exiting B&W mode - default to light-compact theme
+        applyTheme('light', true, false);
+    } else {
+        // Entering B&W mode
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        const isCompact = localStorage.getItem('compactMode') === 'true';
+        applyTheme(currentTheme, isCompact, true);
+    }
 }
 
 // Initialize theme on page load
@@ -350,6 +392,10 @@ if (themeToggle) {
 
 if (compactToggle) {
     compactToggle.addEventListener('click', toggleCompactMode);
+}
+
+if (bwToggle) {
+    bwToggle.addEventListener('click', toggleBWMode);
 }
 
 // ==========================================
