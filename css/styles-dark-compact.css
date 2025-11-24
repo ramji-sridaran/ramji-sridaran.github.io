@@ -836,10 +836,9 @@ body {
     width: 16px;
     height: 16px;
     background: linear-gradient(135deg, #06B6D4, #3B82F6);
-    border: 3px solid var(--dark-bg);
+    border: 3px solid #0F1419;
     border-radius: 50%;
     z-index: 2;
-    animation: pulse 2s ease-in-out infinite;
 }
 
 .timeline-content {

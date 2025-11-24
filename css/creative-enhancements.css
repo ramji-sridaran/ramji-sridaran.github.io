@@ -534,29 +534,29 @@
 }
 
 .badge-java {
-    top: 150px;
-    right: -30px;
+    top: 40px;
+    left: 30px;
     color: #007396;
-    animation-delay: 2s;
+    animation-delay: .25s;
 }
 
 .badge-bigdata {
     bottom: 60px;
-    right: -30px;
+    right: 30px;
     color: #e65100;
     animation-delay: 1.5s;
 }
 
 .badge-spring {
     bottom: 5px;
-    right: 60px;
+    right: -30px;
     color: #6db33f;
     animation-delay: 0.5s;
 }
 
 .badge-kafka {
     bottom: 5px;
-    left: 60px;
+    left: 10px;
     color: #231f20;
     animation-delay: 2.5s;
 }
@@ -569,7 +569,7 @@
 }
 
 .badge-docker {
-    top: 60px;
+    top: 80px;
     left: -30px;
     color: #2496ed;
     animation-delay: 2s;
