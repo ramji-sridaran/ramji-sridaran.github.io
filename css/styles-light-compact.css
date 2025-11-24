@@ -8,16 +8,18 @@
 }
 
 :root {
-    --primary-color: #2D5A8C;
-    --secondary-color: #00C9A7;
-    --accent-color: #FF6B54;
-    --text-dark: #1F2937;
-    --text-light: #6B7280;
-    --bg-light: #F9FAFB;
+    --primary-color: #4A5568;        /* Muted Slate Gray */
+    --secondary-color: #718096;      /* Light Slate Gray */
+    --accent-color: #805AD5;         /* Muted Purple */
+    --accent-secondary: #38B2AC;     /* Muted Teal */
+    --text-dark: #2D3748;
+    --text-light: #718096;
+    --bg-light: #F7FAFC;
     --bg-white: #FFFFFF;
-    --border-color: #E5E7EB;
-    --shadow: 0 2px 12px rgba(45, 90, 140, 0.1);
-    --shadow-sm: 0 1px 6px rgba(45, 90, 140, 0.06);
+    --bg-accent: #EDF2F7;
+    --border-color: #E2E8F0;
+    --shadow: 0 2px 12px rgba(74, 85, 104, 0.08);
+    --shadow-sm: 0 1px 6px rgba(74, 85, 104, 0.05);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -405,7 +407,7 @@ body {
     overflow-y: hidden;
     padding-bottom: 15px;
     scrollbar-width: thin;
-    scrollbar-color: #00C9A7 #f0f0f0;
+    scrollbar-color: var(--accent-color) #f0f0f0;
 }
 
 .skills-grid::-webkit-scrollbar {
@@ -413,7 +415,7 @@ body {
 }
 
 .skills-grid::-webkit-scrollbar-thumb {
-    background: #00C9A7;
+    background: var(--accent-color);
     border-radius: 4px;
 }
 
@@ -590,7 +592,7 @@ body {
    PROJECTS SECTION - COMPACT
    ========================================== */
 .projects {
-    background: white;
+    background: var(--bg-light);
 }
 
 .projects-grid {
@@ -601,7 +603,7 @@ body {
     overflow-y: hidden;
     padding-bottom: 15px;
     scrollbar-width: thin;
-    scrollbar-color: #00C9A7 #f0f0f0;
+    scrollbar-color: var(--accent-color) #f0f0f0;
 }
 
 .projects-grid::-webkit-scrollbar {
@@ -609,7 +611,7 @@ body {
 }
 
 .projects-grid::-webkit-scrollbar-thumb {
-    background: #00C9A7;
+    background: var(--accent-color);
     border-radius: 4px;
 }
 
@@ -762,7 +764,7 @@ body {
    EXPERIENCE SECTION - COMPACT
    ========================================== */
 .experience {
-    background: var(--bg-light);
+    background: white;
 }
 
 .timeline {
@@ -869,16 +871,16 @@ body {
    CONTACT SECTION - COMPACT
    ========================================== */
 .contact {
-    background: white;
+    background: var(--bg-light);
 }
 
 .contact-intro {
     text-align: center;
     margin-bottom: 40px;
     padding: 25px;
-    background: linear-gradient(135deg, rgba(0, 201, 167, 0.08), rgba(45, 90, 140, 0.08));
+    background: linear-gradient(135deg, rgba(74, 85, 104, 0.06), rgba(128, 90, 213, 0.06));
     border-radius: 12px;
-    border-left: 4px solid #00C9A7;
+    border-left: 4px solid var(--accent-color);
 }
 
 .contact-tagline {
@@ -1546,7 +1548,7 @@ body {
 
 /* Certifications Section */
 .certifications {
-  background: linear-gradient(180deg, var(--card-bg), rgba(59, 130, 246, 0.03));
+  background: var(--bg-white);
   padding: 60px 0 40px 0;
 }
 .certifications-grid {

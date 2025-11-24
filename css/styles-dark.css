@@ -1088,7 +1088,7 @@ body {
    CONTACT SECTION
    ========================================== */
 .contact {
-    background: var(--dark-bg);
+    background: var(--card-bg);
 }
 
 .contact-intro {

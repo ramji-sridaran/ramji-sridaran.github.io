@@ -661,7 +661,7 @@ body {
    PROJECTS SECTION
    ========================================== */
 .projects {
-    background: white;
+    background: var(--bg-light);
 }
 
 .projects-grid {
@@ -835,7 +835,7 @@ body {
    EXPERIENCE SECTION
    ========================================== */
 .experience {
-    background: var(--bg-light);
+    background: white;
 }
 
 .timeline {
@@ -937,7 +937,7 @@ body {
    CONTACT SECTION
    ========================================== */
 .contact {
-    background: white;
+    background: var(--bg-light);
 }
 
 .contact-intro {
@@ -1621,7 +1621,7 @@ body {
 
 /* Certifications Section */
 .certifications {
-  background: linear-gradient(180deg, var(--card-bg), rgba(59, 130, 246, 0.03));
+  background: var(--bg-white);
   padding: 80px 0 60px 0;
 }
 .certifications-grid {
