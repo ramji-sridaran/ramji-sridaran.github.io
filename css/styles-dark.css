@@ -475,10 +475,22 @@ body {
 }
 
 .about-content {
-    display: grid;
+    width: 100%;
+    margin: 0 auto;
+    display: block;
     grid-template-columns: 1fr 1fr;
     gap: 60px;
     align-items: center;
+}
+
+.about-content {
+    justify-content: center;
+}
+
+.about-text {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .about-text p {

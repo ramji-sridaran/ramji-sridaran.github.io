@@ -360,6 +360,13 @@ body {
     grid-template-columns: 1fr;
     gap: 30px;
     align-items: start;
+    justify-content: center;
+}
+
+.about-text {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .about-text p {
