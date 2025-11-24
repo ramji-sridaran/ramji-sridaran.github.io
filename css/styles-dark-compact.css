@@ -1401,6 +1401,10 @@ body {
         gap: 0.8rem;
     }
 
+    body {
+        padding-top: 80px;
+    }
+
     .hamburger {
         display: flex;
     }
