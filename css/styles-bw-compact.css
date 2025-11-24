@@ -64,17 +64,9 @@ a:hover {
    CONTAINER & LAYOUT - COMPACT
    ========================================== */
 .container {
-    max-width: 1600px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 0 40px;
-    transition: max-width 0.3s cubic-bezier(0.4,0,0.2,1);
-}
-
-@media (min-width: 1800px) {
-    .container {
-        max-width: 1800px;
-        padding: 0 80px;
-    }
+    padding: 0 20px;
 }
 
 section {
@@ -266,9 +258,7 @@ body {
    HERO SECTION - COMPACT
    ========================================== */
 .hero {
-    background: linear-gradient(120deg, #000 0%, #333 100%);
-    min-height: 600px;
-    box-shadow: 0 8px 40px 0 rgba(0,0,0,0.08);
+    background: linear-gradient(135deg, #000000 0%, #333333 50%, #000000 100%);
     padding: 60px 0;
     color: white;
 }
@@ -318,26 +308,6 @@ body {
     width: 240px !important;
     height: 240px !important;
     border-radius: 16px !important;
-}
-
-@media (min-width: 1200px) {
-    .hero .container {
-        grid-template-columns: 1.2fr 1fr;
-        gap: 100px;
-    }
-    .hero-content {
-        font-size: 1.15em;
-    }
-}
-
-@media (min-width: 1600px) {
-    .hero .container {
-        grid-template-columns: 1.3fr 1fr;
-        gap: 140px;
-    }
-    .hero-content {
-        font-size: 1.22em;
-    }
 }
 
 /* ==========================================
@@ -1781,104 +1751,3 @@ body {
 .compact-toggle {
   display: none !important;
 }
-
-/* UX Enhancement for Large Screens */
-.container {
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 0 40px;
-    transition: max-width 0.3s cubic-bezier(0.4,0,0.2,1);
-}
-
-@media (min-width: 1800px) {
-    .container {
-        max-width: 1800px;
-        padding: 0 80px;
-    }
-}
-
-body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; bottom: 0; width: 12vw;
-    background: linear-gradient(120deg, #e5e5e5 0%, #fff 100%);
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.7;
-}
-
-body::after {
-    content: '';
-    position: fixed;
-    top: 0; right: 0; bottom: 0; width: 12vw;
-    background: linear-gradient(-120deg, #e5e5e5 0%, #fff 100%);
-    z-index: 0;
-    pointer-events: none;
-    opacity: 0.7;
-}
-
-section, .hero {
-    position: relative;
-    z-index: 1;
-}
-
-.hero {
-    background: linear-gradient(120deg, #000 0%, #333 100%);
-    min-height: 600px;
-    box-shadow: 0 8px 40px 0 rgba(0,0,0,0.08);
-}
-
-@media (min-width: 1200px) {
-    .hero .container {
-        grid-template-columns: 1.2fr 1fr;
-        gap: 100px;
-    }
-    .hero-content {
-        font-size: 1.15em;
-    }
-}
-
-@media (min-width: 1600px) {
-    .hero .container {
-        grid-template-columns: 1.3fr 1fr;
-        gap: 140px;
-    }
-    .hero-content {
-        font-size: 1.22em;
-    }
-}
-
-@media (min-width: 1200px) {
-    body::before, body::after {
-        opacity: 0.9;
-        background: url('data:image/svg+xml;utf8,<svg width="320" height="900" xmlns="http://www.w3.org/2000/svg"><g opacity="0.08"><ellipse cx="160" cy="200" rx="120" ry="80" fill="%23000"/><ellipse cx="80" cy="700" rx="90" ry="60" fill="%23666"/></g></svg>') no-repeat center center, linear-gradient(120deg, #e5e5e5 0%, #fff 100%);
-        background-size: cover, 100% 100%;
-    }
-}
-
-@media (min-width: 1400px) {
-    section {
-        padding-left: 4vw;
-        padding-right: 4vw;
-    }
-}
-
-@media (min-width: 1800px) {
-    section {
-        padding-left: 8vw;
-        padding-right: 8vw;
-    }
-}
-
-@media (min-width: 1400px) {
-    html {
-        font-size: 18px;
-    }
-}
-
-@media (min-width: 1800px) {
-    html {
-        font-size: 20px;
-    }
-}
-
