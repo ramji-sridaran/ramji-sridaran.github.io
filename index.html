@@ -32,9 +32,10 @@
 
     <!-- Stylesheets -->
     <link id="theme-stylesheet" rel="stylesheet" href="css/styles-dark.css">
+    <link rel="stylesheet" href="css/creative-enhancements.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
           rel="stylesheet">
 
     <!-- Schema.org JSON-LD for Rich Snippets -->
@@ -113,31 +114,124 @@
 
 <!-- Hero Section -->
 <section id="home" class="hero">
+    <div class="hero-background-animation">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+    <div class="floating-particles" id="particles"></div>
+
     <div class="container">
         <div class="hero-content">
             <div class="hero-text">
-                <h1 class="hero-title">Welcome to Ramji's Portfolio</h1>
-                <p class="hero-subtitle">Tech Lead at DGS | Snowflake Certified | AWS | BigData Engineer | Microservices
-                    | IoT | Agentic AI Enthusiast</p>
-                <!--<p class="hero-description">
-                    My core specialization spans Java-based backend engineering using Spring Boot, microservices architecture, and cloud-native development across AWS and Snowflake. I also bring hands-on expertise in Big Data ecosystems and IoT platform engineering.
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    <span class="badge-text">Available for Opportunities</span>
+                </div>
+
+                <h1 class="hero-title">
+                    Hi, I'm <span class="name-highlight">Ramji Sridaran</span>
+                </h1>
+
+                <div class="hero-typing-container">
+                    <span class="hero-typing-prefix">I'm a </span>
+                    <span class="hero-typing-text" id="typingText"></span>
+                    <span class="typing-cursor">|</span>
+                </div>
+
+                <p class="hero-subtitle">
+                    Technical Lead specializing in <span class="tech-highlight">Java</span>,
+                    <span class="tech-highlight">AWS</span>,
+                    <span class="tech-highlight">IoT</span>,
+                    <span class="tech-highlight">Snowflake</span> &
+                    <span class="tech-highlight">Big Data</span>
                 </p>
 
-                <p class="hero-description">
-                    I have applied these capabilities across multiple domains, including Advertising Technology, Fintech, IoT sensor analytics, and large-scale data processing, delivering scalable, resilient, and high-performance solutions.
-                </p>-->
+                <div class="hero-stats">
+                    <a href="#experience" class="stat-item">
+                        <div class="stat-number" data-target="11">11+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </a>
+                    <div class="stat-divider"></div>
+                    <a href="#projects" class="stat-item">
+                        <div class="stat-number" data-target="4">4+</div>
+                        <div class="stat-label">Major Projects</div>
+                    </a>
+                    <div class="stat-divider"></div>
+                    <a href="#certifications" class="stat-item">
+                        <div class="stat-number" data-target="10">10+</div>
+                        <div class="stat-label">Certifications</div>
+                    </a>
+                </div>
 
-                <div class="hero-buttons">
-                    <a href="#projects" class="btn btn-primary">View My Work</a>
-                    <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-                    <a href="Resources/RamjiSridaran_OnePageResume.pdf" class="btn btn-secondary" download style="background: linear-gradient(135deg, #10B981, #059669); border-color: #10B981;">📄 Download Resume</a>
+                <div class="hero-social-links">
+                    <a href="https://www.linkedin.com/in/ramji-sridaran/" target="_blank" rel="noopener" class="social-icon" aria-label="LinkedIn">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                        </svg>
+                    </a>
+                    <a href="https://github.com/ramjisridaran" target="_blank" rel="noopener" class="social-icon" aria-label="GitHub">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </div>
+
         <div class="hero-image">
-            <img src="Resources/Ramji.jpg" alt="Ramji Sridaran - Technical Lead" loading="eager"
-                 style="width: 300px; height: 300px; border-radius: 20px; object-fit: cover; object-position: center top; box-shadow: 0 10px 40px rgba(45, 90, 140, 0.3);">
+            <div class="image-glow"></div>
+            <div class="image-container">
+                <img src="Resources/Ramji.jpg" alt="Ramji Sridaran - Technical Lead" loading="eager">
+                <div class="image-overlay-pattern"></div>
+            </div>
+            <div class="floating-badges-container">
+                <div class="floating-badge badge-aws">
+                    <span>☁️ AWS</span>
+                </div>
+                <div class="floating-badge badge-snowflake">
+                    <span>❄️ Snowflake</span>
+                </div>
+                <div class="floating-badge badge-java">
+                    <span>☕ Java</span>
+                </div>
+                <div class="floating-badge badge-bigdata">
+                    <span>📊 Big Data</span>
+                </div>
+                <div class="floating-badge badge-spring">
+                    <span>🍃 Spring Boot</span>
+                </div>
+                <div class="floating-badge badge-kafka">
+                    <span>📨 Kafka</span>
+                </div>
+                <div class="floating-badge badge-microservices">
+                    <span>🔧 Microservices</span>
+                </div>
+                <div class="floating-badge badge-docker">
+                    <span>🐳 Docker</span>
+                </div>
+            </div>
+
+            <div class="hero-buttons-right">
+                <a href="#projects" class="btn btn-primary btn-glow">
+                    <span class="btn-text">View My Work</span>
+                    <span class="btn-icon">→</span>
+                </a>
+                <a href="#contact" class="btn btn-secondary btn-outline">
+                    <span class="btn-text">Get In Touch</span>
+                    <span class="btn-icon">✉</span>
+                </a>
+                <a href="Resources/RamjiSridaran_OnePageResume.pdf" class="btn btn-accent" download>
+                    <span class="btn-text">Download Resume</span>
+                    <span class="btn-icon">📄</span>
+                </a>
+            </div>
         </div>
+    </div>
+
+    <div class="scroll-indicator">
+        <div class="mouse"></div>
+        <span>Scroll to explore</span>
     </div>
 </section>
 
@@ -158,20 +252,6 @@
                     <strong>Team Leadership</strong>. I'm passionate about solving complex technical challenges and
                     delivering solutions that are reliable, performant, and production-ready.
                 </p>
-            </div>
-            <div class="about-stats">
-                <a href="#projects" class="stat-card">
-                    <h3>9+</h3>
-                    <p>Projects Completed</p>
-                </a>
-                <a href="#experience" class="stat-card">
-                    <h3>11+</h3>
-                    <p>Years Experience</p>
-                </a>
-                <a href="#skills" class="stat-card">
-                    <h3>30+</h3>
-                    <p>Skills</p>
-                </a>
             </div>
         </div>
     </div>
