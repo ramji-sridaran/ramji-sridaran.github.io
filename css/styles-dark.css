@@ -1562,6 +1562,11 @@ body {
     box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
 }
 
+#pageModalFrame.image-modal-content {
+    width: 90vw;
+    height: 90vh;
+}
+
 .image-modal-close {
     position: absolute;
     top: 20px;
