@@ -129,7 +129,7 @@
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(101, 101, 101, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50px;
@@ -140,10 +140,10 @@
 }
 
 .badge-dot {
-    width: 8px;
-    height: 8px;
-    background: #10b981;
-    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    background: #04ae7a;
+    border-radius: 75%;
     animation: pulse 2s ease-in-out infinite;
     flex-shrink: 0;
 }
@@ -707,7 +707,7 @@
     }
 
     .badge-text {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
     }
 
     .hero-title {

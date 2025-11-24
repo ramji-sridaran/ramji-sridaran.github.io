@@ -1790,3 +1790,68 @@ body {
 .bw-toggle:active .bw-icon {
     transform: scale(1.15);
 }
+
+/* ==========================================
+   LIGHT THEME - ENHANCED HERO SECTION
+   ========================================== */
+.hero {
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 30%, #7dd3fc 70%, #38bdf8 100%) !important;
+    color: #0c4a6e !important;
+}
+
+.hero-title {
+    color: #0c4a6e !important;
+}
+
+.hero-typing-prefix {
+    color: #0c4a6e !important;
+}
+
+.hero-subtitle {
+    color: #0c4a6e !important;
+}
+
+.stat-label {
+    color: #0c4a6e !important;
+}
+
+.name-highlight {
+    background: linear-gradient(135deg, #0284c7 0%, #0891b2 50%, #06b6d4 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+.hero-typing-text {
+    color: #0284c7 !important;
+    font-weight: 700 !important;
+}
+
+.typing-cursor {
+    color: #0284c7 !important;
+}
+
+.tech-highlight {
+    color: #0c4a6e !important;
+    background: rgba(14, 165, 233, 0.2) !important;
+    font-weight: 600 !important;
+}
+
+.btn-glow {
+    background: linear-gradient(135deg, #0284c7, #0891b2) !important;
+    box-shadow: 0 8px 32px rgba(2, 132, 199, 0.5) !important;
+    color: white !important;
+}
+
+.btn-outline {
+    border-color: rgba(12, 74, 110, 0.4) !important;
+    color: #0c4a6e !important;
+    background: rgba(255, 255, 255, 0.5) !important;
+}
+
+.social-icon {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(14, 165, 233, 0.3) !important;
+    color: #0c4a6e !important;
+}
+

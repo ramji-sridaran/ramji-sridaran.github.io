@@ -373,7 +373,7 @@ function toggleBWMode() {
 
     if (isBW) {
         // Exiting B&W mode - default to light-compact theme
-        applyTheme('light', true, false);
+        applyTheme('dark', true, false);
     } else {
         // Entering B&W mode
         const currentTheme = localStorage.getItem('theme') || 'light';
