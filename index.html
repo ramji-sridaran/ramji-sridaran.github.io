@@ -33,6 +33,7 @@
     <!-- Stylesheets -->
     <link id="theme-stylesheet" rel="stylesheet" href="css/styles-dark.css">
     <link rel="stylesheet" href="css/creative-enhancements.css">
+    <link rel="stylesheet" href="css/chatbot.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
@@ -885,6 +886,92 @@
     <div class="image-modal-caption"></div>
 </div>
 
+<!-- AI Chatbot Assistant -->
+<div id="ai-chatbot-container">
+    <!-- Chat Button -->
+    <button id="chatbot-toggle" class="chatbot-toggle" aria-label="Open AI Assistant">
+        <svg class="chat-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span class="chatbot-badge">✨</span>
+    </button>
+
+    <!-- Chat Window -->
+    <div id="chatbot-window" class="chatbot-window">
+        <div class="chatbot-header">
+            <div class="chatbot-header-info">
+                <div class="chatbot-avatar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="4"></circle>
+                        <path d="M3 21v-2a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v2"></path>
+                    </svg>
+                </div>
+                <div class="chatbot-header-text">
+                    <h3>Portfolio Assistant</h3>
+                    <span class="chatbot-status">
+                        <span class="status-dot"></span>
+                        Online
+                    </span>
+                </div>
+            </div>
+            <button id="chatbot-minimize" class="chatbot-minimize" aria-label="Minimize chat">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <div class="chatbot-messages" id="chatbot-messages">
+            <div class="message bot-message">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <p>Hi! I'm Ramji's AI assistant. I can help you learn about his:</p>
+                    <ul>
+                        <li>🎯 Work experience & skills</li>
+                        <li>🚀 Projects & achievements</li>
+                        <li>🎓 Certifications</li>
+                        <li>💼 Technical expertise</li>
+                    </ul>
+                    <p>What would you like to know?</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="chatbot-suggestions" id="chatbot-suggestions">
+            <button class="suggestion-chip" data-question="What is Ramji's experience?">💼 Experience</button>
+            <button class="suggestion-chip" data-question="What are Ramji's key skills?">🛠️ Skills</button>
+            <button class="suggestion-chip" data-question="Tell me about Ramji's projects">🚀 Projects</button>
+            <button class="suggestion-chip" data-question="What certifications does Ramji have?">🎓 Certifications</button>
+        </div>
+
+        <div class="chatbot-input-container">
+            <div class="chatbot-input-wrapper">
+                <input
+                    type="text"
+                    id="chatbot-input"
+                    class="chatbot-input"
+                    placeholder="Ask me anything about Ramji..."
+                    autocomplete="off"
+                />
+                <button id="chatbot-send" class="chatbot-send" aria-label="Send message">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+            <div class="chatbot-footer">
+                <span class="powered-by">Powered by Knowledge Base</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="js/script.js" defer></script>
+<script src="js/chatbot.js" defer></script>
 </body>
 </html>
