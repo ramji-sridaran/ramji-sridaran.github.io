@@ -353,6 +353,52 @@ if (compactToggle) {
 }
 
 // ==========================================
+// PROJECT HIGHLIGHTING FROM EXPERIENCE LINKS
+// ==========================================
+function highlightProject(projectId) {
+    // Remove any existing highlights
+    document.querySelectorAll('.project-card').forEach(card => {
+        card.classList.remove('highlight-project');
+    });
+
+    // Find and highlight the target project
+    const targetProject = document.getElementById(projectId);
+    if (targetProject) {
+        // Scroll to the projects section first
+        const projectsSection = document.getElementById('projects');
+        if (projectsSection) {
+            projectsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Add highlight after a short delay to ensure scrolling starts
+        setTimeout(() => {
+            targetProject.classList.add('highlight-project');
+
+            // Scroll the project card into view within the scrollable container
+            targetProject.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+
+            // Remove highlight after 3 seconds
+            setTimeout(() => {
+                targetProject.classList.remove('highlight-project');
+            }, 3000);
+        }, 500);
+    }
+}
+
+// Add click listeners to experience links that point to projects
+document.addEventListener('DOMContentLoaded', () => {
+    const projectLinks = document.querySelectorAll('a[href^="#"][href$="bridge"], a[href^="#"][href$="mf2c"], a[href^="#"][href$="datamigration"], a[href^="#"][href$="chiller"]');
+
+    projectLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const projectId = link.getAttribute('href').substring(1);
+            highlightProject(projectId);
+        });
+    });
+});
+
+// ==========================================
 // PROJECT MODAL FUNCTIONALITY
 // ==========================================
 const projectData = {

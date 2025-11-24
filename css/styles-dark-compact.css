@@ -416,9 +416,28 @@ body {
 }
 
 .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    display: flex;
+    flex-direction: row;
     gap: 25px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 15px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color) var(--card-bg);
+}
+
+.skills-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.skills-grid::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 4px;
+}
+
+.skills-grid::-webkit-scrollbar-track {
+    background: var(--card-bg);
+    border-radius: 4px;
 }
 
 .skill-category {
@@ -428,10 +447,11 @@ body {
     box-shadow: var(--shadow-sm);
     transition: var(--transition);
     border: 1px solid var(--border-color);
+    width: 280px;
+    flex: 0 0 280px;
 }
 
 .skill-category:hover {
-    transform: translateY(-6px);
     box-shadow: var(--shadow);
     border-color: var(--secondary-color);
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(59, 130, 246, 0.15));
@@ -592,9 +612,28 @@ body {
 }
 
 .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    display: flex;
+    flex-direction: row;
     gap: 25px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 15px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color) var(--card-bg);
+}
+
+.projects-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.projects-grid::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 4px;
+}
+
+.projects-grid::-webkit-scrollbar-track {
+    background: var(--card-bg);
+    border-radius: 4px;
 }
 
 .project-card {
@@ -606,12 +645,30 @@ body {
     display: flex;
     flex-direction: column;
     border: 1px solid var(--border-color);
+    width: 340px;
+    flex: 0 0 340px;
 }
 
 .project-card:hover {
-    transform: translateY(-8px);
     box-shadow: var(--shadow);
     border-color: var(--secondary-color);
+}
+
+.project-card.highlight-project {
+    animation: highlight-pulse 1s ease-in-out 3;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.6), var(--shadow);
+}
+
+@keyframes highlight-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.6), var(--shadow);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 45px rgba(16, 185, 129, 0.8), var(--shadow);
+    }
 }
 
 .project-image {
@@ -1416,11 +1473,21 @@ body {
     }
 
     .skills-grid {
-        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .skill-category {
+        width: 250px;
+        flex: 0 0 250px;
     }
 
     .projects-grid {
-        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .project-card {
+        width: 280px;
+        flex: 0 0 280px;
     }
 
     .skill-legend {
@@ -1517,11 +1584,31 @@ body {
   padding: 60px 0 40px 0;
 }
 .certifications-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 24px 16px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
   margin-top: 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 15px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary-color) var(--card-bg);
 }
+
+.certifications-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.certifications-grid::-webkit-scrollbar-thumb {
+  background: var(--secondary-color);
+  border-radius: 4px;
+}
+
+.certifications-grid::-webkit-scrollbar-track {
+  background: var(--card-bg);
+  border-radius: 4px;
+}
+
 .cert-card {
   background: linear-gradient(135deg, rgba(6, 182, 212, 0.13), rgba(59, 130, 246, 0.13));
   border-radius: 14px;
@@ -1532,12 +1619,13 @@ body {
   align-items: center;
   border: 1px solid var(--border-color);
   transition: box-shadow 0.3s, transform 0.3s;
-  min-height: 180px;
+  height: 240px;
+  width: 220px;
+  flex: 0 0 220px;
   position: relative;
 }
 .cert-card:hover {
   box-shadow: 0 6px 18px rgba(6, 182, 212, 0.18);
-  transform: translateY(-4px) scale(1.02);
   border-color: var(--secondary-color);
 }
 .cert-badge {
@@ -1615,11 +1703,12 @@ body {
 }
 @media (max-width: 700px) {
   .certifications-grid {
-    grid-template-columns: 1fr;
-    gap: 12px 0;
+    gap: 12px;
   }
   .cert-card {
-    min-height: 120px;
+    width: 180px;
+    flex: 0 0 180px;
+    height: 200px;
     padding: 8px 4px 6px 4px;
   }
   .cert-badge {
