@@ -457,7 +457,7 @@ function applyTheme(theme, isCompact = false, isBW = false) {
     if (compactToggle) {
         if (isCompact) {
             compactToggle.classList.add('active');
-            compactToggle.title = 'Switch to Regular Mode';
+            compactToggle.title = 'Switch to Big screen Mode';
         } else {
             compactToggle.classList.remove('active');
             compactToggle.title = 'Switch to Compact Mode';
@@ -469,10 +469,10 @@ function applyTheme(theme, isCompact = false, isBW = false) {
     if (bwToggle) {
         if (isBW) {
             bwToggle.classList.add('active');
-            bwToggle.title = 'Disable Black & White Mode';
+            bwToggle.title = 'Switch to Color Mode';
         } else {
             bwToggle.classList.remove('active');
-            bwToggle.title = 'Enable Black & White Mode';
+            bwToggle.title = 'Switch to Black & White Mode';
         }
     }
 }
