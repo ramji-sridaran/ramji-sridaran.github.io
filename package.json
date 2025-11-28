@@ -1,0 +1,28 @@
+{
+  "name": "ramji-portfolio-ai-chatbot",
+  "version": "1.0.0",
+  "description": "AI-powered chatbot for Ramji Sridaran's portfolio",
+  "type": "module",
+  "main": "index.html",
+  "scripts": {
+    "test": "node test-chat-local.js",
+    "test:quick": "./start-local-test.sh",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "portfolio",
+    "ai",
+    "chatbot",
+    "openai"
+  ],
+  "author": "Ramji Sridaran",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  }
+}
+

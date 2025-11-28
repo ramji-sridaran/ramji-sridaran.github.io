@@ -321,6 +321,9 @@
         <mxCell id="E-G1ZHLgUoUV-Zowo5rt-56" value="MID to PPID conversion" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="629" y="950" width="120" height="60" as="geometry" />
         </mxCell>
+        <mxCell id="srSgyrY3wkdiMQHS2B-l-1" value="OpenAPI&lt;div&gt;Liquibase&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="629.75" y="90" width="120" height="60" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
