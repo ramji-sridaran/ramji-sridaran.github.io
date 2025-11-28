@@ -161,7 +161,7 @@ INSTRUCTIONS FOR AI ASSISTANT:
 - Be enthusiastic about Ramji's accomplishments
 - If you don't know something specific, say so and suggest checking the contact form or LinkedIn profile`;
 
-// Fallback AI function using Groq (free tier: 14,400 requests/day, super fast!)
+// Primary AI function using Groq (free tier: 14,400 requests/day, super fast!)
 async function callGroqAPI(messages) {
   console.log('[GROQ] 🚀 Attempting Groq API call...');
   console.log('[GROQ] API Key present:', !!GROQ_API_KEY);
@@ -176,7 +176,7 @@ async function callGroqAPI(messages) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'llama3-8b-8192', // Fast, free model
+        model: 'llama-3.3-70b-versatile', // Latest Groq model (Nov 2024), high quality and fast
         messages: messages,
         temperature: 0.7,
         max_tokens: 300
@@ -201,6 +201,50 @@ async function callGroqAPI(messages) {
     return result;
   } catch (error) {
     console.error('[GROQ] ❌ Exception:', error.message);
+    throw error;
+  }
+}
+
+// Fallback AI function using OpenAI (backup when Groq fails)
+async function callOpenAI(messages) {
+  console.log('[OPENAI] 🔄 Attempting OpenAI API call as fallback...');
+  console.log('[OPENAI] API Key present:', !!OPENAI_API_KEY);
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: messages,
+        temperature: 0.7,
+        max_tokens: 300,
+        presence_penalty: 0.6,
+        frequency_penalty: 0.3
+      })
+    });
+
+    console.log('[OPENAI] Response status:', response.status, response.statusText);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[OPENAI] ❌ API Error Response:', errorText);
+      throw new Error(`OpenAI API failed: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log('[OPENAI] ✅ Response received');
+    console.log('[OPENAI] Tokens used:', data.usage?.total_tokens || 0);
+
+    return {
+      reply: data.choices[0].message.content,
+      tokensUsed: data.usage?.total_tokens || 0
+    };
+  } catch (error) {
+    console.error('[OPENAI] ❌ Exception:', error.message);
     throw error;
   }
 }
@@ -243,14 +287,20 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Message too long. Max 500 characters.' });
     }
 
-    // Check if API key is configured
-    if (!OPENAI_API_KEY) {
-      console.error('OpenAI API key not configured');
+    // Check if at least one AI provider is configured
+    if (!GROQ_API_KEY && !OPENAI_API_KEY) {
+      console.error('[API] ❌ No AI providers configured (need GROQ_API_KEY or OPENAI_API_KEY)');
       return res.status(500).json({
         error: 'Service temporarily unavailable',
-        fallback: true
+        fallback: true,
+        reply: "I'm currently in offline mode. Please try again later or use the contact form below."
       });
     }
+
+    console.log('[API] ✅ AI providers available:', {
+      groq: !!GROQ_API_KEY,
+      openai: !!OPENAI_API_KEY
+    });
 
     // Build conversation messages
     const messages = [
@@ -266,75 +316,67 @@ export default async function handler(req, res) {
       }
     ];
 
-    // Try OpenAI first
+    console.log('[API] 🎯 Starting AI request cascade: Groq → OpenAI → Fallback');
+
     let reply;
     let tokensUsed = 0;
-    let provider = 'OpenAI';
+    let provider = 'Unknown';
 
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENAI_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: messages,
-          temperature: 0.7,
-          max_tokens: 300,
-          presence_penalty: 0.6,
-          frequency_penalty: 0.3
-        })
-      });
+    // PRIORITY 1: Try Groq first (FREE, fast, 14,400 requests/day)
+    if (GROQ_API_KEY) {
+      try {
+        console.log('[API] 🚀 Attempting Groq (Primary)...');
+        reply = await callGroqAPI(messages);
+        provider = 'Groq';
+        console.log('[API] ✅ Groq success!');
+      } catch (groqError) {
+        console.error('[API] ❌ Groq failed:', groqError.message);
 
-      if (!response.ok) {
-        const errorData = await response.text();
-        console.error('OpenAI API error:', response.status, errorData);
-
-        // Try Groq as fallback for ANY OpenAI error (401, 429, 500, etc.)
-        console.log('[API] 🔄 OpenAI failed (status ' + response.status + '), trying Groq fallback...');
-
-        if (GROQ_API_KEY) {
+        // PRIORITY 2: Try OpenAI as fallback
+        if (OPENAI_API_KEY) {
           try {
-            reply = await callGroqAPI(messages);
-            provider = 'Groq';
-            console.log('[API] ✅ Groq fallback successful');
-          } catch (groqError) {
-            console.error('[API] ❌ Groq also failed:', groqError);
-            throw new Error(`OpenAI error (${response.status}) and Groq failed: ${groqError.message}`);
+            console.log('[API] 🔄 Groq failed, trying OpenAI (Secondary)...');
+            const openaiResult = await callOpenAI(messages);
+            reply = openaiResult.reply;
+            tokensUsed = openaiResult.tokensUsed;
+            provider = 'OpenAI';
+            console.log('[API] ✅ OpenAI fallback success!');
+          } catch (openaiError) {
+            console.error('[API] ❌ OpenAI also failed:', openaiError.message);
+            // Will use local fallback
           }
         } else {
-          console.error('[API] ❌ No Groq API key available for fallback');
-          throw new Error(`OpenAI API error: ${response.statusText}`);
+          console.log('[API] ⚠️ No OpenAI key available for fallback');
         }
-      } else {
-        const data = await response.json();
-        reply = data.choices[0].message.content;
-        tokensUsed = data.usage?.total_tokens || 0;
       }
-    } catch (openaiError) {
-      // If OpenAI completely fails, try Groq
-      if (GROQ_API_KEY && !reply) {
-        console.log('[API] 🔄 OpenAI error, trying Groq fallback...');
-        try {
-          reply = await callGroqAPI(messages);
-          provider = 'Groq';
-          console.log('[API] ✅ Groq fallback successful');
-        } catch (groqError) {
-          console.error('[API] ❌ Both providers failed');
-          throw openaiError; // Throw original error
-        }
-      } else {
-        throw openaiError;
+    }
+    // If no Groq key, try OpenAI directly
+    else if (OPENAI_API_KEY) {
+      try {
+        console.log('[API] 🔄 No Groq key, trying OpenAI directly...');
+        const openaiResult = await callOpenAI(messages);
+        reply = openaiResult.reply;
+        tokensUsed = openaiResult.tokensUsed;
+        provider = 'OpenAI';
+        console.log('[API] ✅ OpenAI success!');
+      } catch (openaiError) {
+        console.error('[API] ❌ OpenAI failed:', openaiError.message);
+        // Will use local fallback
       }
     }
 
-    return res.status(200).json({
-      reply: reply,
-      tokensUsed: tokensUsed,
-      provider: provider
-    });
+    // If we got a response, return it
+    if (reply) {
+      return res.status(200).json({
+        reply: reply,
+        tokensUsed: tokensUsed,
+        provider: provider
+      });
+    }
+
+    // PRIORITY 3: All AI providers failed, throw error to trigger fallback
+    console.log('[API] ❌ All AI providers failed, returning fallback response');
+    throw new Error('All AI providers unavailable');
 
   } catch (error) {
     console.error('Chat API Error:', error);
