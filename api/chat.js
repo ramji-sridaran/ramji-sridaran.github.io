@@ -2,6 +2,7 @@
 // This serverless function handles chat requests and integrates with OpenAI
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY; // Free tier available
 
 const LINKEDIN_PROFILE = 'https://www.linkedin.com/in/ramji-sridaran/';
 
@@ -160,6 +161,39 @@ INSTRUCTIONS FOR AI ASSISTANT:
 - Be enthusiastic about Ramji's accomplishments
 - If you don't know something specific, say so and suggest checking the contact form or LinkedIn profile`;
 
+// Fallback AI function using Hugging Face (free tier)
+async function callHuggingFaceAPI(messages) {
+  const lastUserMessage = messages[messages.length - 1].content;
+  const systemContext = messages[0].content;
+
+  // Combine context and question
+  const prompt = `${systemContext.substring(0, 500)}...\n\nQuestion: ${lastUserMessage}\n\nAnswer:`;
+
+  const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${HUGGINGFACE_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      inputs: prompt,
+      parameters: {
+        max_new_tokens: 300,
+        temperature: 0.7,
+        top_p: 0.9,
+        return_full_text: false
+      }
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error('Hugging Face API failed');
+  }
+
+  const data = await response.json();
+  return data[0]?.generated_text || data.generated_text || 'Unable to generate response';
+}
+
 export default async function handler(req, res) {
   // Log incoming request
   console.log(`[API] Incoming ${req.method} request from origin:`, req.headers.origin || 'unknown');
@@ -221,35 +255,77 @@ export default async function handler(req, res) {
       }
     ];
 
-    // Call OpenAI API
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: messages,
-        temperature: 0.7,
-        max_tokens: 300,
-        presence_penalty: 0.6,
-        frequency_penalty: 0.3
-      })
-    });
+    // Try OpenAI first
+    let reply;
+    let tokensUsed = 0;
+    let provider = 'OpenAI';
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      console.error('OpenAI API error:', response.status, errorData);
-      throw new Error(`OpenAI API error: ${response.statusText}`);
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: messages,
+          temperature: 0.7,
+          max_tokens: 300,
+          presence_penalty: 0.6,
+          frequency_penalty: 0.3
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error('OpenAI API error:', response.status, errorData);
+
+        // If rate limited or error, try Hugging Face as fallback
+        if (response.status === 429 || response.status >= 500) {
+          console.log('[API] 🔄 OpenAI failed, trying Hugging Face fallback...');
+
+          if (HUGGINGFACE_API_KEY) {
+            try {
+              reply = await callHuggingFaceAPI(messages);
+              provider = 'Hugging Face';
+              console.log('[API] ✅ Hugging Face fallback successful');
+            } catch (hfError) {
+              console.error('[API] ❌ Hugging Face also failed:', hfError);
+              throw new Error(`OpenAI rate limited and Hugging Face failed`);
+            }
+          } else {
+            throw new Error(`OpenAI API error: ${response.statusText}`);
+          }
+        } else {
+          throw new Error(`OpenAI API error: ${response.statusText}`);
+        }
+      } else {
+        const data = await response.json();
+        reply = data.choices[0].message.content;
+        tokensUsed = data.usage?.total_tokens || 0;
+      }
+    } catch (openaiError) {
+      // If OpenAI completely fails, try Hugging Face
+      if (HUGGINGFACE_API_KEY && !reply) {
+        console.log('[API] 🔄 OpenAI error, trying Hugging Face fallback...');
+        try {
+          reply = await callHuggingFaceAPI(messages);
+          provider = 'Hugging Face';
+          console.log('[API] ✅ Hugging Face fallback successful');
+        } catch (hfError) {
+          console.error('[API] ❌ Both providers failed');
+          throw openaiError; // Throw original error
+        }
+      } else {
+        throw openaiError;
+      }
     }
-
-    const data = await response.json();
-    const reply = data.choices[0].message.content;
 
     return res.status(200).json({
       reply: reply,
-      tokensUsed: data.usage?.total_tokens || 0
+      tokensUsed: tokensUsed,
+      provider: provider
     });
 
   } catch (error) {
