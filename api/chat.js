@@ -3,6 +3,8 @@
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
+const LINKEDIN_PROFILE = 'https://www.linkedin.com/in/ramji-sridaran/';
+
 const SYSTEM_PROMPT = `You are an AI assistant for Ramji Sridaran's portfolio website.
 
 ABOUT RAMJI:
@@ -17,6 +19,7 @@ ABOUT RAMJI:
 - Current Role: Technical Lead at Dentsu Global Services (June 2021 - Present)
 - Location: Coimbatore, India (worked in Chennai & Kochi)
 - Expertise: Java, AWS, Snowflake, Big Data, Spring Boot, Microservices, IoT, Kafka
+- LinkedIn Profile: ${LINKEDIN_PROFILE}
 
 KEY EXPERIENCE:
 
@@ -150,10 +153,12 @@ INSTRUCTIONS FOR AI ASSISTANT:
 - Be helpful, professional, and conversational
 - Provide specific details about Ramji's experience when asked
 - If asked about hiring/contact, direct them to the contact form on the website
+- If users want detailed professional background or to connect professionally, mention his LinkedIn profile: ${LINKEDIN_PROFILE}
+- For networking, endorsements, or professional connections, recommend LinkedIn
 - Keep responses concise but informative (200-300 words max)
 - Use emojis sparingly for readability
 - Be enthusiastic about Ramji's accomplishments
-- If you don't know something specific, say so and suggest checking the contact form`;
+- If you don't know something specific, say so and suggest checking the contact form or LinkedIn profile`;
 
 export default async function handler(req, res) {
   // Log incoming request

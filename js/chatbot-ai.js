@@ -63,9 +63,10 @@ class AIChatbot {
 
                 // Check if fallback mode is suggested
                 if (errorData.fallback) {
-                    console.log('🔄 [CHATBOT] Using server-suggested fallback response');
+                    console.log('🔄 [CHATBOT] API suggests fallback - using intelligent local response');
                     this.isProcessing = false;
-                    return errorData.reply || this.getFallbackResponse(userMessage);
+                    // Use intelligent local fallback instead of generic server message
+                    return this.getFallbackResponse(userMessage);
                 }
 
                 // Use fallback for any API error

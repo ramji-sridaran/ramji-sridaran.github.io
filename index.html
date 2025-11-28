@@ -34,6 +34,7 @@
     <link id="theme-stylesheet" rel="stylesheet" href="css/styles-dark.css">
     <link rel="stylesheet" href="css/creative-enhancements.css">
     <link rel="stylesheet" href="css/chatbot.css">
+    <link rel="stylesheet" href="css/about-enhanced.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap"
@@ -256,7 +257,7 @@
 <section id="about" class="about">
     <div class="container">
         <h2 class="section-title">About Me</h2>
-        <div class="about-content">
+        <div class="about-content-wrapper">
             <div class="about-text">
                 <p>
                     I'm a results-driven engineer specializing in <strong>Java</strong>, <strong>AWS</strong>, <strong>Snowflake</strong>,
@@ -269,6 +270,20 @@
                     <strong>Team Leadership</strong>. I'm passionate about solving complex technical challenges and
                     delivering solutions that are reliable, performant, and production-ready.
                 </p>
+            </div>
+
+            <!-- Chatbot CTA -->
+            <div class="about-chatbot-cta">
+                <div class="chatbot-cta-card">
+                    <div class="cta-icon">💬</div>
+                    <h3>Want to know more?</h3>
+                    <p>Chat with my AI assistant to explore my experience, projects, and skills in detail!</p>
+                    <button class="btn-chatbot-cta" id="openChatFromAbout">
+                        <span class="btn-icon">🤖</span>
+                        <span>Start Conversation</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -984,5 +999,32 @@
 
 <script src="js/script.js" defer></script>
 <script src="js/chatbot-ai.js" defer></script>
+<script>
+    // Connect About Me CTA button to chatbot
+    document.addEventListener('DOMContentLoaded', function() {
+        const openChatBtn = document.getElementById('openChatFromAbout');
+        const chatToggle = document.getElementById('chatbot-toggle');
+        const chatWindow = document.getElementById('chatbot-window');
+        const chatInput = document.getElementById('chatbot-input');
+
+        if (openChatBtn && chatToggle && chatWindow) {
+            openChatBtn.addEventListener('click', function() {
+                // Open chatbot
+                chatToggle.classList.add('active');
+                chatWindow.classList.add('active');
+
+                // Focus on input
+                setTimeout(() => {
+                    if (chatInput) {
+                        chatInput.focus();
+                    }
+                }, 300);
+
+                // Smooth scroll to top for better view
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    });
+</script>
 </body>
 </html>
