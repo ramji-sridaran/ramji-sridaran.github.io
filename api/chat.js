@@ -2,7 +2,7 @@
 // This serverless function handles chat requests and integrates with OpenAI
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY; // Free tier available
+const GROQ_API_KEY = process.env.GROQ_API_KEY; // Free tier: 14,400 requests/day, super fast!
 
 const LINKEDIN_PROFILE = 'https://www.linkedin.com/in/ramji-sridaran/';
 
@@ -161,37 +161,48 @@ INSTRUCTIONS FOR AI ASSISTANT:
 - Be enthusiastic about Ramji's accomplishments
 - If you don't know something specific, say so and suggest checking the contact form or LinkedIn profile`;
 
-// Fallback AI function using Hugging Face (free tier)
-async function callHuggingFaceAPI(messages) {
-  const lastUserMessage = messages[messages.length - 1].content;
-  const systemContext = messages[0].content;
+// Fallback AI function using Groq (free tier: 14,400 requests/day, super fast!)
+async function callGroqAPI(messages) {
+  console.log('[GROQ] 🚀 Attempting Groq API call...');
+  console.log('[GROQ] API Key present:', !!GROQ_API_KEY);
+  console.log('[GROQ] API Key length:', GROQ_API_KEY?.length || 0);
 
-  // Combine context and question
-  const prompt = `${systemContext.substring(0, 500)}...\n\nQuestion: ${lastUserMessage}\n\nAnswer:`;
-
-  const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${HUGGINGFACE_API_KEY}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      inputs: prompt,
-      parameters: {
-        max_new_tokens: 300,
+  try {
+    // Groq uses OpenAI-compatible API format - super easy!
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${GROQ_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama3-8b-8192', // Fast, free model
+        messages: messages,
         temperature: 0.7,
-        top_p: 0.9,
-        return_full_text: false
-      }
-    })
-  });
+        max_tokens: 300
+      })
+    });
 
-  if (!response.ok) {
-    throw new Error('Hugging Face API failed');
+    console.log('[GROQ] Response status:', response.status, response.statusText);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[GROQ] ❌ API Error Response:', errorText);
+      throw new Error(`Groq API failed: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    console.log('[GROQ] ✅ Response received');
+    console.log('[GROQ] Tokens used:', data.usage?.total_tokens || 0);
+
+    const result = data.choices[0].message.content;
+    console.log('[GROQ] ✅ Reply length:', result.length);
+
+    return result;
+  } catch (error) {
+    console.error('[GROQ] ❌ Exception:', error.message);
+    throw error;
   }
-
-  const data = await response.json();
-  return data[0]?.generated_text || data.generated_text || 'Unable to generate response';
 }
 
 export default async function handler(req, res) {
@@ -281,18 +292,18 @@ export default async function handler(req, res) {
         const errorData = await response.text();
         console.error('OpenAI API error:', response.status, errorData);
 
-        // If rate limited or error, try Hugging Face as fallback
+        // If rate limited or error, try Groq as fallback
         if (response.status === 429 || response.status >= 500) {
-          console.log('[API] 🔄 OpenAI failed, trying Hugging Face fallback...');
+          console.log('[API] 🔄 OpenAI failed, trying Groq fallback...');
 
-          if (HUGGINGFACE_API_KEY) {
+          if (GROQ_API_KEY) {
             try {
-              reply = await callHuggingFaceAPI(messages);
-              provider = 'Hugging Face';
-              console.log('[API] ✅ Hugging Face fallback successful');
-            } catch (hfError) {
-              console.error('[API] ❌ Hugging Face also failed:', hfError);
-              throw new Error(`OpenAI rate limited and Hugging Face failed`);
+              reply = await callGroqAPI(messages);
+              provider = 'Groq';
+              console.log('[API] ✅ Groq fallback successful');
+            } catch (groqError) {
+              console.error('[API] ❌ Groq also failed:', groqError);
+              throw new Error(`OpenAI rate limited and Groq failed`);
             }
           } else {
             throw new Error(`OpenAI API error: ${response.statusText}`);
@@ -306,14 +317,14 @@ export default async function handler(req, res) {
         tokensUsed = data.usage?.total_tokens || 0;
       }
     } catch (openaiError) {
-      // If OpenAI completely fails, try Hugging Face
-      if (HUGGINGFACE_API_KEY && !reply) {
-        console.log('[API] 🔄 OpenAI error, trying Hugging Face fallback...');
+      // If OpenAI completely fails, try Groq
+      if (GROQ_API_KEY && !reply) {
+        console.log('[API] 🔄 OpenAI error, trying Groq fallback...');
         try {
-          reply = await callHuggingFaceAPI(messages);
-          provider = 'Hugging Face';
-          console.log('[API] ✅ Hugging Face fallback successful');
-        } catch (hfError) {
+          reply = await callGroqAPI(messages);
+          provider = 'Groq';
+          console.log('[API] ✅ Groq fallback successful');
+        } catch (groqError) {
           console.error('[API] ❌ Both providers failed');
           throw openaiError; // Throw original error
         }
