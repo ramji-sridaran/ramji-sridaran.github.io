@@ -292,23 +292,20 @@ export default async function handler(req, res) {
         const errorData = await response.text();
         console.error('OpenAI API error:', response.status, errorData);
 
-        // If rate limited or error, try Groq as fallback
-        if (response.status === 429 || response.status >= 500) {
-          console.log('[API] 🔄 OpenAI failed, trying Groq fallback...');
+        // Try Groq as fallback for ANY OpenAI error (401, 429, 500, etc.)
+        console.log('[API] 🔄 OpenAI failed (status ' + response.status + '), trying Groq fallback...');
 
-          if (GROQ_API_KEY) {
-            try {
-              reply = await callGroqAPI(messages);
-              provider = 'Groq';
-              console.log('[API] ✅ Groq fallback successful');
-            } catch (groqError) {
-              console.error('[API] ❌ Groq also failed:', groqError);
-              throw new Error(`OpenAI rate limited and Groq failed`);
-            }
-          } else {
-            throw new Error(`OpenAI API error: ${response.statusText}`);
+        if (GROQ_API_KEY) {
+          try {
+            reply = await callGroqAPI(messages);
+            provider = 'Groq';
+            console.log('[API] ✅ Groq fallback successful');
+          } catch (groqError) {
+            console.error('[API] ❌ Groq also failed:', groqError);
+            throw new Error(`OpenAI error (${response.status}) and Groq failed: ${groqError.message}`);
           }
         } else {
+          console.error('[API] ❌ No Groq API key available for fallback');
           throw new Error(`OpenAI API error: ${response.statusText}`);
         }
       } else {
