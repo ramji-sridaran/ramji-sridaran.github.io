@@ -1,4 +1,8 @@
 .env
+.env.local
+.env.production
+.env.development
+.env*.local
 .vercel
 node_modules/
 .DS_Store
@@ -21,3 +25,4 @@ FILES_TO_REMOVE.md
 cleanup.sh
 
 .env*.local
+/.env.production

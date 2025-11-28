@@ -482,16 +482,21 @@ export default async function handler(req, res) {
     if (GROQ_API_KEY) {
       try {
         console.log('[API] 🚀 Attempting Groq (Primary)...');
+        console.log('[API] 🔑 Groq API Key length:', GROQ_API_KEY?.length || 0);
+        console.log('[API] 🔑 Groq API Key prefix:', GROQ_API_KEY?.substring(0, 10) + '...');
         reply = await callGroqAPI(messages);
         provider = 'Groq';
         console.log('[API] ✅ Groq success!');
       } catch (groqError) {
         console.error('[API] ❌ Groq failed:', groqError.message);
+        console.error('[API] 🔍 Groq error stack:', groqError.stack);
 
         // PRIORITY 2: Try OpenAI as fallback
         if (OPENAI_API_KEY) {
           try {
             console.log('[API] 🔄 Groq failed, trying OpenAI (Secondary)...');
+            console.log('[API] 🔑 OpenAI API Key length:', OPENAI_API_KEY?.length || 0);
+            console.log('[API] 🔑 OpenAI API Key prefix:', OPENAI_API_KEY?.substring(0, 10) + '...');
             const openaiResult = await callOpenAI(messages);
             reply = openaiResult.reply;
             tokensUsed = openaiResult.tokensUsed;
@@ -499,6 +504,7 @@ export default async function handler(req, res) {
             console.log('[API] ✅ OpenAI fallback success!');
           } catch (openaiError) {
             console.error('[API] ❌ OpenAI also failed:', openaiError.message);
+            console.error('[API] 🔍 OpenAI error stack:', openaiError.stack);
             // Will use local fallback
           }
         } else {
@@ -510,6 +516,7 @@ export default async function handler(req, res) {
     else if (OPENAI_API_KEY) {
       try {
         console.log('[API] 🔄 No Groq key, trying OpenAI directly...');
+        console.log('[API] 🔑 OpenAI API Key length:', OPENAI_API_KEY?.length || 0);
         const openaiResult = await callOpenAI(messages);
         reply = openaiResult.reply;
         tokensUsed = openaiResult.tokensUsed;
@@ -517,6 +524,7 @@ export default async function handler(req, res) {
         console.log('[API] ✅ OpenAI success!');
       } catch (openaiError) {
         console.error('[API] ❌ OpenAI failed:', openaiError.message);
+        console.error('[API] 🔍 OpenAI error stack:', openaiError.stack);
         // Will use local fallback
       }
     }
@@ -531,7 +539,8 @@ export default async function handler(req, res) {
     }
 
     // PRIORITY 3: All AI providers failed, throw error to trigger fallback
-    console.log('[API] ❌ All AI providers failed, returning fallback response');
+    console.error('[API] ❌ All AI providers failed, returning fallback response');
+    console.error('[API] 🔍 Groq available:', !!GROQ_API_KEY, 'OpenAI available:', !!OPENAI_API_KEY);
     throw new Error('All AI providers unavailable');
 
   } catch (error) {
