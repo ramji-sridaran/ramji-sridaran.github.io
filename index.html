@@ -34,6 +34,7 @@
     <link id="theme-stylesheet" rel="stylesheet" href="css/styles-dark.css">
     <link rel="stylesheet" href="css/creative-enhancements.css">
     <link rel="stylesheet" href="css/chatbot.css">
+    <link rel="stylesheet" href="css/chatbot-enhanced.css">
     <link rel="stylesheet" href="css/about-enhanced.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -913,6 +914,40 @@
 </div>
 
 <!-- AI Chatbot Assistant -->
+<!-- Welcome Banner (appears on page load) -->
+<div class="chatbot-hero-banner" id="chatbot-hero-banner">
+    <button class="banner-close" id="banner-close" aria-label="Close banner">×</button>
+    <div class="banner-content">
+        <div class="banner-avatar">🤖</div>
+        <h3>👋 Hi! I'm Ramji's AI Assistant</h3>
+        <p>Want to know about his experience, skills, or projects? I'm here to help!</p>
+        <div class="banner-actions">
+            <button class="banner-btn banner-btn-primary" id="banner-start-chat">
+                Let's Chat
+            </button>
+            <button class="banner-btn banner-btn-secondary" id="banner-dismiss">
+                Maybe Later
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Question Cards -->
+<div class="chatbot-quick-questions" id="quick-questions">
+    <div class="quick-question-card" data-question="What is Ramji's experience with AWS and cloud technologies?">
+        <span class="quick-question-icon">☁️</span>
+        <span class="quick-question-text">AWS & Cloud Expertise</span>
+    </div>
+    <div class="quick-question-card" data-question="Tell me about Ramji's leadership and team management experience">
+        <span class="quick-question-icon">👥</span>
+        <span class="quick-question-text">Leadership Experience</span>
+    </div>
+    <div class="quick-question-card" data-question="What major projects has Ramji worked on?">
+        <span class="quick-question-icon">🚀</span>
+        <span class="quick-question-text">Key Projects</span>
+    </div>
+</div>
+
 <div id="ai-chatbot-container">
     <!-- Chat Button -->
     <button id="chatbot-toggle" class="chatbot-toggle" aria-label="Open AI Assistant">
@@ -1000,15 +1035,138 @@
 <script src="js/script.js" defer></script>
 <script src="js/chatbot-ai.js" defer></script>
 <script>
-    // Connect About Me CTA button to chatbot
+    // Enhanced Chatbot Experience - Welcome Banner & Quick Questions
     document.addEventListener('DOMContentLoaded', function() {
-        const openChatBtn = document.getElementById('openChatFromAbout');
+        const heroBanner = document.getElementById('chatbot-hero-banner');
+        const quickQuestions = document.getElementById('quick-questions');
         const chatToggle = document.getElementById('chatbot-toggle');
         const chatWindow = document.getElementById('chatbot-window');
         const chatInput = document.getElementById('chatbot-input');
+        const openChatBtn = document.getElementById('openChatFromAbout');
 
+        // Show welcome banner after 3 seconds
+        setTimeout(() => {
+            if (heroBanner && !sessionStorage.getItem('chatbot-banner-dismissed')) {
+                heroBanner.classList.add('show');
+            }
+        }, 3000);
+
+        // Banner - Start Chat button
+        const bannerStartBtn = document.getElementById('banner-start-chat');
+        if (bannerStartBtn) {
+            bannerStartBtn.addEventListener('click', function() {
+                heroBanner.classList.add('hidden');
+                setTimeout(() => {
+                    heroBanner.style.display = 'none';
+                }, 500);
+
+                // Open chatbot
+                chatToggle.classList.add('active');
+                chatWindow.classList.add('active');
+
+                // Show quick questions after banner closes
+                setTimeout(() => {
+                    if (quickQuestions) {
+                        quickQuestions.classList.add('show');
+                    }
+                }, 600);
+
+                sessionStorage.setItem('chatbot-banner-dismissed', 'true');
+            });
+        }
+
+        // Banner - Dismiss button
+        const bannerDismiss = document.getElementById('banner-dismiss');
+        if (bannerDismiss) {
+            bannerDismiss.addEventListener('click', function() {
+                heroBanner.classList.add('hidden');
+                setTimeout(() => {
+                    heroBanner.style.display = 'none';
+                }, 500);
+
+                // Show quick questions instead
+                setTimeout(() => {
+                    if (quickQuestions) {
+                        quickQuestions.classList.add('show');
+                    }
+                }, 600);
+
+                sessionStorage.setItem('chatbot-banner-dismissed', 'true');
+            });
+        }
+
+        // Banner - Close button
+        const bannerClose = document.getElementById('banner-close');
+        if (bannerClose) {
+            bannerClose.addEventListener('click', function() {
+                heroBanner.classList.add('hidden');
+                setTimeout(() => {
+                    heroBanner.style.display = 'none';
+                }, 500);
+                sessionStorage.setItem('chatbot-banner-dismissed', 'true');
+            });
+        }
+
+        // Quick Question Cards
+        const questionCards = document.querySelectorAll('.quick-question-card');
+        questionCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const question = this.getAttribute('data-question');
+
+                // Hide quick questions
+                if (quickQuestions) {
+                    quickQuestions.classList.remove('show');
+                }
+
+                // Open chatbot
+                chatToggle.classList.add('active');
+                chatWindow.classList.add('active');
+
+                // Send the question
+                setTimeout(() => {
+                    if (chatInput) {
+                        chatInput.value = question;
+                        chatInput.focus();
+                        // Trigger send button click
+                        const sendBtn = document.getElementById('chatbot-send');
+                        if (sendBtn) {
+                            sendBtn.click();
+                        }
+                    }
+                }, 300);
+            });
+        });
+
+        // When chatbot is opened, hide quick questions
+        if (chatToggle) {
+            chatToggle.addEventListener('click', function() {
+                if (this.classList.contains('active')) {
+                    // Closing chatbot - show quick questions again
+                    setTimeout(() => {
+                        if (quickQuestions && !heroBanner.classList.contains('show')) {
+                            quickQuestions.classList.add('show');
+                        }
+                    }, 300);
+                } else {
+                    // Opening chatbot - hide quick questions
+                    if (quickQuestions) {
+                        quickQuestions.classList.remove('show');
+                    }
+                }
+            });
+        }
+
+        // About Me CTA button integration
         if (openChatBtn && chatToggle && chatWindow) {
             openChatBtn.addEventListener('click', function() {
+                // Hide banner and quick questions
+                if (heroBanner) {
+                    heroBanner.style.display = 'none';
+                }
+                if (quickQuestions) {
+                    quickQuestions.classList.remove('show');
+                }
+
                 // Open chatbot
                 chatToggle.classList.add('active');
                 chatWindow.classList.add('active');
