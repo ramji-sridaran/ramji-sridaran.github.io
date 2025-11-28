@@ -1,27 +1,25 @@
 /* ==========================================
-   INNOVATIVE AI CHATBOT - HERO INTEGRATION
+   AI CHATBOT WELCOME BANNER
    ========================================== */
 
-/* Welcome Banner - Appears on page load */
+/* Welcome Banner - Floats at bottom right */
 .chatbot-hero-banner {
     position: fixed;
     bottom: 100px;
     right: 30px;
-    width: 400px;
+    width: 380px;
     max-width: calc(100vw - 60px);
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 20px;
     padding: 24px;
     box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
     z-index: 9998;
-    animation: slideInBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     opacity: 0;
     transform: translateY(100px) scale(0.8);
 }
 
 .chatbot-hero-banner.show {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+    animation: slideInBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
 .chatbot-hero-banner.hidden {
@@ -34,6 +32,7 @@
         transform: translateY(100px) scale(0.8);
     }
     50% {
+        opacity: 1;
         transform: translateY(-10px) scale(1.02);
     }
     100% {
@@ -143,64 +142,6 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Quick Question Cards - Floating on Page */
-.chatbot-quick-questions {
-    position: fixed;
-    bottom: 100px;
-    right: 30px;
-    width: 320px;
-    max-width: calc(100vw - 60px);
-    z-index: 9997;
-    display: none;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.chatbot-quick-questions.show {
-    display: flex;
-    animation: fadeInUp 0.5s ease-out;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.quick-question-card {
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 16px;
-    padding: 16px;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: 0 4px 12px var(--shadow-color);
-}
-
-.quick-question-card:hover {
-    transform: translateX(-8px) scale(1.02);
-    border-color: var(--primary-color);
-    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
-}
-
-.quick-question-icon {
-    font-size: 24px;
-    flex-shrink: 0;
-}
-
-.quick-question-text {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-primary);
-}
 
 /* Enhanced Toggle Button */
 #ai-chatbot-container {
@@ -665,10 +606,6 @@
         bottom: 90px;
     }
 
-    .chatbot-quick-questions {
-        width: calc(100vw - 40px);
-        right: 20px;
-    }
 
     .chatbot-window {
         width: calc(100vw - 20px);

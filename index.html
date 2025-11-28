@@ -932,21 +932,6 @@
     </div>
 </div>
 
-<!-- Quick Question Cards -->
-<div class="chatbot-quick-questions" id="quick-questions">
-    <div class="quick-question-card" data-question="What is Ramji's experience with AWS and cloud technologies?">
-        <span class="quick-question-icon">☁️</span>
-        <span class="quick-question-text">AWS & Cloud Expertise</span>
-    </div>
-    <div class="quick-question-card" data-question="Tell me about Ramji's leadership and team management experience">
-        <span class="quick-question-icon">👥</span>
-        <span class="quick-question-text">Leadership Experience</span>
-    </div>
-    <div class="quick-question-card" data-question="What major projects has Ramji worked on?">
-        <span class="quick-question-icon">🚀</span>
-        <span class="quick-question-text">Key Projects</span>
-    </div>
-</div>
 
 <div id="ai-chatbot-container">
     <!-- Chat Button -->
@@ -1035,10 +1020,9 @@
 <script src="js/script.js" defer></script>
 <script src="js/chatbot-ai.js" defer></script>
 <script>
-    // Enhanced Chatbot Experience - Welcome Banner & Quick Questions
+    // AI Chatbot Welcome Banner
     document.addEventListener('DOMContentLoaded', function() {
         const heroBanner = document.getElementById('chatbot-hero-banner');
-        const quickQuestions = document.getElementById('quick-questions');
         const chatToggle = document.getElementById('chatbot-toggle');
         const chatWindow = document.getElementById('chatbot-window');
         const chatInput = document.getElementById('chatbot-input');
@@ -1064,12 +1048,12 @@
                 chatToggle.classList.add('active');
                 chatWindow.classList.add('active');
 
-                // Show quick questions after banner closes
+                // Focus on input
                 setTimeout(() => {
-                    if (quickQuestions) {
-                        quickQuestions.classList.add('show');
+                    if (chatInput) {
+                        chatInput.focus();
                     }
-                }, 600);
+                }, 300);
 
                 sessionStorage.setItem('chatbot-banner-dismissed', 'true');
             });
@@ -1083,13 +1067,6 @@
                 setTimeout(() => {
                     heroBanner.style.display = 'none';
                 }, 500);
-
-                // Show quick questions instead
-                setTimeout(() => {
-                    if (quickQuestions) {
-                        quickQuestions.classList.add('show');
-                    }
-                }, 600);
 
                 sessionStorage.setItem('chatbot-banner-dismissed', 'true');
             });
@@ -1107,64 +1084,12 @@
             });
         }
 
-        // Quick Question Cards
-        const questionCards = document.querySelectorAll('.quick-question-card');
-        questionCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const question = this.getAttribute('data-question');
-
-                // Hide quick questions
-                if (quickQuestions) {
-                    quickQuestions.classList.remove('show');
-                }
-
-                // Open chatbot
-                chatToggle.classList.add('active');
-                chatWindow.classList.add('active');
-
-                // Send the question
-                setTimeout(() => {
-                    if (chatInput) {
-                        chatInput.value = question;
-                        chatInput.focus();
-                        // Trigger send button click
-                        const sendBtn = document.getElementById('chatbot-send');
-                        if (sendBtn) {
-                            sendBtn.click();
-                        }
-                    }
-                }, 300);
-            });
-        });
-
-        // When chatbot is opened, hide quick questions
-        if (chatToggle) {
-            chatToggle.addEventListener('click', function() {
-                if (this.classList.contains('active')) {
-                    // Closing chatbot - show quick questions again
-                    setTimeout(() => {
-                        if (quickQuestions && !heroBanner.classList.contains('show')) {
-                            quickQuestions.classList.add('show');
-                        }
-                    }, 300);
-                } else {
-                    // Opening chatbot - hide quick questions
-                    if (quickQuestions) {
-                        quickQuestions.classList.remove('show');
-                    }
-                }
-            });
-        }
-
         // About Me CTA button integration
         if (openChatBtn && chatToggle && chatWindow) {
             openChatBtn.addEventListener('click', function() {
-                // Hide banner and quick questions
+                // Hide banner
                 if (heroBanner) {
                     heroBanner.style.display = 'none';
-                }
-                if (quickQuestions) {
-                    quickQuestions.classList.remove('show');
                 }
 
                 // Open chatbot
