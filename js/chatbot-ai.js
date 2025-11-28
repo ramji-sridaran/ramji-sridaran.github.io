@@ -5,7 +5,24 @@
 // AI Chatbot Class with OpenAI Integration
 class AIChatbot {
     constructor() {
-        this.apiEndpoint = 'https://ramji-sridaran.vercel.app/api/chat';
+        // Auto-detect API endpoint based on current domain
+        // If on Vercel, use relative path; if on GitHub Pages, use Vercel URL
+        const currentDomain = window.location.hostname;
+
+        if (currentDomain.includes('vercel.app')) {
+            // On Vercel - use relative path (faster, same domain)
+            this.apiEndpoint = '/api/chat';
+        } else if (currentDomain === 'localhost' || currentDomain === '127.0.0.1') {
+            // Local development
+            this.apiEndpoint = 'http://localhost:3000/api/chat';
+        } else {
+            // GitHub Pages or any other domain - use absolute Vercel URL
+            this.apiEndpoint = 'https://ramji-sridaran.vercel.app/api/chat';
+        }
+
+        console.log('🌐 [CHATBOT] Current domain:', currentDomain);
+        console.log('📍 [CHATBOT] API Endpoint:', this.apiEndpoint);
+
         this.conversationHistory = [];
         this.isProcessing = false;
     }

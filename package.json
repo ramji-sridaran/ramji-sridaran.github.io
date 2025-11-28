@@ -5,9 +5,12 @@
   "type": "module",
   "main": "index.html",
   "scripts": {
+    "dev": "vercel dev --listen 3000",
+    "start": "python3 -m http.server 8000",
     "test": "node test-chat-local.js",
     "test:quick": "./start-local-test.sh",
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "logs": "vercel logs"
   },
   "keywords": [
     "portfolio",
