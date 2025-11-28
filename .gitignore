@@ -1,4 +1,23 @@
-/Local readme/*
-/.idea/*
-/Resources/.$Databridge.svg.bkp
-/Resources/.$FlowCharts.drawio.bkp
+.env
+.vercel
+node_modules/
+.DS_Store
+*.log
+.vscode/
+.idea/
+*.backup
+
+# Temporary documentation (keep only docs/ folder)
+/*_GUIDE.md
+/*_REPORT.md
+/*_FIX*.md
+/*_ERROR*.md
+/*_SUMMARY.md
+/*_EXPLAINED.md
+/*CLEANUP*.md
+/*DEPLOYMENT*.md
+/*IMPLEMENTATION*.md
+FILES_TO_REMOVE.md
+cleanup.sh
+
+.env*.local
