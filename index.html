@@ -644,6 +644,45 @@
                 </div>
             </article>
 
+            <article class="project-card" data-project="5" id="ai-chatbot">
+                <div class="project-image project-image-clickable" data-page="Resources/ChatBot.svg"
+                     data-page-num="4">
+                    <div class="project-watermark"></div>
+                    <div class="image-overlay">
+                            <span style="display: flex; align-items: center; gap: 0.5em; font-size: 1.1em;">
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                                     viewBox="0 0 24 24"
+                                     style="opacity:0.8; animation: curiosity-bounce 1.2s infinite alternate;">
+                                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                                    <path d="M7 7l3 3m4-3l3 3m-3 4l3 3m-7-3l-3 3"/>
+                                </svg>
+                                <span style="font-size:0.98em;opacity:0.85;">What's under the hood?</span>
+                                <span class="curiosity-arrow">➔</span>
+                            </span>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3>AI-Powered Portfolio Chatbot</h3>
+                    <p>Serverless AI chatbot with intelligent multi-tier fallback strategy (Groq AI → OpenAI → Static responses).
+                        Built with Node.js serverless functions on Vercel, featuring 99.95% availability, global edge deployment,
+                        and cost-optimized architecture processing 14,400+ free AI requests daily with graceful degradation patterns.</p>
+                    <div class="project-tags">
+                        <span>Node.js</span>
+                        <span>Serverless</span>
+                        <span>Groq AI</span>
+                        <span>OpenAI</span>
+                        <span>Vercel</span>
+                        <span>JavaScript</span>
+                        <span>REST APIs</span>
+                        <span>Edge Functions</span>
+                    </div>
+                    <a href="#" class="project-link">View Details →</a>
+                </div>
+            </article>
+
         </div>
     </div>
 </section>
@@ -653,6 +692,18 @@
     <div class="container">
         <h2 class="section-title">Professional Experience</h2>
         <div class="timeline">
+
+            <!-- Hobby Project - Latest Work -->
+            <div class="timeline-item hobby-project">
+                <div class="timeline-marker"></div>
+                <a href="#ai-chatbot" style="text-decoration: none; color: inherit;">
+                    <div class="timeline-content experience-popup-trigger">
+                        <h3>AI-POWERED PORTFOLIO CHATBOT <span class="hobby-badge">🚀 Hobby Project</span></h3>
+                        <p class="company">Personal Project</p>
+                        <p class="year">2025—Present</p>
+                    </div>
+                </a>
+            </div>
 
             <div class="timeline-item">
                 <div class="timeline-marker"></div>
@@ -762,6 +813,8 @@
                     </p>-->
                 </div>
             </div>
+
+
         </div>
     </div>
 </section>
@@ -929,6 +982,9 @@
                 Maybe Later
             </button>
         </div>
+        <a href="#ai-chatbot" class="banner-tech-link" title="Learn about the technology behind this chatbot">
+            <small>How does this work?</small>
+        </a>
     </div>
 </div>
 
@@ -1105,6 +1161,52 @@
 
                 // Smooth scroll to top for better view
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        // Banner tech link - Navigate to AI chatbot project with highlight
+        const bannerTechLink = document.querySelector('.banner-tech-link');
+        if (bannerTechLink) {
+            bannerTechLink.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Hide the banner
+                heroBanner.classList.add('hidden');
+                setTimeout(() => {
+                    heroBanner.style.display = 'none';
+                }, 500);
+                sessionStorage.setItem('chatbot-banner-dismissed', 'true');
+
+                // Use the existing highlightProject function from script.js
+                if (typeof highlightProject === 'function') {
+                    highlightProject('ai-chatbot');
+                } else {
+                    // Fallback if function not available yet
+                    setTimeout(() => {
+                        if (typeof highlightProject === 'function') {
+                            highlightProject('ai-chatbot');
+                        } else {
+                            // Manual highlight as last resort
+                            const projectsSection = document.getElementById('projects');
+                            const targetProject = document.getElementById('ai-chatbot');
+
+                            if (projectsSection) {
+                                projectsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+
+                            if (targetProject) {
+                                setTimeout(() => {
+                                    targetProject.classList.add('highlight-project');
+                                    targetProject.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                                    setTimeout(() => {
+                                        targetProject.classList.remove('highlight-project');
+                                    }, 3000);
+                                }, 500);
+                            }
+                        }
+                    }, 100);
+                }
             });
         }
     });

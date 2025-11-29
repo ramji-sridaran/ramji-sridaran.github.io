@@ -561,7 +561,7 @@ function highlightProject(projectId) {
 
 // Add click listeners to experience links that point to projects
 document.addEventListener('DOMContentLoaded', () => {
-    const projectLinks = document.querySelectorAll('a[href^="#"][href$="bridge"], a[href^="#"][href$="mf2c"], a[href^="#"][href$="datamigration"], a[href^="#"][href$="chiller"]');
+    const projectLinks = document.querySelectorAll('a[href^="#"][href$="bridge"], a[href^="#"][href$="mf2c"], a[href^="#"][href$="datamigration"], a[href^="#"][href$="chiller"], a[href^="#"][href$="ai-chatbot"]');
 
     projectLinks.forEach(link => {
         link.addEventListener('click', (e) => {

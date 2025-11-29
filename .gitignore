@@ -26,3 +26,6 @@ cleanup.sh
 
 .env*.local
 /.env.production
+Local readme/*.md
+/test-portfolio-links.js
+/test-detailed-verification.js

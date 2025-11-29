@@ -142,6 +142,27 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
+.banner-tech-link {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 11px;
+    transition: all 0.2s ease;
+    opacity: 0.8;
+}
+
+.banner-tech-link:hover {
+    color: rgba(255, 255, 255, 1);
+    opacity: 1;
+    text-decoration: underline;
+}
+
+.banner-tech-link small {
+    font-size: inherit;
+}
+
 
 /* Enhanced Toggle Button */
 #ai-chatbot-container {
