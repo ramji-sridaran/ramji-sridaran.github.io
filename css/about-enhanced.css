@@ -5,8 +5,8 @@
 /* Two-column layout: Text left, CTA right */
 .about-content-wrapper {
     display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 48px;
+    /*grid-template-columns: 1fr 340px;*/
+    /*gap: 48px;*/
     align-items: start;
 }
 

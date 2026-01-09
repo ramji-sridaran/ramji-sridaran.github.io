@@ -405,9 +405,151 @@ async function callOpenAI(messages) {
   }
 }
 
+// Helper: Parse browser/device info from user-agent
+function parseBrowserInfo(userAgent) {
+  if (!userAgent || userAgent === 'unknown') return { browser: 'Unknown', os: 'Unknown', device: 'Unknown' };
+
+  let browser = 'Unknown';
+  let os = 'Unknown';
+  let device = 'Unknown';
+
+  // Browser detection
+  if (userAgent.includes('Chrome')) browser = 'Chrome';
+  else if (userAgent.includes('Safari')) browser = 'Safari';
+  else if (userAgent.includes('Firefox')) browser = 'Firefox';
+  else if (userAgent.includes('Edge')) browser = 'Edge';
+  else if (userAgent.includes('Opera')) browser = 'Opera';
+  else if (userAgent.includes('MSIE') || userAgent.includes('Trident')) browser = 'IE';
+
+  // OS detection
+  if (userAgent.includes('Windows')) os = 'Windows';
+  else if (userAgent.includes('Mac')) os = 'macOS';
+  else if (userAgent.includes('Linux')) os = 'Linux';
+  else if (userAgent.includes('Android')) os = 'Android';
+  else if (userAgent.includes('iPhone') || userAgent.includes('iPad')) os = 'iOS';
+
+  // Device detection
+  if (userAgent.includes('Mobile') || userAgent.includes('Android')) device = 'Mobile';
+  else if (userAgent.includes('iPad')) device = 'Tablet';
+  else if (userAgent.includes('Bot') || userAgent.includes('bot') || userAgent.includes('Crawler')) device = 'Bot/Crawler';
+  else device = 'Desktop';
+
+  return { browser, os, device };
+}
+
+// Helper: Detect geolocation from IP (basic)
+function detectGeolocation(ip) {
+  // Note: This is basic detection. For production, use a real geolocation service like MaxMind, IP2Location, or ipapi
+  // Common IP ranges for reference (simplified)
+  if (ip.startsWith('127.') || ip === 'localhost') return { country: 'Local', city: 'Localhost', isp: 'Localhost' };
+  if (ip.startsWith('10.') || ip.startsWith('192.168.') || ip.startsWith('172.')) return { country: 'Private', city: 'Internal Network', isp: 'Private Network' };
+
+  // For now, return generic response - in production use a real API
+  return { country: 'Detecting...', city: 'Unknown', isp: 'Unknown (use MaxMind/ipapi for real data)' };
+}
+
+// Helper: Simple in-memory rate limiter by IP (for demo purposes)
+const ipRequestMap = new Map();
+const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute window
+const RATE_LIMIT_MAX_REQUESTS = 20; // Max 20 requests per minute per IP
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const ipData = ipRequestMap.get(ip) || { requests: [], blocked: false };
+
+  // Clean old requests outside the window
+  ipData.requests = ipData.requests.filter(time => now - time < RATE_LIMIT_WINDOW_MS);
+
+  // Check if rate limited
+  if (ipData.requests.length >= RATE_LIMIT_MAX_REQUESTS) {
+    ipData.blocked = true;
+    return { limited: true, count: ipData.requests.length, limit: RATE_LIMIT_MAX_REQUESTS };
+  }
+
+  // Add current request
+  ipData.requests.push(now);
+  ipData.blocked = false;
+  ipRequestMap.set(ip, ipData);
+
+  return { limited: false, count: ipData.requests.length, limit: RATE_LIMIT_MAX_REQUESTS };
+}
+
+// Helper: Calculate request body size
+function getRequestBodySize(req) {
+  const contentLength = req.headers['content-length'];
+  if (contentLength) return `${contentLength} bytes`;
+
+  // Rough estimate if content-length not provided
+  if (req.body) {
+    const size = JSON.stringify(req.body).length;
+    return `~${size} bytes (estimated)`;
+  }
+  return 'Unknown';
+}
+
+// Generate unique request ID for tracking
+function generateRequestId() {
+  return `REQ-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+}
+
 export default async function handler(req, res) {
-  // Log incoming request
-  console.log(`[API] Incoming ${req.method} request from origin:`, req.headers.origin || 'unknown');
+  // Generate unique request ID for tracking
+  const requestId = generateRequestId();
+
+  // Log incoming request with comprehensive user information
+  const userIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || 'unknown';
+  const userAgent = req.headers['user-agent'] || 'unknown';
+  const referer = req.headers['referer'] || 'direct';
+  const host = req.headers['host'] || 'unknown';
+  const userId = req.headers['x-user-id'] || req.body?.userId || 'anonymous';
+
+  // Parse browser/device info
+  const browserInfo = parseBrowserInfo(userAgent);
+
+  // Get geolocation from IP
+  const geolocation = detectGeolocation(userIP);
+
+  // Check request body size
+  const bodySize = getRequestBodySize(req);
+
+  // Check rate limiting
+  const rateLimitCheck = checkRateLimit(userIP);
+
+  console.log(`[API] ✅ Incoming ${req.method} request [ID: ${requestId}]`, {
+    requestId: requestId,
+    origin: req.headers.origin || 'unknown',
+    userIP: userIP,
+    userAgent: userAgent,
+    browser: browserInfo.browser,
+    os: browserInfo.os,
+    device: browserInfo.device,
+    geolocation: geolocation,
+    referer: referer,
+    host: host,
+    userId: userId,
+    requestBodySize: bodySize,
+    rateLimit: {
+      isLimited: rateLimitCheck.limited,
+      requestCount: rateLimitCheck.count,
+      limit: rateLimitCheck.limit,
+      windowMs: RATE_LIMIT_WINDOW_MS
+    },
+    timestamp: new Date().toISOString()
+  });
+
+  // Block if rate limited
+  if (rateLimitCheck.limited) {
+    console.warn(`[API] ⚠️ RATE LIMITED - IP: ${userIP}, RequestID: ${requestId}, Requests in window: ${rateLimitCheck.count}`);
+    return res.status(429).json({
+      error: 'Too many requests',
+      message: `Rate limit exceeded. Max ${RATE_LIMIT_MAX_REQUESTS} requests per minute.`,
+      retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000),
+      requestId: requestId
+    });
+  }
+
+  // Add request ID to response headers for tracking
+  res.setHeader('X-Request-ID', requestId);
 
   // Enable CORS for all origins
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -418,42 +560,66 @@ export default async function handler(req, res) {
 
   // Handle preflight OPTIONS request
   if (req.method === 'OPTIONS') {
-    console.log('[API] ✅ Handling OPTIONS preflight request - CORS headers set');
+    console.log(`[API] ✅ Handling OPTIONS preflight request [ID: ${requestId}] - CORS headers set`);
     return res.status(200).end();
   }
 
   // Only allow POST requests for actual API calls
   if (req.method !== 'POST') {
-    console.log('[API] ❌ Method not allowed:', req.method);
-    return res.status(405).json({ error: 'Method not allowed. Use POST.' });
+    console.log(`[API] ❌ Method not allowed [ID: ${requestId}]:`, req.method);
+    return res.status(405).json({ error: 'Method not allowed. Use POST.', requestId: requestId });
   }
 
-  console.log('[API] ✅ Processing POST request');
+  console.log(`[API] ✅ Processing POST request [ID: ${requestId}]`);
 
   try {
     const { message, conversationHistory = [] } = req.body;
 
     // Validate input
     if (!message || message.trim().length === 0) {
-      return res.status(400).json({ error: 'Message is required' });
+      console.warn(`[API] ⚠️ Empty message received [ID: ${requestId}] from IP: ${userIP}`);
+      return res.status(400).json({ error: 'Message is required', requestId: requestId });
     }
+
+    // Log the actual user query
+    console.log(`[API] 📝 User Query Received [ID: ${requestId}]`, {
+      requestId: requestId,
+      userIP: userIP,
+      userId: userId,
+      message: message.trim(),
+      messageLength: message.length,
+      conversationHistoryLength: conversationHistory.length,
+      conversationHistory: conversationHistory.map((msg, idx) => ({
+        index: idx,
+        role: msg.role,
+        contentLength: msg.content?.length || 0,
+        contentPreview: msg.content?.substring(0, 100) + (msg.content?.length > 100 ? '...' : '')
+      })),
+      timestamp: new Date().toISOString()
+    });
 
     // Limit message length
     if (message.length > 500) {
-      return res.status(400).json({ error: 'Message too long. Max 500 characters.' });
+      console.warn(`[API] ⚠️ Message too long [ID: ${requestId}] - Length: ${message.length} bytes`);
+      return res.status(400).json({
+        error: 'Message too long. Max 500 characters.',
+        requestId: requestId,
+        receivedLength: message.length
+      });
     }
 
     // Check if at least one AI provider is configured
     if (!GROQ_API_KEY && !OPENAI_API_KEY) {
-      console.error('[API] ❌ No AI providers configured (need GROQ_API_KEY or OPENAI_API_KEY)');
+      console.error(`[API] ❌ No AI providers configured [ID: ${requestId}] - need GROQ_API_KEY or OPENAI_API_KEY`);
       return res.status(500).json({
         error: 'Service temporarily unavailable',
         fallback: true,
-        reply: "I'm currently in offline mode. Please try again later or use the contact form below."
+        reply: "I'm currently in offline mode. Please try again later or use the contact form below.",
+        requestId: requestId
       });
     }
 
-    console.log('[API] ✅ AI providers available:', {
+    console.log(`[API] ✅ AI providers available [ID: ${requestId}]`, {
       groq: !!GROQ_API_KEY,
       openai: !!OPENAI_API_KEY
     });
@@ -531,7 +697,22 @@ export default async function handler(req, res) {
 
     // If we got a response, return it
     if (reply) {
+      const responseSize = JSON.stringify(reply).length;
+      console.log(`[API] ✅ Response Generated [ID: ${requestId}]`, {
+        requestId: requestId,
+        userIP: userIP,
+        userId: userId,
+        provider: provider,
+        tokensUsed: tokensUsed,
+        responseLength: reply.length,
+        responseSize: `${responseSize} bytes`,
+        responsePreview: reply.substring(0, 150) + (reply.length > 150 ? '...' : ''),
+        processingTime: 'See response headers',
+        timestamp: new Date().toISOString()
+      });
+
       return res.status(200).json({
+        requestId: requestId,
         reply: reply,
         tokensUsed: tokensUsed,
         provider: provider
@@ -539,15 +720,24 @@ export default async function handler(req, res) {
     }
 
     // PRIORITY 3: All AI providers failed, throw error to trigger fallback
-    console.error('[API] ❌ All AI providers failed, returning fallback response');
-    console.error('[API] 🔍 Groq available:', !!GROQ_API_KEY, 'OpenAI available:', !!OPENAI_API_KEY);
+    console.error(`[API] ❌ All AI providers failed [ID: ${requestId}], returning fallback response`);
+    console.error(`[API] 🔍 Groq available: ${!!GROQ_API_KEY}, OpenAI available: ${!!OPENAI_API_KEY}`);
     throw new Error('All AI providers unavailable');
 
   } catch (error) {
-    console.error('Chat API Error:', error);
+    console.error(`[API] ❌ Chat API Error [ID: ${requestId}]:`, error.message);
+    console.error(`[API] 🔍 Error details:`, {
+      requestId: requestId,
+      userIP: userIP,
+      userId: userId,
+      errorMessage: error.message,
+      errorStack: error.stack,
+      timestamp: new Date().toISOString()
+    });
 
     // Return fallback response
     return res.status(500).json({
+      requestId: requestId,
       error: 'Failed to generate response',
       message: error.message,
       fallback: true,
