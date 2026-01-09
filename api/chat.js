@@ -573,7 +573,17 @@ export default async function handler(req, res) {
   console.log(`[API] ✅ Processing POST request [ID: ${requestId}]`);
 
   try {
-    const { message, conversationHistory = [] } = req.body;
+    const { message, conversationHistory = [], isHealthCheck = false } = req.body;
+
+    // Health check - respond silently without logging (prevents log clutter)
+    if (isHealthCheck) {
+      return res.status(200).json({
+        requestId: requestId,
+        status: 'healthy',
+        isHealthCheck: true,
+        reply: 'API is operational'
+      });
+    }
 
     // Validate input
     if (!message || message.trim().length === 0) {

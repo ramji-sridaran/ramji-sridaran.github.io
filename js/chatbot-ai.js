@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch(chatbot.apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: 'test' })
+        body: JSON.stringify({ message: 'test', isHealthCheck: true })
     })
     .then(response => {
         console.log('✅ [CHATBOT] API Connection Test Result:', response.status, response.statusText);
