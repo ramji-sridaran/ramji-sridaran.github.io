@@ -718,107 +718,312 @@ function closeModal() {
 }
 
 // ==========================================
-// IMAGE & PAGE MODAL FUNCTIONALITY
+// ENHANCED FLOWCHART VIEWER
 // ==========================================
-const imageModal = document.getElementById('imageModal');
-const imageModalImg = document.getElementById('imageModalImg');
-const pageModalFrame = document.getElementById('pageModalFrame');
-const imageModalClose = document.querySelector('.image-modal-close');
-const clickableImages = document.querySelectorAll('.project-image-clickable');
 
-// Page names must match the diagram names in Resources/FlowCharts.html
-// Page number to page index mapping (0-based for the embedded page attribute)
-const pageIndexMap = {
-    '0': '0',  // IoT
-    '1': '1',  // Insurance - BigData migration
-    '2': '2',  // Retail - Cloud Migration
-    '3': '3'   // Databridge
+// ── Project data for sidebar ──────────────────────────────────────────────────
+const fvProjectData = {
+    '0': {
+        title: 'Remote Chiller Monitoring',
+        icon: '🌡️',
+        company: 'Tata Consultancy Services',
+        period: '2015 – 2018',
+        overview: 'An IoT solution to bring smart building capability to Intel offices. Sensor parameters are monitored and analysed by building managers to visualise information and make fast, precise decisions in real time.',
+        tech: ['Java', 'Spring Boot', 'Kafka', 'MQTT', 'REST APIs', 'PostgreSQL', 'Redis', 'Spark', 'HBase', 'Maven', 'Tomcat'],
+        highlights: [
+            'Real-time sensor data streaming via MQTT protocol',
+            'Kafka-powered event pipeline processing thousands of events per minute',
+            'Apache Spark analytics engine for predictive maintenance alerts',
+            'HBase as time-series store for historical sensor readings',
+            'REST API dashboard consumed by building operations managers',
+            'Deployed across multiple Intel office campuses'
+        ]
+    },
+    '1': {
+        title: 'Big Data Migration',
+        icon: '🗄️',
+        company: 'Cognizant Technology Solutions',
+        period: '2018 – 2020',
+        overview: 'Big-data solution to migrate data from legacy systems and deliver business insights through analytics. Periodically synchronises data from RDBMS systems via change data files received through Informatica.',
+        tech: ['Sqoop', 'Scala', 'Spark', 'HBase', 'Hadoop', 'HDFS', 'Hive', 'Shell Script', 'Informatica'],
+        highlights: [
+            'Migrated multi-terabyte datasets from legacy RDBMS into Hadoop ecosystem',
+            'Sqoop jobs for incremental and full-load data ingestion',
+            'Spark + Scala transformations for data cleansing and enrichment',
+            'Hive tables exposed as analytical layer for business reports',
+            'Shell scripts orchestrating end-to-end pipeline scheduling',
+            'Change Data Capture (CDC) pipeline via Informatica integration'
+        ]
+    },
+    '2': {
+        title: 'MF2C — Cloud Migration',
+        icon: '☁️',
+        company: 'Cognizant Technology Solutions',
+        period: '2020 – 2021',
+        overview: 'Migration of projects from Mainframe systems to cloud using AGILE methodology. Set up data channels using Kafka with Spring Batch to process files for day-to-day financial services on Azure and client-native cloud.',
+        tech: ['Java', 'Spring Batch', 'Kafka', 'Liquibase', 'MySQL', 'Kubernetes', 'KITT', 'Splunk', 'Dynatrace', 'Azure'],
+        highlights: [
+            'Mainframe-to-Cloud lift-and-shift with zero data loss',
+            'Spring Batch jobs processing high-volume financial data files daily',
+            'Kafka topics as decoupled data channels between services',
+            'Kubernetes deployments on both Azure and client-native platforms',
+            'Liquibase managing database schema versioning and rollbacks',
+            'Splunk + Dynatrace for real-time observability and alerting'
+        ]
+    },
+    '3': {
+        title: 'Databridge — AdTech Platform',
+        icon: '📡',
+        company: 'Dentsu Global Services',
+        period: '2021 – Dec 2025',
+        overview: 'Large-scale application development for a programmatic advertising platform hosted on AWS with data on Snowflake. Leading a team of 5, managing feature delivery with automated CI/CD via Jenkins and Kubernetes.',
+        tech: ['Java', 'Spring Boot', 'REST APIs', 'Snowflake', 'Amazon Web Services', 'MySQL', 'Jenkins', 'Wildfly', 'Datadog', 'Kubernetes'],
+        highlights: [
+            'Technical Lead managing a cross-functional team of 5 engineers',
+            'Snowflake data warehouse powering real-time ad-performance analytics',
+            'AWS-hosted microservices with auto-scaling Kubernetes clusters',
+            'Jenkins CI/CD pipelines reducing deployment time by 60%',
+            'Datadog dashboards providing full-stack observability',
+            'Sub-second query performance on billions of ad impression records'
+        ]
+    },
+    '\\4': {
+        title: 'AI-Powered Portfolio Chatbot',
+        icon: '🤖',
+        company: 'Personal Project',
+        period: '2025 – Present',
+        overview: 'Serverless AI chatbot with an intelligent multi-tier fallback strategy (Groq AI → OpenAI → Static). Built with Node.js on Vercel edge, featuring 99.95% availability, global edge deployment and cost-optimised architecture.',
+        tech: ['Node.js', 'Serverless', 'Groq AI', 'OpenAI', 'Vercel', 'JavaScript', 'REST APIs', 'Edge Functions'],
+        highlights: [
+            '14,400+ free AI requests processed daily via Groq\'s LPU inference',
+            'Multi-tier fallback: Groq → OpenAI → curated static responses',
+            'Vercel edge functions deployed globally with <50 ms cold start',
+            'Zero-infrastructure cost architecture for hobby-project scale',
+            'Graceful degradation patterns ensuring 99.95% availability',
+            'Context-aware responses trained on 12+ years of career data'
+        ]
+    }
 };
 
-// Open image/page modal when project image is clicked
-clickableImages.forEach(imageContainer => {
-    imageContainer.addEventListener('click', async function(e) {
-        // Prevent project card modal from opening
-        e.stopPropagation();
+// ── DOM refs ──────────────────────────────────────────────────────────────────
+const imageModal       = document.getElementById('imageModal');
+const imageModalImg    = document.getElementById('imageModalImg');
+const pageModalFrame   = document.getElementById('pageModalFrame');
+const clickableImages  = document.querySelectorAll('.project-image-clickable');
+const fvCanvas         = document.getElementById('fvCanvas');
+const fvCanvasWrapper  = document.getElementById('fvCanvasWrapper');
+const fvZoomIn         = document.getElementById('fvZoomIn');
+const fvZoomOut        = document.getElementById('fvZoomOut');
+const fvZoomReset      = document.getElementById('fvZoomReset');
+const fvZoomLevel      = document.getElementById('fvZoomLevel');
+const fvClose          = document.getElementById('fvClose');
+const fvSidebarToggle  = document.getElementById('fvSidebarToggle');
+const fvSidebar        = document.getElementById('fvSidebar');
+const fvHint           = document.getElementById('fvHint');
+const fvTabs           = document.querySelectorAll('.fv-tab');
 
-        let pageSrc = this.getAttribute('data-page');
-        const pageNum = this.getAttribute('data-page-num') || '0'; // Default to page 0 if not specified
-        const imageSrc = this.getAttribute('data-image');
-        const imgElement = this.querySelector('img');
+// ── Zoom state ────────────────────────────────────────────────────────────────
+let fvZoom = 1;
+const FV_ZOOM_STEP = 0.25;
+const FV_ZOOM_MIN  = 0.5;
+const FV_ZOOM_MAX  = 3;
 
-        if (pageSrc) {
-            // Open page modal with iframe
-            imageModalImg.style.display = 'none';
-            pageModalFrame.style.display = 'block';
+function setZoom(z) {
+    fvZoom = Math.min(FV_ZOOM_MAX, Math.max(FV_ZOOM_MIN, z));
+    fvCanvas.style.transform = `scale(${fvZoom})`;
+    fvZoomLevel.textContent  = Math.round(fvZoom * 100) + '%';
+}
 
-            // Remove any existing hash from pageSrc
-            if (pageSrc.includes('#')) {
-                pageSrc = pageSrc.split('#')[0];
-            }
+fvZoomIn.addEventListener('click',    () => setZoom(fvZoom + FV_ZOOM_STEP));
+fvZoomOut.addEventListener('click',   () => setZoom(fvZoom - FV_ZOOM_STEP));
+fvZoomReset.addEventListener('click', () => setZoom(1));
 
-            try {
-                // Fetch the HTML file
-                const response = await fetch(pageSrc);
-                let htmlContent = await response.text();
+// Mouse-wheel zoom centred on cursor
+fvCanvasWrapper.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -FV_ZOOM_STEP : FV_ZOOM_STEP;
+    // Zoom towards cursor position
+    const rect      = fvCanvasWrapper.getBoundingClientRect();
+    const offsetX   = e.clientX - rect.left + fvCanvasWrapper.scrollLeft;
+    const offsetY   = e.clientY - rect.top  + fvCanvasWrapper.scrollTop;
+    const prevZoom  = fvZoom;
+    setZoom(fvZoom + delta);
+    const ratio     = fvZoom / prevZoom;
+    fvCanvasWrapper.scrollLeft = offsetX * ratio - (e.clientX - rect.left);
+    fvCanvasWrapper.scrollTop  = offsetY * ratio - (e.clientY - rect.top);
+    hideHint();
+}, { passive: false });
 
-                // Get the desired page index from the map
-                const pageIndex = pageIndexMap[pageNum] || pageIndexMap['0'];
+// ── Drag-to-pan ───────────────────────────────────────────────────────────────
+let isPanning = false, panStartX = 0, panStartY = 0, scrollStartX = 0, scrollStartY = 0;
 
-                // Replace the page number in the data-mxgraph attribute
-                // Pattern: "page":X where X is the current page number
-                htmlContent = htmlContent.replace(
-                    /"page":\d+/,
-                    `"page":${pageIndex}`
-                );
+fvCanvasWrapper.addEventListener('mousedown', function(e) {
+    if (e.button !== 0) return;
+    isPanning   = true;
+    panStartX   = e.clientX;
+    panStartY   = e.clientY;
+    scrollStartX = fvCanvasWrapper.scrollLeft;
+    scrollStartY = fvCanvasWrapper.scrollTop;
+    fvCanvasWrapper.classList.add('grabbing');
+    hideHint();
+});
 
-                // Create a blob and object URL for the modified HTML
-                const blob = new Blob([htmlContent], { type: 'text/html' });
-                const blobUrl = URL.createObjectURL(blob);
+document.addEventListener('mousemove', function(e) {
+    if (!isPanning) return;
+    fvCanvasWrapper.scrollLeft = scrollStartX - (e.clientX - panStartX);
+    fvCanvasWrapper.scrollTop  = scrollStartY - (e.clientY - panStartY);
+});
 
-                // Load the modified HTML in the iframe
-                pageModalFrame.src = blobUrl;
-            } catch (error) {
-                console.error('Error loading page:', error);
-                // Fallback: just load the page as-is
-                pageModalFrame.src = pageSrc;
-            }
+document.addEventListener('mouseup', function() {
+    if (!isPanning) return;
+    isPanning = false;
+    fvCanvasWrapper.classList.remove('grabbing');
+});
 
-            imageModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        } else if (imageSrc && imgElement) {
-            // Open image modal
-            pageModalFrame.style.display = 'none';
-            imageModalImg.style.display = 'block';
-            imageModalImg.src = imageSrc;
-            imageModalImg.alt = imgElement.alt || 'Project Image';
-            imageModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        }
+// ── Hint auto-hide ─────────────────────────────────────────────────────────────
+let hintTimer;
+function hideHint() {
+    clearTimeout(hintTimer);
+    if (fvHint) fvHint.classList.add('hidden');
+}
+function showHint() {
+    if (!fvHint) return;
+    fvHint.classList.remove('hidden');
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(hideHint, 3500);
+}
+
+// ── Sidebar toggle ─────────────────────────────────────────────────────────────
+fvSidebarToggle.addEventListener('click', () => {
+    fvSidebar.classList.toggle('collapsed');
+});
+
+// ── Sidebar tabs ──────────────────────────────────────────────────────────────
+fvTabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+        fvTabs.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        const tabName = this.dataset.tab;
+        document.querySelectorAll('.fv-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('fv-panel-' + tabName).classList.add('active');
     });
 });
 
-// Close image/page modal when X is clicked
-imageModalClose.addEventListener('click', closeImageModal);
+// ── Populate sidebar ──────────────────────────────────────────────────────────
+function populateSidebar(pageNum) {
+    const data = fvProjectData[pageNum] || fvProjectData['0'];
 
-// Close image/page modal when clicking outside
-imageModal.addEventListener('click', function(e) {
-    if (e.target === imageModal || e.target === imageModalClose) {
-        closeImageModal();
-    }
+    // Header
+    document.getElementById('fvIcon').textContent  = data.icon;
+    document.getElementById('fvTitle').textContent = data.title;
+    document.getElementById('fvMeta').textContent  = data.period;
+
+    // Overview panel
+    document.getElementById('fv-panel-overview').innerHTML = `
+        <p class="fv-section-label">About</p>
+        <div class="fv-overview-company">
+            <span class="fv-company-badge">${data.company}</span>
+            <span class="fv-period-badge">${data.period}</span>
+        </div>
+        <p class="fv-overview-text">${data.overview}</p>
+    `;
+
+    // Tech Stack panel
+    const chips = data.tech.map((t, i) =>
+        `<span class="fv-tech-chip" style="animation-delay:${i * 0.04}s">${t}</span>`
+    ).join('');
+    document.getElementById('fv-panel-tech').innerHTML = `
+        <p class="fv-section-label">Technologies Used</p>
+        <div class="fv-tech-grid">${chips}</div>
+    `;
+
+    // Highlights panel
+    const items = data.highlights.map((h, i) =>
+        `<li style="animation-delay:${i * 0.06}s">${h}</li>`
+    ).join('');
+    document.getElementById('fv-panel-highlights').innerHTML = `
+        <p class="fv-section-label">Key Highlights</p>
+        <ul class="fv-highlights-list">${items}</ul>
+    `;
+
+    // Reset tabs to Overview
+    fvTabs.forEach(t => t.classList.remove('active'));
+    fvTabs[0].classList.add('active');
+    document.querySelectorAll('.fv-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('fv-panel-overview').classList.add('active');
+}
+
+// ── Page index map ────────────────────────────────────────────────────────────
+const pageIndexMap = { '0': '0', '1': '1', '2': '2', '3': '3' };
+
+// ── Open modal ────────────────────────────────────────────────────────────────
+clickableImages.forEach(imageContainer => {
+    imageContainer.addEventListener('click', async function(e) {
+        e.stopPropagation();
+
+        let pageSrc  = this.getAttribute('data-page');
+        const pageNum = this.getAttribute('data-page-num') || '0';
+        const imageSrc = this.getAttribute('data-image');
+
+        // Reset zoom
+        setZoom(1);
+        fvCanvasWrapper.scrollLeft = 0;
+        fvCanvasWrapper.scrollTop  = 0;
+
+        // Populate sidebar
+        populateSidebar(pageNum);
+
+        if (pageSrc) {
+            imageModalImg.style.display  = 'none';
+            pageModalFrame.style.display = 'block';
+
+            if (pageSrc.includes('#')) pageSrc = pageSrc.split('#')[0];
+
+            // Check if it's an SVG — load directly in iframe
+            if (pageSrc.toLowerCase().endsWith('.svg')) {
+                pageModalFrame.src = pageSrc;
+            } else {
+                try {
+                    const response   = await fetch(pageSrc);
+                    let htmlContent  = await response.text();
+                    const pageIndex  = pageIndexMap[pageNum] || '0';
+                    htmlContent = htmlContent.replace(/"page":\d+/, `"page":${pageIndex}`);
+                    const blob       = new Blob([htmlContent], { type: 'text/html' });
+                    pageModalFrame.src = URL.createObjectURL(blob);
+                } catch (err) {
+                    console.error('Error loading architecture diagram:', err);
+                    pageModalFrame.src = pageSrc;
+                }
+            }
+
+        } else if (imageSrc) {
+            pageModalFrame.style.display = 'none';
+            imageModalImg.style.display  = 'block';
+            imageModalImg.src = imageSrc;
+        }
+
+        imageModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        showHint();
+    });
 });
 
-// Close image/page modal with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && imageModal.classList.contains('active')) {
-        closeImageModal();
-    }
-});
-
+// ── Close modal ───────────────────────────────────────────────────────────────
 function closeImageModal() {
     imageModal.classList.remove('active');
-    pageModalFrame.src = ''; // Clear iframe
-    document.body.style.overflow = ''; // Restore scrolling
+    pageModalFrame.src = '';
+    document.body.style.overflow = '';
 }
+
+fvClose.addEventListener('click', closeImageModal);
+
+imageModal.addEventListener('click', function(e) {
+    if (e.target === imageModal) closeImageModal();
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && imageModal.classList.contains('active')) closeImageModal();
+});
 
 // ==========================================
 // PROJECT TILE WATERMARKS (DYNAMIC SVG)

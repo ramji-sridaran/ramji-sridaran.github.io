@@ -26,9 +26,21 @@ const knowledgeBase = {
 
     experience: [
         {
+            role: "Senior Software Engineer",
+            company: "Concentrix Catalyst",
+            duration: "January 2026 - Present",
+            highlights: [
+                "Contributing to enterprise banking and trade finance applications focused on import/export workflows",
+                "Java-based application enhancements and REST API integrations across enterprise banking platforms",
+                "Workflow automation and cloud-native engineering practices for enterprise platform modernization",
+                "Kubernetes and Argo Workflows for containerized deployments and workflow orchestration",
+                "Collaborating across development, QA, business analysis, and support functions"
+            ]
+        },
+        {
             role: "Technical Lead",
             company: "Dentsu Global Services",
-            duration: "June 2021 - Present",
+            duration: "June 2021 - December 2025",
             highlights: [
                 "Leading a 5-member engineering team in developing high-performance AdTech platform serving 50M+ requests daily",
                 "Architected enterprise-scale features using AWS cloud infrastructure and Snowflake data warehouse",
@@ -265,18 +277,22 @@ What would you like to know more about?`;
     }
 
     getExperienceResponse() {
-        const exp = this.kb.experience[0]; // Current role
-        return `Ramji has <strong>${this.kb.profile.experience} of professional experience</strong> in software development and architecture.
+        const current = this.kb.experience[0]; // Concentrix - most recent
+        const prev = this.kb.experience[1];    // Dentsu
+        return `Ramji has <strong>${this.kb.profile.experience} of hands-on engineering experience</strong> building enterprise-grade backend systems and cloud-native applications.
 
 <strong>Current Role:</strong>
-🎯 ${exp.role} at ${exp.company} (${exp.duration})
+🎯 ${current.role} at ${current.company} (${current.duration})
+• Enterprise banking & trade finance platform engineering
+• Java, Spring Boot, Kubernetes, Argo Workflows
 
-<strong>Key Highlights:</strong>
-${exp.highlights.map(h => `• ${h}`).join('\n')}
+<strong>Previously:</strong>
+🎯 ${prev.role} at ${prev.company} (${prev.duration})
+• AdTech identity platform on AWS + Snowflake (4.5 years)
 
-He has worked across multiple domains including AdTech, Retail, IoT, and Enterprise Data Platforms.
+He has engineered solutions across Banking, AdTech, Retail, IoT, and Big Data domains.
 
-Would you like to know about his specific projects or technical skills?`;
+Would you like to know about his specific projects or tech stack?`;
     }
 
     getSkillsResponse() {
