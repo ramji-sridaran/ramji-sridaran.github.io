@@ -28,7 +28,7 @@ ABOUT RAMJI SRIDARAN:
 - Technical Lead at Dentsu Global Services (June 2021 - Present)
 - Based in Coimbatore, India
 - Leading 5-member engineering team on AdTech identity solution platform
-- 11+ years of experience in software development and technical leadership
+- 12+ years of experience in software development and technical leadership
 
 🎯 CAREER JOURNEY:
 1. Started as Java Developer at TCS Chennai (Feb 2014)
@@ -271,7 +271,7 @@ SPECIFIC SCENARIOS:
 • Highlight progression and growth
 • Mention leadership and mentoring experience
 • Include team sizes and methodologies
-• Example: "Over his 11+ years, Ramji has grown from Developer to Technical Lead..."
+• Example: "Over his 12+ years, Ramji has grown from Developer to Technical Lead..."
 
 🚀 Project Questions:
 • Describe business impact and scale

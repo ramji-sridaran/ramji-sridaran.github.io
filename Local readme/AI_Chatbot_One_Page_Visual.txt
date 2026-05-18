@@ -169,7 +169,7 @@
 │     contact methods. Zero "dead ends" - system never completely fails.        │
 │                                                                                │
 │  ✨ Context-Aware AI                                                           │
-│     AI trained with 11+ years of professional experience, projects, skills,   │
+│     AI trained with 12+ years of professional experience, projects, skills,   │
 │     certifications. Provides accurate, relevant answers about my portfolio.   │
 │                                                                                │
 │  ✨ Global Performance                                                         │

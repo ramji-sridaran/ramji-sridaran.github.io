@@ -154,12 +154,12 @@ class AIChatbot {
 
         // Greetings
         if (/^(hi|hello|hey|greetings)/i.test(msg)) {
-            return "👋 Hello! I'm Ramji's assistant. I can tell you about his 11+ years of experience in Java, AWS, Snowflake, and Big Data. What would you like to know?";
+            return "👋 Hello! I'm Ramji's assistant. I can tell you about his 12+ years of experience in Java, AWS, Snowflake, and Big Data. What would you like to know?";
         }
 
         // Experience
         if (/(experience|work|career|job|background)/i.test(msg)) {
-            return "Ramji has 11+ years of experience:\n\n• Technical Lead @ Dentsu (2021-Present)\n• Java/Cloud Developer @ Cognizant (2019-2021)\n• Big Data Developer @ Cognizant (2018-2019)\n• IoT Developer @ TCS (2015-2018)\n\nHe specializes in Java, AWS, Snowflake, and Big Data technologies.";
+            return "Ramji has 12+ years of experience:\n\n• Technical Lead @ Dentsu (2021-Present)\n• Java/Cloud Developer @ Cognizant (2019-2021)\n• Big Data Developer @ Cognizant (2018-2019)\n• IoT Developer @ TCS (2015-2018)\n\nHe specializes in Java, AWS, Snowflake, and Big Data technologies.";
         }
 
         // Skills
@@ -188,7 +188,7 @@ class AIChatbot {
         }
 
         // Default
-        return "I can help you learn about Ramji's:\n\n🎯 Experience (11+ years)\n🛠️ Skills (Java, AWS, Snowflake)\n🚀 Projects (Enterprise platforms)\n🎓 Certifications\n\nTry asking: 'What's Ramji's AWS experience?' or 'Tell me about his projects'";
+        return "I can help you learn about Ramji's:\n\n🎯 Experience (12+ years)\n🛠️ Skills (Java, AWS, Snowflake)\n🚀 Projects (Enterprise platforms)\n🎓 Certifications\n\nTry asking: 'What's Ramji's AWS experience?' or 'Tell me about his projects'";
     }
 }
 

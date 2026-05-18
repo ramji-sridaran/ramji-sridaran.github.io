@@ -7,7 +7,7 @@ const knowledgeBase = {
     profile: {
         name: "Ramji Sridaran",
         title: "Technical Lead",
-        experience: "11+ years",
+        experience: "12+ years",
         location: "Based in Coimbatore, India. [Worked in Chennai & Kochi]",
         specializations: ["Java", "AWS", "Snowflake", "Big Data", "Spring Boot", "Microservices", "IoT", "Kafka"]
     },
@@ -402,7 +402,7 @@ His projects span batch processing, real-time streaming, and data warehouse migr
     getDefaultResponse() {
         return `I can help you learn about Ramji's:
 
-🎯 <strong>Experience</strong> - 11+ years in software development
+🎯 <strong>Experience</strong> - 12+ years in software development
 🛠️ <strong>Skills</strong> - Java, AWS, Snowflake, Big Data, and more
 🚀 <strong>Projects</strong> - Enterprise platforms handling massive scale
 🎓 <strong>Certifications</strong> - Snowflake, AWS, AI certifications
