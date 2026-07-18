@@ -229,12 +229,17 @@ class AIChatbot {
 
         // Skills
         if (/(skill|technology|tech|know|language)/i.test(msg)) {
-            return "Ramji's key skills include:\n\n☁️ Cloud: AWS, Snowflake\n☕ Languages: Java 17, Python, Scala, SQL\n🚀 Frameworks: Spring Boot 3, Hibernate\n📊 Big Data: Kafka, Spark, HBase, Airflow\n🐳 DevOps: Docker, Kubernetes, Jenkins";
+            return "Ramji's key skills include:\n\n☁️ Cloud: AWS, Snowflake, Azure\n☕ Languages: Java 17, Python, Scala, SQL\n🚀 Frameworks: Spring Boot, Spring Batch, Hibernate\n📊 Data: Kafka, Spark, HBase, Hadoop, Sqoop, Redis, PostgreSQL, MySQL\n🐳 DevOps: Docker, Kubernetes, Jenkins, Argo Workflows";
+        }
+
+        // Redis
+        if (/(redis)/i.test(msg)) {
+            return "Ramji used Redis in two projects:\n\n• Remote Chiller Monitoring (TCS, IoT): Redis used for caching and real-time session/state management in the sensor telemetry pipeline.\n• Databridge (Dentsu, AdTech): Redis used for caching in the high-volume audience data platform on AWS.";
         }
 
         // Projects
         if (/(project|built|portfolio)/i.test(msg)) {
-            return "Key projects:\n\n1. Databridge - Enterprise data platform processing 100TB+ daily\n2. Retail Cloud Migration - AWS migration with 99.9% uptime\n3. IoT Analytics - Real-time analytics for 10K+ devices\n\nWant details on any specific project?";
+            return "Key projects:\n\n1. Remote Chiller Monitoring (TCS) — IoT platform: Java, Kafka, MQTT, Redis, Spark, HBase\n2. Data Migration into Big Data (Cognizant) — Hadoop/HBase pipeline: Sqoop, Scala, Spark\n3. MF2C / Retail Cloud Migration (Cognizant) — Mainframe-to-cloud: Spring Batch, Kafka, Azure\n4. Databridge (Dentsu) — AdTech data platform: Java, AWS, Snowflake, Redis, Kubernetes\n5. Enterprise Banking (Concentrix) — Trade-finance workflows: Java, Spring Boot, Argo Workflows\n\nWant details on any specific project?";
         }
 
         // AWS

@@ -39,19 +39,21 @@ Career timeline:
 - Big Data Developer, Cognizant (May 2018–Sep 2020): Data migration, HBase/Solr pipelines, Scala/Spark/Sqoop.
 - IoT Developer, TCS (Sep 2015–May 2018): MQTT/Kafka/Spark IoT analytics and monitoring.
 
-Project highlights:
-- Databridge (AdTech, Dentsu): large-scale audience data platform on AWS + Snowflake; high-volume ingestion/publishing; major automation and reliability gains.
-- Retail cloud migration (Cognizant): mainframe-to-cloud modernization with high availability and automated validation.
-- Big data migration/search (Cognizant): legacy data to Hadoop/HBase/Solr; faster search and analytics access.
-- IoT analytics platform (TCS): real-time telemetry processing and predictive maintenance outcomes.
-- Portfolio AI chatbot: Groq-first, OpenAI fallback, graceful static fallback.
+Projects (with per-project tech stack):
+- Remote Chiller Monitoring / IoT Analytics (TCS, Sep 2015–May 2018): Real-time smart-building IoT platform for Intel offices. Streams and analyzes sensor telemetry in near real-time. Stack: Java, Spring Boot, REST APIs, Kafka, MQTT, PostgreSQL, Redis, Spark, HBase, Maven, Tomcat.
+- Data Migration into Big Data (Cognizant, May 2018–Sep 2020): Migrates enterprise data from legacy RDBMS into Hadoop/HBase ecosystem using Informatica CDC feeds. Stack: Sqoop, Scala, Spark, HBase, Shell Script, Hadoop.
+- MF2C / Retail Cloud Migration (Cognizant, Oct 2020–May 2021): Mainframe-to-cloud modernization using Kafka + Spring Batch for critical daily financial file processing across Azure and client-native clouds. Stack: Java, Spring Batch, Liquibase, MySQL, Kafka, KITT, Kubernetes, Splunk, Dynatrace.
+- Databridge (AdTech, Dentsu, Jun 2021–Dec 2025): Large-scale audience data platform on AWS + Snowflake; led 5-member team; high-volume identity/data ingestion and publishing; CI/CD with Jenkins and Kubernetes. Stack: Java, Spring Boot, REST APIs, Snowflake, AWS, MySQL, Redis, Jenkins, Wildfly, Datadog, Kubernetes.
+- Enterprise Banking & Trade Finance (Concentrix Catalyst, Jan 2026–Jul 2026): Enterprise banking and trade-finance workflow enhancements; Java services, REST integrations, workflow automation. Stack: Java, Spring Boot, REST APIs, Kubernetes, Argo Workflows, Cloud-Native.
+- Portfolio AI Chatbot (Personal, 2025–present): Groq-first (llama-3.3-70b-versatile), OpenAI fallback (gpt-4o-mini), graceful static fallback, FAQ cache, rate limiting. Stack: Node.js, Vercel Serverless, JavaScript, Groq AI, OpenAI, REST APIs.
 
-Key technologies:
-- Java 17, Spring Boot, REST APIs, Microservices
-- AWS, Azure, Snowflake
-- Kafka, Spark, HBase, Solr, Sqoop, Airflow
-- Docker, Kubernetes, Argo Workflows, Jenkins
-- Datadog, Splunk, Dynatrace, Liquibase
+Key technologies (cross-project):
+- Languages: Java 17, Scala, Python, JavaScript, SQL, Shell Script
+- Frameworks: Spring Boot, Spring Batch, REST APIs, Microservices
+- Cloud: AWS, Azure, Snowflake, Vercel
+- Data: Kafka, Spark, HBase, Hadoop, Sqoop, Solr, MySQL, PostgreSQL, Redis
+- DevOps: Docker, Kubernetes, Argo Workflows, Jenkins, CI/CD
+- Observability: Datadog, Splunk, Dynatrace, Liquibase
 
 Response behavior:
 - For skills/questions, map answer to real projects and outcomes.
