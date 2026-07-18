@@ -14,28 +14,28 @@ A personal portfolio website with an AI-powered chatbot assistant. Built entirel
 │                   GitHub Pages (Static Host)                │
 │                 ramji-sridaran.github.io                    │
 │                                                             │
-│  index.html  ──┬──  js/script.js       (UI logic)          │
+│  index.html  ──┬──  js/script.js       (UI logic)           │
 │                ├──  js/chatbot-ai.js   (chatbot frontend)   │
 │                └──  css/ (5 theme files + 4 base files)     │
 └─────────────────────────┬───────────────────────────────────┘
                           │ POST /api/chat
                           │ (cross-origin fetch)
                           ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  Vercel (Serverless Function)               │
-│                 ramji-sridaran.vercel.app                   │
-│                                                             │
-│   api/chat.js                                               │
-│      │                                                      │
-│      ├── Rate Limiter  (burst: 8/10s, window: 25/min)       │
-│      ├── FAQ Cache     (5-min TTL, first-turn only)         │
-│      │                                                      │
-│      └── AI Cascade:                                        │
-│           1. DeepSeek V4 Flash (~$0.27/M tokens)           │
+┌───────────────────────────────────────────────────────────────┐
+│                  Vercel (Serverless Function)                 │
+│                 ramji-sridaran.vercel.app                     │
+│                                                               │
+│   api/chat.js                                                 │
+│      │                                                        │
+│      ├── Rate Limiter  (burst: 8/10s, window: 25/min)         │
+│      ├── FAQ Cache     (5-min TTL, first-turn only)           │
+│      │                                                        │
+│      └── AI Cascade:                                          │
+│           1. DeepSeek V4 Flash (~$0.27/M tokens)              │
 │           2. Groq           (openai/gpt-oss-120b, free tier)  │
-│           3. OpenAI         (gpt-4.1-nano, paid fallback)   │
-│           4. Local Fallback (rule-based, always available)  │
-└─────────────────────────────────────────────────────────────┘
+│           3. OpenAI         (gpt-4.1-nano, paid fallback)     │
+│           4. Local Fallback (rule-based, always available)    │
+└───────────────────────────────────────────────────────────────┘
                           │
           ┌───────────────┼───────────────┐
           ▼               ▼               ▼
