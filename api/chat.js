@@ -2,7 +2,8 @@
 // This serverless function handles chat requests and integrates with OpenAI
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const GROQ_API_KEY = process.env.GROQ_API_KEY; // Free tier: 14,400 requests/day, super fast!
+const GROQ_API_KEY = process.env.GROQ_API_KEY;       // Free tier: 14,400 requests/day
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY; // Very cheap: ~$0.27/M input tokens
 
 const LINKEDIN_PROFILE = 'https://www.linkedin.com/in/ramji-sridaran/';
 const EXPERIENCE_START_DATE = new Date(2013, 4, 1); // May 2013
@@ -77,7 +78,41 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = AI_TIMEOUT_MS) {
   }
 }
 
-// Primary AI function using Groq (free tier: 14,400 requests/day, super fast!)
+// PRIMARY AI function using DeepSeek V3 (OpenAI-compatible, ~$0.27/M input tokens)
+async function callDeepSeekAPI(messages) {
+  console.log('[DEEPSEEK] 🚀 Attempting DeepSeek V3 API call...');
+
+  const response = await fetchWithTimeout('https://api.deepseek.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'deepseek-chat', // DeepSeek V3
+      messages: messages,
+      temperature: 0.7,
+      max_tokens: 300
+    })
+  }, AI_TIMEOUT_MS);
+
+  console.log('[DEEPSEEK] Response status:', response.status, response.statusText);
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('[DEEPSEEK] ❌ API Error:', errorText);
+    throw new Error(`DeepSeek API failed: ${response.status} - ${errorText}`);
+  }
+
+  const data = await response.json();
+  console.log('[DEEPSEEK] ✅ Response received, tokens:', data.usage?.total_tokens || 0);
+  return {
+    reply: data.choices[0].message.content,
+    tokensUsed: data.usage?.total_tokens || 0
+  };
+}
+
+// SECONDARY AI function using Groq (free tier: 14,400 requests/day, super fast!)
 async function callGroqAPI(messages) {
   console.log('[GROQ] 🚀 Attempting Groq API call...');
 
@@ -112,7 +147,7 @@ async function callGroqAPI(messages) {
     const result = data.choices[0].message.content;
     console.log('[GROQ] ✅ Reply length:', result.length);
 
-    return result;
+    return { reply: result, tokensUsed: data.usage?.total_tokens || 0 };
   } catch (error) {
     console.error('[GROQ] ❌ Exception:', error.message);
     throw error;
@@ -420,8 +455,8 @@ export default async function handler(req, res) {
     }
 
     // Check if at least one AI provider is configured
-    if (!GROQ_API_KEY && !OPENAI_API_KEY) {
-      console.error(`[API] ❌ No AI providers configured [ID: ${requestId}] - need GROQ_API_KEY or OPENAI_API_KEY`);
+    if (!DEEPSEEK_API_KEY && !GROQ_API_KEY && !OPENAI_API_KEY) {
+      console.error(`[API] ❌ No AI providers configured [ID: ${requestId}]`);
       return res.status(500).json({
         error: 'Service temporarily unavailable',
         fallback: true,
@@ -429,8 +464,9 @@ export default async function handler(req, res) {
         requestId: requestId,
         provider: 'Local Fallback',
         providerMeta: {
-          primary: 'Groq',
+          primary: 'DeepSeek',
           active: 'Local Fallback',
+          deepseekStatus: 'not_configured',
           groqStatus: 'not_configured',
           groqFailure: null,
           openaiUsed: false
@@ -439,6 +475,7 @@ export default async function handler(req, res) {
     }
 
     console.log(`[API] ✅ AI providers available [ID: ${requestId}]`, {
+      deepseek: !!DEEPSEEK_API_KEY,
       groq: !!GROQ_API_KEY,
       openai: !!OPENAI_API_KEY
     });
@@ -455,9 +492,10 @@ export default async function handler(req, res) {
           tokensUsed: 0,
           provider: 'Cache',
           providerMeta: {
-            primary: 'Groq',
+            primary: 'DeepSeek',
             active: 'Cache',
             cacheSource: cached.provider,
+            deepseekStatus: 'not_attempted',
             groqStatus: 'not_attempted',
             groqFailure: null,
             openaiUsed: cached.provider === 'OpenAI'
@@ -468,63 +506,60 @@ export default async function handler(req, res) {
 
     // Build conversation messages
     const messages = [
-      {
-        role: 'system',
-        content: SYSTEM_PROMPT
-      },
-      // Include last 4 messages from history for context
+      { role: 'system', content: SYSTEM_PROMPT },
       ...conversationHistory.slice(-4),
-      {
-        role: 'user',
-        content: message.trim()
-      }
+      { role: 'user', content: message.trim() }
     ];
 
-    console.log('[API] 🎯 Starting AI request cascade: Groq → OpenAI → Fallback');
+    console.log('[API] 🎯 Starting AI request cascade: DeepSeek → Groq → OpenAI → Fallback');
 
     let reply;
     let tokensUsed = 0;
     let provider = 'Unknown';
+    let deepseekStatus = DEEPSEEK_API_KEY ? 'pending' : 'not_configured';
+    let deepseekFailure = '';
     let groqStatus = GROQ_API_KEY ? 'pending' : 'not_configured';
     let groqFailure = '';
 
-    // PRIORITY 1: Try Groq first (FREE, fast, 14,400 requests/day)
-    if (GROQ_API_KEY) {
+    // PRIORITY 1: DeepSeek V3 (cheapest, ~$0.27/M input tokens)
+    if (DEEPSEEK_API_KEY) {
       try {
-        console.log('[API] 🚀 Attempting Groq (Primary)...');
-        reply = await callGroqAPI(messages);
+        console.log('[API] 🚀 Attempting DeepSeek V3 (Primary)...');
+        const result = await callDeepSeekAPI(messages);
+        reply = result.reply;
+        tokensUsed = result.tokensUsed;
+        provider = 'DeepSeek';
+        deepseekStatus = 'success';
+        groqStatus = 'not_attempted';
+        console.log('[API] ✅ DeepSeek success!');
+      } catch (dsError) {
+        console.error('[API] ❌ DeepSeek failed:', dsError.message);
+        deepseekStatus = 'failed';
+        deepseekFailure = dsError.message;
+      }
+    }
+
+    // PRIORITY 2: Groq (FREE tier, 14,400 req/day, fast)
+    if (!reply && GROQ_API_KEY) {
+      try {
+        console.log('[API] 🔄 Trying Groq (Secondary)...');
+        const result = await callGroqAPI(messages);
+        reply = result.reply;
+        tokensUsed = result.tokensUsed;
         provider = 'Groq';
         groqStatus = 'success';
         console.log('[API] ✅ Groq success!');
       } catch (groqError) {
         console.error('[API] ❌ Groq failed:', groqError.message);
-        console.error('[API] 🔍 Groq error stack:', groqError.stack);
         groqStatus = 'failed';
         groqFailure = groqError.message;
-
-        // PRIORITY 2: Try OpenAI as fallback
-        if (OPENAI_API_KEY) {
-          try {
-            console.log('[API] 🔄 Groq failed, trying OpenAI (Secondary)...');
-            const openaiResult = await callOpenAI(messages);
-            reply = openaiResult.reply;
-            tokensUsed = openaiResult.tokensUsed;
-            provider = 'OpenAI';
-            console.log('[API] ✅ OpenAI fallback success!');
-          } catch (openaiError) {
-            console.error('[API] ❌ OpenAI also failed:', openaiError.message);
-            console.error('[API] 🔍 OpenAI error stack:', openaiError.stack);
-            // Will use local fallback
-          }
-        } else {
-          console.log('[API] ⚠️ No OpenAI key available for fallback');
-        }
       }
     }
-    // If no Groq key, try OpenAI directly
-    else if (OPENAI_API_KEY) {
+
+    // PRIORITY 3: OpenAI (final paid fallback)
+    if (!reply && OPENAI_API_KEY) {
       try {
-        console.log('[API] 🔄 No Groq key, trying OpenAI directly...');
+        console.log('[API] 🔄 Trying OpenAI (Tertiary)...');
         const openaiResult = await callOpenAI(messages);
         reply = openaiResult.reply;
         tokensUsed = openaiResult.tokensUsed;
@@ -566,8 +601,10 @@ export default async function handler(req, res) {
         tokensUsed: tokensUsed,
         provider: provider,
         providerMeta: {
-          primary: 'Groq',
+          primary: 'DeepSeek',
           active: provider,
+          deepseekStatus: deepseekStatus,
+          deepseekFailure: deepseekFailure || null,
           groqStatus: groqStatus,
           groqFailure: groqFailure || null,
           openaiUsed: provider === 'OpenAI'
@@ -575,23 +612,13 @@ export default async function handler(req, res) {
       });
     }
 
-    // PRIORITY 3: All AI providers failed, throw error to trigger fallback
+    // All AI providers failed
     console.error(`[API] ❌ All AI providers failed [ID: ${requestId}], returning fallback response`);
-    console.error(`[API] 🔍 Groq available: ${!!GROQ_API_KEY}, OpenAI available: ${!!OPENAI_API_KEY}`);
     throw new Error('All AI providers unavailable');
 
   } catch (error) {
     console.error(`[API] ❌ Chat API Error [ID: ${requestId}]:`, error.message);
-    console.error(`[API] 🔍 Error details:`, {
-      requestId: requestId,
-      userIP: userIP,
-      userId: userId,
-      errorMessage: error.message,
-      errorStack: error.stack,
-      timestamp: new Date().toISOString()
-    });
 
-    // Return fallback response
     return res.status(500).json({
       requestId: requestId,
       error: 'Failed to generate response',
@@ -600,9 +627,11 @@ export default async function handler(req, res) {
       reply: "I'm having trouble connecting right now. Please try again in a moment, or use the contact form below to reach Ramji directly.",
       provider: 'Local Fallback',
       providerMeta: {
-        primary: 'Groq',
+        primary: 'DeepSeek',
         active: 'Local Fallback',
-        groqStatus: groqStatus,
+        deepseekStatus: deepseekStatus || 'not_attempted',
+        deepseekFailure: deepseekFailure || null,
+        groqStatus: groqStatus || 'not_attempted',
         groqFailure: groqFailure || null,
         openaiUsed: false
       }

@@ -365,6 +365,11 @@
     animation: pulse-dot 2s ease-in-out infinite;
 }
 
+.status-dot.offline {
+    background: #ef4444 !important;
+    animation: none;
+}
+
 @keyframes pulse-dot {
     0%, 100% {
         opacity: 1;

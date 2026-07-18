@@ -350,6 +350,68 @@ body {
     border-color: #333333;
 }
 
+/* Download button group */
+.btn-download-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1.5px solid #999;
+    color: #333;
+    transition: var(--transition);
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-download-label {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.btn-download-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.btn-download-sub {
+    font-size: 0.66rem;
+    font-weight: 400;
+    opacity: 0.65;
+    letter-spacing: 0.04em;
+}
+
+.btn-download-arrow {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.btn-download:hover {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: #555;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
+
+.btn-download-detailed {
+    border-color: #777;
+}
+
+.btn-download-detailed:hover {
+    border-color: #333;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+}
+
 /* ==========================================
    ABOUT SECTION - COMPACT
    ========================================== */

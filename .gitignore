@@ -1,10 +1,7 @@
 .env
-.env.local
-.env.production
-.env.development
-.env*.local
 .vercel
 node_modules/
+Resources/unused/
 .DS_Store
 *.log
 .vscode/

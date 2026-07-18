@@ -390,6 +390,71 @@ body {
     color: white;
 }
 
+/* Download button group */
+.btn-download-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    background: #EFF6FF;
+    border: 1.5px solid #3B82F6;
+    color: #1D4ED8;
+    transition: var(--transition);
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-download-label {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.btn-download-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.btn-download-sub {
+    font-size: 0.66rem;
+    font-weight: 400;
+    opacity: 0.65;
+    letter-spacing: 0.04em;
+}
+
+.btn-download-arrow {
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.btn-download:hover {
+    background: #DBEAFE;
+    border-color: #1D4ED8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(59, 130, 246, 0.2);
+}
+
+.btn-download-detailed {
+    background: #F0FDF4;
+    border-color: #16A34A;
+    color: #15803D;
+}
+
+.btn-download-detailed:hover {
+    background: #DCFCE7;
+    border-color: #15803D;
+    box-shadow: 0 6px 18px rgba(22, 163, 74, 0.2);
+}
+
 /* ==========================================
    ABOUT SECTION
    ========================================== */

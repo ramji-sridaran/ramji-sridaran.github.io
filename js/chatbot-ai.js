@@ -187,16 +187,20 @@ class AIChatbot {
 
     getProviderSourceLine(provider, providerMeta = {}) {
         const activeProvider = providerMeta.active || provider || 'Unknown';
+        if (activeProvider === 'DeepSeek') {
+            return 'ℹ️ AI Source: DeepSeek V3';
+        }
         if (activeProvider === 'Groq') {
+            if (providerMeta.deepseekStatus === 'failed') {
+                return 'ℹ️ AI Source: Groq (DeepSeek failed, fallback used)';
+            }
             return 'ℹ️ AI Source: Groq';
         }
         if (activeProvider === 'OpenAI') {
-            if (providerMeta.groqStatus === 'failed') {
-                return 'ℹ️ AI Source: OpenAI (Groq failed, fallback used)';
-            }
-            if (providerMeta.groqStatus === 'not_configured') {
-                return 'ℹ️ AI Source: OpenAI (Groq not configured)';
-            }
+            const failures = [];
+            if (providerMeta.deepseekStatus === 'failed') failures.push('DeepSeek');
+            if (providerMeta.groqStatus === 'failed') failures.push('Groq');
+            if (failures.length) return `ℹ️ AI Source: OpenAI (${failures.join(' & ')} failed)`;
             return 'ℹ️ AI Source: OpenAI';
         }
         if (activeProvider === 'Cache') {
@@ -204,10 +208,7 @@ class AIChatbot {
             return `ℹ️ AI Source: Cache (from ${cacheSource})`;
         }
         if (activeProvider === 'Local Fallback') {
-            if (providerMeta.groqStatus === 'failed') {
-                return 'ℹ️ AI Source: Local fallback (Groq failed and provider unavailable)';
-            }
-            return 'ℹ️ AI Source: Local fallback';
+            return 'ℹ️ AI Source: Local fallback (all providers unavailable)';
         }
         return `ℹ️ AI Source: ${activeProvider}`;
     }
@@ -354,7 +355,28 @@ document.addEventListener('DOMContentLoaded', function() {
         hideTypingIndicator();
         const responseText = typeof response === 'string' ? response : response.text;
         const sourceLine = typeof response === 'string' ? '' : (response.sourceLine || '');
+
+        // Update online/offline status indicator
+        const isLocalFallback = sourceLine.toLowerCase().includes('local fallback');
+        setOnlineStatus(!isLocalFallback);
+
         addMessage(sourceLine ? `${responseText}\n\n${sourceLine}` : responseText, 'bot');
+    }
+
+    function setOnlineStatus(isOnline) {
+        const dot = document.getElementById('chatbot-status-dot');
+        const text = document.getElementById('chatbot-status-text');
+        const indicator = document.getElementById('chatbot-status-indicator');
+        if (!dot || !text) return;
+        if (isOnline) {
+            dot.classList.remove('offline');
+            text.textContent = 'Online';
+            indicator && indicator.classList.remove('offline');
+        } else {
+            dot.classList.add('offline');
+            text.textContent = 'Offline';
+            indicator && indicator.classList.add('offline');
+        }
     }
 
     // Event listeners

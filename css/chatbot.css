@@ -164,6 +164,15 @@
     animation: pulse-dot 2s ease-in-out infinite;
 }
 
+.status-dot.offline {
+    background: #ef4444 !important;
+    animation: none;
+}
+
+#chatbot-status-indicator.offline #chatbot-status-text {
+    opacity: 0.85;
+}
+
 @keyframes pulse-dot {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }
