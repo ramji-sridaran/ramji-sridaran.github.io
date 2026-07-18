@@ -2,7 +2,7 @@
 // This serverless function handles chat requests and integrates with OpenAI
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const GROQ_API_KEY = process.env.GROQ_API_KEY;       // Free tier: 14,400 requests/day
+const GROQ_API_KEY = process.env.GROQ_API_KEY;       // Free tier: 14,400 requests/day — runs openai/gpt-oss-120b
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY; // Very cheap: ~$0.27/M input tokens
 
 const LINKEDIN_PROFILE = 'https://www.linkedin.com/in/ramji-sridaran/';
@@ -89,7 +89,7 @@ async function callDeepSeekAPI(messages) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'deepseek-chat', // DeepSeek V3
+      model: 'deepseek-v4-flash', // DeepSeek V4 Flash (upgraded from V3 deepseek-chat)
       messages: messages,
       temperature: 0.7,
       max_tokens: 300
@@ -125,10 +125,10 @@ async function callGroqAPI(messages) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile', // Latest Groq model (Nov 2024), high quality and fast
+        model: 'openai/gpt-oss-120b', // OpenAI OSS 120B via Groq free tier (upgraded from llama-3.3-70b-versatile)
         messages: messages,
         temperature: 0.7,
-        max_tokens: 300
+        max_tokens: 500  // Extra headroom for reasoning tokens this model uses internally
       })
     }, AI_TIMEOUT_MS);
 
@@ -166,7 +166,7 @@ async function callOpenAI(messages) {
         'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4.1-nano', // GPT-4.1 Nano (upgraded from gpt-3.5-turbo — newer, cheaper, better quality)
         messages: messages,
         temperature: 0.7,
         max_tokens: 300,
