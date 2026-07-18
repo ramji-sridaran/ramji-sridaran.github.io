@@ -1126,6 +1126,23 @@ body {
     resize: vertical;
 }
 
+.form-powered-by {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 0.75rem;
+    opacity: 0.55;
+}
+
+.form-powered-by a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.form-powered-by a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
 /* ==========================================
    FOOTER - COMPACT
    ========================================== */
