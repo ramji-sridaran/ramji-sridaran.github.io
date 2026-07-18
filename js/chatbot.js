@@ -2,12 +2,22 @@
    AI CHATBOT ASSISTANT - JAVASCRIPT
    ========================================== */
 
+const CHATBOT_KB_EXPERIENCE_START_DATE = new Date(2013, 4, 1); // May 2013
+
+function getChatbotKbExperienceYears() {
+    let years = new Date().getFullYear() - CHATBOT_KB_EXPERIENCE_START_DATE.getFullYear();
+    const monthDelta = new Date().getMonth() - CHATBOT_KB_EXPERIENCE_START_DATE.getMonth();
+    const dayDelta = new Date().getDate() - CHATBOT_KB_EXPERIENCE_START_DATE.getDate();
+    if (monthDelta < 0 || (monthDelta === 0 && dayDelta < 0)) years -= 1;
+    return `${Math.max(years, 0)}+ years`;
+}
+
 // Knowledge Base about Ramji Sridaran
 const knowledgeBase = {
     profile: {
         name: "Ramji Sridaran",
         title: "Technical Lead",
-        experience: "12+ years",
+        experience: getChatbotKbExperienceYears(),
         location: "Based in Coimbatore, India. [Worked in Chennai & Kochi]",
         specializations: ["Java", "AWS", "Snowflake", "Big Data", "Spring Boot", "Microservices", "IoT", "Kafka"]
     },
@@ -418,7 +428,7 @@ His projects span batch processing, real-time streaming, and data warehouse migr
     getDefaultResponse() {
         return `I can help you learn about Ramji's:
 
-🎯 <strong>Experience</strong> - 12+ years in software development
+🎯 <strong>Experience</strong> - ${this.kb.profile.experience} in software development
 🛠️ <strong>Skills</strong> - Java, AWS, Snowflake, Big Data, and more
 🚀 <strong>Projects</strong> - Enterprise platforms handling massive scale
 🎓 <strong>Certifications</strong> - Snowflake, AWS, AI certifications
@@ -591,4 +601,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 300);
 });
-

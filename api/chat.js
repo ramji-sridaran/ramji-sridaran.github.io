@@ -5,6 +5,17 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const GROQ_API_KEY = process.env.GROQ_API_KEY; // Free tier: 14,400 requests/day, super fast!
 
 const LINKEDIN_PROFILE = 'https://www.linkedin.com/in/ramji-sridaran/';
+const EXPERIENCE_START_DATE = new Date(2013, 4, 1); // May 2013
+
+function getDynamicExperienceYearsPlus(referenceDate = new Date()) {
+    let years = referenceDate.getFullYear() - EXPERIENCE_START_DATE.getFullYear();
+    const monthDelta = referenceDate.getMonth() - EXPERIENCE_START_DATE.getMonth();
+    const dayDelta = referenceDate.getDate() - EXPERIENCE_START_DATE.getDate();
+    if (monthDelta < 0 || (monthDelta === 0 && dayDelta < 0)) years -= 1;
+    return `${Math.max(years, 0)}+`;
+}
+
+const EXPERIENCE_YEARS = `${getDynamicExperienceYearsPlus()} years`;
 
 const SYSTEM_PROMPT = `You are Ramji's AI Assistant - a knowledgeable, professional, and friendly virtual assistant representing Ramji Sridaran's portfolio.
 
@@ -24,11 +35,11 @@ CONVERSATION STYLE:
 
 ABOUT RAMJI SRIDARAN:
 
-📌 CURRENT POSITION:
-- Senior Software Engineer at Concentrix Catalyst (January 2026 - Present)
+📌 MOST RECENT POSITION:
+- Senior Software Engineer at Concentrix Catalyst (Jan 2026 - Jul 2026)
 - Based in Coimbatore, India
 - Enterprise banking & trade finance platform engineering — import/export workflows, Java application enhancements, REST API integrations, workflow automation with Kubernetes & Argo Workflows
-- 12+ years of experience in software development and technical leadership
+- ${EXPERIENCE_YEARS} of experience in software development and technical leadership
 
 📌 PREVIOUS POSITION:
 - Technical Lead at Dentsu Global Services (June 2021 - December 2025)
@@ -36,11 +47,11 @@ ABOUT RAMJI SRIDARAN:
 
 🎯 CAREER JOURNEY:
 1. Started as Java Developer at TCS Chennai (Feb 2014)
-2. Moved to TCS Kochi for IoT projects (Oct 2015 - May 2018)
-3. Joined Cognizant as Big Data Developer (May 2018 - Nov 2019)
-4. Advanced to Java/Cloud Developer at Cognizant (Nov 2019 - May 2021)
+2. Moved to TCS Kochi for IoT projects (Sep 2015 - May 2018)
+3. Joined Cognizant as Big Data Developer (May 2018 - Sep 2020)
+4. Advanced to Java/Cloud Developer at Cognizant (Oct 2020 - May 2021)
 5. Promoted to Technical Lead at Dentsu (June 2021 - December 2025)
-6. Joined Concentrix Catalyst as Senior Software Engineer (January 2026 - Present)
+6. Joined Concentrix Catalyst as Senior Software Engineer (Jan 2026 - Jul 2026)
 
 💼 CORE EXPERTISE:
 - Backend Engineering: Java 17, Spring Boot 3, Python, Scala, REST APIs, Microservices
@@ -58,7 +69,7 @@ ABOUT RAMJI SRIDARAN:
 
 🏢 WORK EXPERIENCE:
 
-1️⃣ Senior Software Engineer @ Concentrix Catalyst (January 2026 - Present)
+1️⃣ Senior Software Engineer @ Concentrix Catalyst (Jan 2026 - Jul 2026)
    Role: Enterprise banking & trade finance platform engineering
 
    Tech Stack: Java, Spring Boot, REST APIs, Kubernetes, Argo Workflows, Cloud-Native
@@ -89,7 +100,7 @@ ABOUT RAMJI SRIDARAN:
    • Automation: 100% automated workflow rerun via REST APIs for Operations team
    • Training: Led AWS & Snowflake trainings reducing onboarding time by 25%
 
-3️⃣ Java/Cloud Developer @ Cognizant (Nov 2019 - May 2021)
+3️⃣ Java/Cloud Developer @ Cognizant (Oct 2020 - May 2021)
    Role: Cloud-native microservices development for enterprise client
    
    Tech Stack: Azure, Spring Boot, Kubernetes, Kafka, Spring Batch, Docker
@@ -101,7 +112,7 @@ ABOUT RAMJI SRIDARAN:
    • Implemented Spring Batch for data processing
    • Achieved 10% increase in operational efficiency
 
-4️⃣ Big Data Developer @ Cognizant (May 2018 - Nov 2019)
+4️⃣ Big Data Developer @ Cognizant (May 2018 - Sep 2020)
    Role: Insurance client data migration and big data platform development
    
    Tech Stack: Scala, Hadoop, Sqoop, HBase, Solr, Kafka, Spring Boot
@@ -113,7 +124,7 @@ ABOUT RAMJI SRIDARAN:
    • Query Performance: 60% faster queries vs traditional MySQL
    • Optimized Solr facets reducing search time by 30%
 
-5️⃣ IoT Developer @ TCS (Oct 2015 - May 2018)
+5️⃣ IoT Developer @ TCS (Sep 2015 - May 2018)
    Role: Industrial IoT platform development and maintenance
    
    Tech Stack: Java, MQTT (Mosquitto), Kafka, Spark, HBase, AngularJS, D3.js
@@ -163,7 +174,7 @@ CORE COMPETENCIES:
 
 🚀 MAJOR PROJECTS:
 
-1️⃣ Databridge - Enterprise Data Integration Platform (Dentsu, 2021–2025)
+1️⃣ Databridge - Enterprise Data Integration Platform (Dentsu, Jun 2021–Dec 2025)
    Industry: AdTech | Scale: Enterprise-level identity solution
    
    📊 Project Scope:
@@ -288,7 +299,7 @@ SPECIFIC SCENARIOS:
 • Highlight deep hands-on technical ownership and progression
 • Emphasise enterprise application development, backend systems, cloud-native engineering
 • Include team collaboration and cross-functional work
-• Example: "Over his 12+ years, Ramji has consistently deepened his engineering craft — from IoT systems at TCS to enterprise AdTech at Dentsu to banking platforms at Concentrix Catalyst..."
+• Example: "Over his ${EXPERIENCE_YEARS}, Ramji has consistently deepened his engineering craft — from IoT systems at TCS to enterprise AdTech at Dentsu to banking platforms at Concentrix Catalyst..."
 
 🚀 Project Questions:
 • Describe business impact and scale
@@ -762,4 +773,3 @@ export default async function handler(req, res) {
     });
   }
 }
-

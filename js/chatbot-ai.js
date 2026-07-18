@@ -2,6 +2,17 @@
    AI CHATBOT ASSISTANT - OPENAI INTEGRATED
    ========================================== */
 
+const CHATBOT_EXPERIENCE_START_DATE = new Date(2013, 4, 1); // May 2013
+
+function getChatbotExperienceYearsPlus(referenceDate = new Date()) {
+    if (window.PORTFOLIO_EXPERIENCE_YEARS) return window.PORTFOLIO_EXPERIENCE_YEARS;
+    let years = referenceDate.getFullYear() - CHATBOT_EXPERIENCE_START_DATE.getFullYear();
+    const monthDelta = referenceDate.getMonth() - CHATBOT_EXPERIENCE_START_DATE.getMonth();
+    const dayDelta = referenceDate.getDate() - CHATBOT_EXPERIENCE_START_DATE.getDate();
+    if (monthDelta < 0 || (monthDelta === 0 && dayDelta < 0)) years -= 1;
+    return `${Math.max(years, 0)}+`;
+}
+
 // AI Chatbot Class with OpenAI Integration
 class AIChatbot {
     constructor() {
@@ -151,15 +162,16 @@ class AIChatbot {
     // Fallback to rule-based responses if API is unavailable
     getFallbackResponse(message) {
         const msg = message.toLowerCase();
+        const experienceYears = `${getChatbotExperienceYearsPlus()} years`;
 
         // Greetings
         if (/^(hi|hello|hey|greetings)/i.test(msg)) {
-            return "👋 Hello! I'm Ramji's assistant. I can tell you about his 12+ years of hands-on enterprise engineering experience in Java, AWS, Spring Boot, and cloud-native architectures. What would you like to know?";
+            return `👋 Hello! I'm Ramji's assistant. I can tell you about his ${experienceYears} of hands-on enterprise engineering experience in Java, AWS, Spring Boot, and cloud-native architectures. What would you like to know?`;
         }
 
         // Experience
         if (/(experience|work|career|job|background)/i.test(msg)) {
-            return "Ramji has 12+ years of hands-on engineering experience:\n\n• Senior Software Engineer @ Concentrix Catalyst (Jan 2026–Present)\n• Technical Lead @ Dentsu (June 2021–Dec 2025)\n• Java/Cloud Developer @ Cognizant (2019–2021)\n• Big Data Developer @ Cognizant (2018–2019)\n• IoT Developer @ TCS (2015–2018)\n\nHe specializes in enterprise backend development, cloud-native architectures, and scalable Java applications.";
+            return `Ramji has ${experienceYears} of hands-on engineering experience:\n\n• Senior Software Engineer @ Concentrix Catalyst (Jan 2026–Jul 2026)\n• Technical Lead @ Dentsu (Jun 2021–Dec 2025)\n• Java/Cloud Developer @ Cognizant (Oct 2020–May 2021)\n• Big Data Developer @ Cognizant (May 2018–Sep 2020)\n• IoT Developer @ TCS (Sep 2015–May 2018)\n\nHe specializes in enterprise backend development, cloud-native architectures, and scalable Java applications.`;
         }
 
         // Skills
@@ -179,7 +191,7 @@ class AIChatbot {
 
         // Snowflake
         if (/(snowflake|data warehouse)/i.test(msg)) {
-            return "Ramji is SnowPro Core Certified and worked extensively with Snowflake Data Cloud at Dentsu (2021–2025). His Databridge project processed 100TB+ data daily with 99.9% accuracy. He implemented security enhancements and performance optimizations on the platform.";
+            return "Ramji is SnowPro Core Certified and worked extensively with Snowflake Data Cloud at Dentsu (Jun 2021–Dec 2025). His Databridge project processed 100TB+ data daily with 99.9% accuracy. He implemented security enhancements and performance optimizations on the platform.";
         }
 
         // Contact
@@ -188,7 +200,7 @@ class AIChatbot {
         }
 
         // Default
-        return "I can help you learn about Ramji's:\n\n🎯 Experience (12+ years in enterprise backend engineering)\n🛠️ Skills (Java, Spring Boot, AWS, Cloud-Native)\n🚀 Projects (Banking, AdTech, IoT platforms)\n🎓 Certifications\n\nTry asking: 'What's Ramji's AWS experience?' or 'Tell me about his projects'";
+        return `I can help you learn about Ramji's:\n\n🎯 Experience (${experienceYears} in enterprise backend engineering)\n🛠️ Skills (Java, Spring Boot, AWS, Cloud-Native)\n🚀 Projects (Banking, AdTech, IoT platforms)\n🎓 Certifications\n\nTry asking: 'What's Ramji's AWS experience?' or 'Tell me about his projects'`;
     }
 }
 

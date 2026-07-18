@@ -4,6 +4,39 @@
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
 const navLinks = document.querySelectorAll('.nav-link');
+const EXPERIENCE_START_DATE = new Date(2013, 4, 1); // May 2013
+
+function getDynamicExperienceYearsPlus(referenceDate = new Date()) {
+    let years = referenceDate.getFullYear() - EXPERIENCE_START_DATE.getFullYear();
+    const monthDelta = referenceDate.getMonth() - EXPERIENCE_START_DATE.getMonth();
+    const dayDelta = referenceDate.getDate() - EXPERIENCE_START_DATE.getDate();
+    if (monthDelta < 0 || (monthDelta === 0 && dayDelta < 0)) years -= 1;
+    return `${Math.max(years, 0)}+`;
+}
+
+function applyDynamicExperienceYears() {
+    const yearsPlus = getDynamicExperienceYearsPlus();
+    const yearsPhrase = `${yearsPlus} years`;
+    window.PORTFOLIO_EXPERIENCE_YEARS = yearsPlus;
+
+    document.querySelectorAll('[data-exp-years]').forEach(el => {
+        el.textContent = yearsPlus;
+    });
+
+    const replaceYears = text => text.replace(/__EXP_YEARS__|\d+\+\s+years/g, yearsPhrase);
+
+    document.querySelectorAll('meta[name="description"], meta[property="og:description"], meta[property="twitter:description"]').forEach(meta => {
+        const current = meta.getAttribute('content');
+        if (current) meta.setAttribute('content', replaceYears(current));
+    });
+
+    const jsonLd = document.querySelector('script[type="application/ld+json"]');
+    if (jsonLd && jsonLd.textContent) {
+        jsonLd.textContent = replaceYears(jsonLd.textContent);
+    }
+}
+
+applyDynamicExperienceYears();
 
 // Toggle mobile menu
 if (hamburger) {
@@ -444,6 +477,9 @@ function applyTheme(theme, isCompact = false, isBW = false) {
     localStorage.setItem('theme', theme);
     localStorage.setItem('compactMode', isCompact);
     localStorage.setItem('bwMode', isBW);
+    if (document.body) {
+        document.body.dataset.theme = isBW ? 'bw' : theme;
+    }
 
     // Update theme toggle icon
     if (themeToggle) {
@@ -561,7 +597,7 @@ function highlightProject(projectId) {
 
 // Add click listeners to experience links that point to projects
 document.addEventListener('DOMContentLoaded', () => {
-    const projectLinks = document.querySelectorAll('a[href^="#"][href$="bridge"], a[href^="#"][href$="mf2c"], a[href^="#"][href$="datamigration"], a[href^="#"][href$="chiller"], a[href^="#"][href$="ai-chatbot"]');
+    const projectLinks = document.querySelectorAll('a[href^="#"][href$="bridge"], a[href^="#"][href$="mf2c"], a[href^="#"][href$="datamigration"], a[href^="#"][href$="chiller"], a[href^="#"][href$="concentrix"], a[href^="#"][href$="ai-chatbot"]');
 
     projectLinks.forEach(link => {
         link.addEventListener('click', (e) => {
@@ -650,6 +686,38 @@ const projectData = {
         challenges: 'Supporting diverse client datasets and multiple social media platforms required a highly resilient integration layer capable of handling schema variability, frequent API/SDK changes, and strict SLAs for data accuracy. These complexities were addressed through robust workflow orchestration on AWS, schema-managed evolution via Liquibase, scalable processing in Snowflake, and rigorous automation across the entire CI/CD pipeline.',
         liveLink: '#',
         githubLink: '#'
+    },
+    5: {
+        title: 'Enterprise Banking & Trade Finance',
+        description: 'Contributed to enterprise banking and trade-finance platforms focused on import/export workflows. Delivered Java-based backend enhancements, API integrations, workflow automation, and cloud-native engineering while coordinating with development, QA, business analysis, and production support teams.',
+        technologies: ['Java', 'Spring Boot', 'REST APIs', 'Kubernetes', 'Argo Workflows', 'Workflow Automation', 'Cloud-Native', 'Trade Finance'],
+        features: [
+            'Implemented backend enhancements for enterprise banking and trade-finance use cases',
+            'Built and optimized REST APIs supporting import/export workflow orchestration',
+            'Contributed to workflow automation pipelines for operational efficiency',
+            'Collaborated closely with QA and business-analysis teams to clarify requirements and improve release quality',
+            'Supported cloud-native deployment patterns in containerized Kubernetes environments',
+            'Partnered with support and operations teams to triage production issues and improve resilience'
+        ],
+        challenges: 'Banking and trade-finance workflows require strict process accuracy, reliable integrations, and clear cross-team coordination. The key challenge was delivering feature changes rapidly while maintaining operational stability and compliance expectations. This was addressed through incremental API design, automation-first workflows, structured test collaboration, and disciplined release coordination across engineering and support functions.',
+        liveLink: '#',
+        githubLink: '#'
+    },
+    6: {
+        title: 'AI-Powered Portfolio Chatbot',
+        description: 'A serverless AI assistant embedded in the portfolio to answer questions about projects, experience, and skills. The architecture uses a multi-tier fallback strategy (Groq AI → OpenAI → curated static responses) to maintain high availability and low operating cost.',
+        technologies: ['Node.js', 'Serverless', 'Groq AI', 'OpenAI', 'Vercel', 'JavaScript', 'REST APIs', 'Edge Functions'],
+        features: [
+            'Processes high daily request volume using low-latency Groq inference as the primary provider',
+            'Implements a resilient fallback chain from Groq to OpenAI to static responses',
+            'Runs on globally distributed Vercel edge/serverless infrastructure',
+            'Delivers context-aware responses grounded in portfolio and experience data',
+            'Maintains graceful degradation to preserve user experience during provider outages',
+            'Optimizes cost while preserving responsiveness and reliability'
+        ],
+        challenges: 'Building a dependable AI assistant with minimal infrastructure cost required careful handling of provider availability, latency, and response quality. The solution combined a tiered provider strategy, serverless edge deployment, and robust fallback logic so users consistently receive useful responses even when upstream AI services are constrained.',
+        liveLink: '#',
+        githubLink: '#'
     }
 };
 
@@ -727,7 +795,7 @@ const fvProjectData = {
         title: 'Remote Chiller Monitoring',
         icon: '🌡️',
         company: 'Tata Consultancy Services',
-        period: '2015 – 2018',
+        period: 'Sep 2015 – May 2018',
         overview: 'An IoT solution to bring smart building capability to Intel offices. Sensor parameters are monitored and analysed by building managers to visualise information and make fast, precise decisions in real time.',
         tech: ['Java', 'Spring Boot', 'Kafka', 'MQTT', 'REST APIs', 'PostgreSQL', 'Redis', 'Spark', 'HBase', 'Maven', 'Tomcat'],
         highlights: [
@@ -743,7 +811,7 @@ const fvProjectData = {
         title: 'Big Data Migration',
         icon: '🗄️',
         company: 'Cognizant Technology Solutions',
-        period: '2018 – 2020',
+        period: 'May 2018 – Sep 2020',
         overview: 'Big-data solution to migrate data from legacy systems and deliver business insights through analytics. Periodically synchronises data from RDBMS systems via change data files received through Informatica.',
         tech: ['Sqoop', 'Scala', 'Spark', 'HBase', 'Hadoop', 'HDFS', 'Hive', 'Shell Script', 'Informatica'],
         highlights: [
@@ -759,7 +827,7 @@ const fvProjectData = {
         title: 'MF2C — Cloud Migration',
         icon: '☁️',
         company: 'Cognizant Technology Solutions',
-        period: '2020 – 2021',
+        period: 'Oct 2020 – May 2021',
         overview: 'Migration of projects from Mainframe systems to cloud using AGILE methodology. Set up data channels using Kafka with Spring Batch to process files for day-to-day financial services on Azure and client-native cloud.',
         tech: ['Java', 'Spring Batch', 'Kafka', 'Liquibase', 'MySQL', 'Kubernetes', 'KITT', 'Splunk', 'Dynatrace', 'Azure'],
         highlights: [
@@ -775,7 +843,7 @@ const fvProjectData = {
         title: 'Databridge — AdTech Platform',
         icon: '📡',
         company: 'Dentsu Global Services',
-        period: '2021 – Dec 2025',
+        period: 'Jun 2021 — Dec 2025',
         overview: 'Large-scale application development for a programmatic advertising platform hosted on AWS with data on Snowflake. Leading a team of 5, managing feature delivery with automated CI/CD via Jenkins and Kubernetes.',
         tech: ['Java', 'Spring Boot', 'REST APIs', 'Snowflake', 'Amazon Web Services', 'MySQL', 'Jenkins', 'Wildfly', 'Datadog', 'Kubernetes'],
         highlights: [
@@ -787,7 +855,7 @@ const fvProjectData = {
             'Sub-second query performance on billions of ad impression records'
         ]
     },
-    '\\4': {
+    '4': {
         title: 'AI-Powered Portfolio Chatbot',
         icon: '🤖',
         company: 'Personal Project',
@@ -800,7 +868,7 @@ const fvProjectData = {
             'Vercel edge functions deployed globally with <50 ms cold start',
             'Zero-infrastructure cost architecture for hobby-project scale',
             'Graceful degradation patterns ensuring 99.95% availability',
-            'Context-aware responses trained on 12+ years of career data'
+            'Context-aware responses trained on years of career data'
         ]
     }
 };
@@ -817,20 +885,81 @@ const fvZoomOut        = document.getElementById('fvZoomOut');
 const fvZoomReset      = document.getElementById('fvZoomReset');
 const fvZoomLevel      = document.getElementById('fvZoomLevel');
 const fvClose          = document.getElementById('fvClose');
+const fvPrev           = document.getElementById('fvPrev');
+const fvNext           = document.getElementById('fvNext');
 const fvSidebarToggle  = document.getElementById('fvSidebarToggle');
 const fvSidebar        = document.getElementById('fvSidebar');
 const fvHint           = document.getElementById('fvHint');
 const fvTabs           = document.querySelectorAll('.fv-tab');
+const fvImageList      = Array.from(clickableImages);
+let fvActiveIndex      = -1;
 
 // ── Zoom state ────────────────────────────────────────────────────────────────
 let fvZoom = 1;
 const FV_ZOOM_STEP = 0.25;
 const FV_ZOOM_MIN  = 0.5;
 const FV_ZOOM_MAX  = 3;
+let fvBaseWidth = 1050;
+let fvBaseHeight = 780;
+
+function getActiveCanvasElement() {
+    if (pageModalFrame.style.display !== 'none') return pageModalFrame;
+    if (imageModalImg.style.display !== 'none') return imageModalImg;
+    return null;
+}
+
+function refreshCanvasBaseSize() {
+    const active = getActiveCanvasElement();
+    if (!active) return;
+
+    let width = 0;
+    let height = 0;
+
+    if (active === imageModalImg) {
+        const naturalWidth = imageModalImg.naturalWidth || imageModalImg.clientWidth;
+        const naturalHeight = imageModalImg.naturalHeight || imageModalImg.clientHeight;
+        if (naturalWidth && naturalHeight) {
+            const constrainedWidth = Math.min(naturalWidth, 1050);
+            const ratio = constrainedWidth / naturalWidth;
+            width = constrainedWidth;
+            height = Math.round(naturalHeight * ratio);
+        }
+    } else {
+        width = pageModalFrame.clientWidth || 1050;
+        height = pageModalFrame.clientHeight || 780;
+    }
+
+    if (width > 0 && height > 0) {
+        fvBaseWidth = width;
+        fvBaseHeight = height;
+    }
+}
 
 function setZoom(z) {
     fvZoom = Math.min(FV_ZOOM_MAX, Math.max(FV_ZOOM_MIN, z));
-    fvCanvas.style.transform = `scale(${fvZoom})`;
+    const active = getActiveCanvasElement();
+    if (active) {
+        const scaledWidth = Math.max(1, Math.round(fvBaseWidth * fvZoom));
+        const scaledHeight = Math.max(1, Math.round(fvBaseHeight * fvZoom));
+        const wrapperWidth = fvCanvasWrapper.clientWidth || 0;
+        const wrapperHeight = fvCanvasWrapper.clientHeight || 0;
+        const canvasWidth = Math.max(scaledWidth, wrapperWidth, 1);
+        const canvasHeight = Math.max(scaledHeight, wrapperHeight, 1);
+        const offsetLeft = Math.max(0, Math.round((canvasWidth - scaledWidth) / 2));
+        const offsetTop = Math.max(0, Math.round((canvasHeight - scaledHeight) / 2));
+
+        active.style.transformOrigin = 'top left';
+        active.style.transform = `scale(${fvZoom})`;
+        active.style.left = `${offsetLeft}px`;
+        active.style.top = `${offsetTop}px`;
+        fvCanvas.style.width = `${canvasWidth}px`;
+        fvCanvas.style.height = `${canvasHeight}px`;
+
+        const isContentNarrow = scaledWidth < wrapperWidth;
+        fvCanvasWrapper.classList.toggle('zoomed-out', fvZoom < 1 && isContentNarrow);
+    } else {
+        fvCanvasWrapper.classList.remove('zoomed-out');
+    }
     fvZoomLevel.textContent  = Math.round(fvZoom * 100) + '%';
 }
 
@@ -838,8 +967,25 @@ fvZoomIn.addEventListener('click',    () => setZoom(fvZoom + FV_ZOOM_STEP));
 fvZoomOut.addEventListener('click',   () => setZoom(fvZoom - FV_ZOOM_STEP));
 fvZoomReset.addEventListener('click', () => setZoom(1));
 
+pageModalFrame.addEventListener('load', () => {
+    refreshCanvasBaseSize();
+    setZoom(fvZoom);
+});
+
+imageModalImg.addEventListener('load', () => {
+    refreshCanvasBaseSize();
+    setZoom(fvZoom);
+});
+
+window.addEventListener('resize', () => {
+    if (!imageModal.classList.contains('active')) return;
+    setZoom(fvZoom);
+});
+
 // Mouse-wheel zoom centred on cursor
 fvCanvasWrapper.addEventListener('wheel', function(e) {
+    // Keep normal wheel/trackpad scrolling; zoom only with Cmd/Ctrl + wheel.
+    if (!e.metaKey && !e.ctrlKey) return;
     e.preventDefault();
     const delta = e.deltaY > 0 ? -FV_ZOOM_STEP : FV_ZOOM_STEP;
     // Zoom towards cursor position
@@ -911,7 +1057,8 @@ fvTabs.forEach(tab => {
 
 // ── Populate sidebar ──────────────────────────────────────────────────────────
 function populateSidebar(pageNum) {
-    const data = fvProjectData[pageNum] || fvProjectData['0'];
+    const normalizedPageNum = pageNum === '\\4' ? '4' : pageNum;
+    const data = fvProjectData[normalizedPageNum] || fvProjectData['0'];
 
     // Header
     document.getElementById('fvIcon').textContent  = data.icon;
@@ -954,64 +1101,112 @@ function populateSidebar(pageNum) {
 }
 
 // ── Page index map ────────────────────────────────────────────────────────────
-const pageIndexMap = { '0': '0', '1': '1', '2': '2', '3': '3' };
+const pageIndexMap = { '0': '0', '1': '1', '2': '2', '3': '3', '4': '4', '\\4': '4' };
 
 // ── Open modal ────────────────────────────────────────────────────────────────
-clickableImages.forEach(imageContainer => {
-    imageContainer.addEventListener('click', async function(e) {
-        e.stopPropagation();
+async function openFlowchartFromTile(imageContainer) {
+    const tileIndex = fvImageList.indexOf(imageContainer);
+    if (tileIndex >= 0) fvActiveIndex = tileIndex;
 
-        let pageSrc  = this.getAttribute('data-page');
-        const pageNum = this.getAttribute('data-page-num') || '0';
-        const imageSrc = this.getAttribute('data-image');
+    let pageSrc  = imageContainer.getAttribute('data-page');
+    const pageNum = imageContainer.getAttribute('data-page-num') || '0';
+    const imageSrc = imageContainer.getAttribute('data-image');
 
-        // Reset zoom
-        setZoom(1);
-        fvCanvasWrapper.scrollLeft = 0;
-        fvCanvasWrapper.scrollTop  = 0;
+    // Reset zoom
+    setZoom(1);
+    fvCanvasWrapper.scrollLeft = 0;
+    fvCanvasWrapper.scrollTop  = 0;
 
-        // Populate sidebar
-        populateSidebar(pageNum);
+    // Populate sidebar
+    populateSidebar(pageNum);
 
-        if (pageSrc) {
+    if (pageSrc) {
+        imageModalImg.style.transform = '';
+        pageModalFrame.style.transform = '';
+
+        if (pageSrc.includes('#')) pageSrc = pageSrc.split('#')[0];
+
+        // SVGs render cleaner as <img> (avoids nested iframe scroll/offset artifacts)
+        if (pageSrc.toLowerCase().endsWith('.svg')) {
+            pageModalFrame.style.display = 'none';
+            pageModalFrame.src = '';
+            imageModalImg.style.display = 'block';
+            imageModalImg.src = pageSrc;
+        } else {
             imageModalImg.style.display  = 'none';
             pageModalFrame.style.display = 'block';
-
-            if (pageSrc.includes('#')) pageSrc = pageSrc.split('#')[0];
-
-            // Check if it's an SVG — load directly in iframe
-            if (pageSrc.toLowerCase().endsWith('.svg')) {
+            try {
+                const response   = await fetch(pageSrc);
+                let htmlContent  = await response.text();
+                const pageIndex  = pageIndexMap[pageNum] || '0';
+                htmlContent = htmlContent.replace(/"page":\d+/, `"page":${pageIndex}`);
+                const blob       = new Blob([htmlContent], { type: 'text/html' });
+                pageModalFrame.src = URL.createObjectURL(blob);
+            } catch (err) {
+                console.error('Error loading architecture diagram:', err);
                 pageModalFrame.src = pageSrc;
-            } else {
-                try {
-                    const response   = await fetch(pageSrc);
-                    let htmlContent  = await response.text();
-                    const pageIndex  = pageIndexMap[pageNum] || '0';
-                    htmlContent = htmlContent.replace(/"page":\d+/, `"page":${pageIndex}`);
-                    const blob       = new Blob([htmlContent], { type: 'text/html' });
-                    pageModalFrame.src = URL.createObjectURL(blob);
-                } catch (err) {
-                    console.error('Error loading architecture diagram:', err);
-                    pageModalFrame.src = pageSrc;
-                }
             }
-
-        } else if (imageSrc) {
-            pageModalFrame.style.display = 'none';
-            imageModalImg.style.display  = 'block';
-            imageModalImg.src = imageSrc;
         }
 
-        imageModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        showHint();
+    } else if (imageSrc) {
+        pageModalFrame.style.display = 'none';
+        pageModalFrame.src = '';
+        imageModalImg.style.display  = 'block';
+        pageModalFrame.style.transform = '';
+        imageModalImg.src = imageSrc;
+    }
+
+    requestAnimationFrame(() => {
+        refreshCanvasBaseSize();
+        setZoom(fvZoom);
+    });
+
+    imageModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    showHint();
+}
+
+clickableImages.forEach((imageContainer, index) => {
+    imageContainer.addEventListener('click', async function(e) {
+        e.stopPropagation();
+        fvActiveIndex = index;
+        await openFlowchartFromTile(imageContainer);
     });
 });
+
+if (fvNext) {
+    fvNext.addEventListener('click', async function(e) {
+        e.stopPropagation();
+        if (fvImageList.length === 0) return;
+        if (fvActiveIndex < 0) fvActiveIndex = 0;
+        fvActiveIndex = (fvActiveIndex + 1) % fvImageList.length;
+        await openFlowchartFromTile(fvImageList[fvActiveIndex]);
+    });
+}
+
+if (fvPrev) {
+    fvPrev.addEventListener('click', async function(e) {
+        e.stopPropagation();
+        if (fvImageList.length === 0) return;
+        if (fvActiveIndex < 0) fvActiveIndex = 0;
+        fvActiveIndex = (fvActiveIndex - 1 + fvImageList.length) % fvImageList.length;
+        await openFlowchartFromTile(fvImageList[fvActiveIndex]);
+    });
+}
 
 // ── Close modal ───────────────────────────────────────────────────────────────
 function closeImageModal() {
     imageModal.classList.remove('active');
     pageModalFrame.src = '';
+    pageModalFrame.style.transform = '';
+    pageModalFrame.style.left = '';
+    pageModalFrame.style.top = '';
+    imageModalImg.style.transform = '';
+    imageModalImg.style.left = '';
+    imageModalImg.style.top = '';
+    fvCanvas.style.width = '';
+    fvCanvas.style.height = '';
+    fvCanvasWrapper.classList.remove('zoomed-out');
     document.body.style.overflow = '';
 }
 
