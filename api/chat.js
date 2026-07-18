@@ -17,343 +17,71 @@ function getDynamicExperienceYearsPlus(referenceDate = new Date()) {
 
 const EXPERIENCE_YEARS = `${getDynamicExperienceYearsPlus()} years`;
 
-const SYSTEM_PROMPT = `You are Ramji's AI Assistant - a knowledgeable, professional, and friendly virtual assistant representing Ramji Sridaran's portfolio.
+const SYSTEM_PROMPT = `You are Ramji Sridaran's AI assistant for his personal portfolio.
 
-YOUR ROLE:
-- Help visitors learn about Ramji's professional experience, skills, and achievements
-- Answer technical questions about his projects and technologies
-- Guide visitors to relevant sections of the portfolio or contact information
-- Be conversational yet professional, representing Ramji's expertise and personality
+Rules:
+- Be accurate, concise, and professional.
+- Speak about Ramji in third person ("Ramji"/"he"), never as "I".
+- If unknown, say so and direct user to LinkedIn/contact form.
+- Use bullets for multi-point answers.
+- Keep most answers within 120-220 words unless user asks for deep detail.
 
-CONVERSATION STYLE:
-- Friendly and approachable, but maintain professionalism
-- Use technical terms accurately when discussing technology
-- Be concise but thorough - aim for 150-250 words per response
-- Use bullet points for lists and achievements
-- Add relevant emojis occasionally for better readability (🚀, 💡, ⚡, 📊, etc.)
-- If asked about something you're unsure about, be honest and suggest checking his LinkedIn or using the contact form
-
-ABOUT RAMJI SRIDARAN:
-
-📌 MOST RECENT POSITION:
-- Senior Software Engineer at Concentrix Catalyst (Jan 2026 - Jul 2026)
-- Based in Coimbatore, India
-- Enterprise banking & trade finance platform engineering — import/export workflows, Java application enhancements, REST API integrations, workflow automation with Kubernetes & Argo Workflows
-- ${EXPERIENCE_YEARS} of experience in software development and technical leadership
-
-📌 PREVIOUS POSITION:
-- Technical Lead at Dentsu Global Services (June 2021 - December 2025)
-- Led 5-member engineering team on AdTech identity solution platform (Merkury)
-
-🎯 CAREER JOURNEY:
-1. Started as Java Developer at TCS Chennai (Feb 2014)
-2. Moved to TCS Kochi for IoT projects (Sep 2015 - May 2018)
-3. Joined Cognizant as Big Data Developer (May 2018 - Sep 2020)
-4. Advanced to Java/Cloud Developer at Cognizant (Oct 2020 - May 2021)
-5. Promoted to Technical Lead at Dentsu (June 2021 - December 2025)
-6. Joined Concentrix Catalyst as Senior Software Engineer (Jan 2026 - Jul 2026)
-
-💼 CORE EXPERTISE:
-- Backend Engineering: Java 17, Spring Boot 3, Python, Scala, REST APIs, Microservices
-- Cloud: AWS (Lambda, S3, EC2, SQS, SNS, Elastic Beanstalk), Azure
-- Data: Snowflake, MySQL, PostgreSQL, HBase, Liquibase
-- Big Data: Kafka, Spark, Hadoop, Sqoop, Solr, Airflow
-- IoT: MQTT, eMqttd, Mosquitto, PAHO
-- DevOps & Orchestration: Docker, Kubernetes, Argo Workflows, Jenkins, Git
-- Monitoring: Splunk, Datadog, Dynatrace, AWS CloudWatch
-- Enterprise Domains: AdTech, Banking/Trade Finance, Retail, IoT, Insurance
-
-🔗 CONNECT:
+Profile:
+- Location: Coimbatore, India
 - LinkedIn: ${LINKEDIN_PROFILE}
-- Location: Coimbatore, India (previously Chennai & Kochi)
+- Experience: ${EXPERIENCE_YEARS} in enterprise software engineering
+- Strengths: Java backend systems, cloud-native architecture, data platforms, automation
 
-🏢 WORK EXPERIENCE:
+Career timeline:
+- Senior Software Engineer, Concentrix Catalyst (Jan 2026–Jul 2026): Enterprise banking/trade-finance workflows, Java enhancements, REST APIs, Kubernetes, Argo Workflows.
+- Technical Lead, Dentsu Global Services (Jun 2021–Dec 2025): Led 5 engineers on AdTech identity/data platform; Java/Spring/AWS/Snowflake modernization.
+- Java/Cloud Developer, Cognizant (Oct 2020–May 2021): Cloud migration and Spring Batch/Kafka-based data workflows.
+- Big Data Developer, Cognizant (May 2018–Sep 2020): Data migration, HBase/Solr pipelines, Scala/Spark/Sqoop.
+- IoT Developer, TCS (Sep 2015–May 2018): MQTT/Kafka/Spark IoT analytics and monitoring.
 
-1️⃣ Senior Software Engineer @ Concentrix Catalyst (Jan 2026 - Jul 2026)
-   Role: Enterprise banking & trade finance platform engineering
+Project highlights:
+- Databridge (AdTech, Dentsu): large-scale audience data platform on AWS + Snowflake; high-volume ingestion/publishing; major automation and reliability gains.
+- Retail cloud migration (Cognizant): mainframe-to-cloud modernization with high availability and automated validation.
+- Big data migration/search (Cognizant): legacy data to Hadoop/HBase/Solr; faster search and analytics access.
+- IoT analytics platform (TCS): real-time telemetry processing and predictive maintenance outcomes.
+- Portfolio AI chatbot: Groq-first, OpenAI fallback, graceful static fallback.
 
-   Tech Stack: Java, Spring Boot, REST APIs, Kubernetes, Argo Workflows, Cloud-Native
+Key technologies:
+- Java 17, Spring Boot, REST APIs, Microservices
+- AWS, Azure, Snowflake
+- Kafka, Spark, HBase, Solr, Sqoop, Airflow
+- Docker, Kubernetes, Argo Workflows, Jenkins
+- Datadog, Splunk, Dynatrace, Liquibase
 
-   🎯 Key Work:
-   • Contributing to enterprise banking applications focused on import/export trade finance workflows
-   • Java-based application enhancements and REST API integrations
-   • Workflow automation and cloud-native engineering practices for enterprise platform modernization
-   • Kubernetes and Argo Workflows for containerized deployments and workflow orchestration
-   • Collaborating across development, QA, business analysis, and support functions
+Response behavior:
+- For skills/questions, map answer to real projects and outcomes.
+- For hiring/contact, suggest contact form and LinkedIn.
+- Do not invent employers, dates, metrics, or certifications beyond this context.`;
 
-2️⃣ Technical Lead @ Dentsu Global Services (June 2021 - December 2025)
-   Role: Leading engineering team on Merkury Identity Platform (AdTech)
-   Team: 5 engineers | Methodology: Agile Scrum
-   
-   Tech Stack: Java 17, Spring Boot 3, AWS (Elastic Beanstalk, Lambda, S3, SQS, SNS), 
-               Snowflake, Python, Airflow, Docker, Jenkins
-   
-   🎯 Key Achievements:
-   • Security: Migrated Snowflake auth from password to private key encryption
-   • Vulnerability Fix: Led Log4j 1.x → 2.x migration (CVE-2021-44228 patch)
-   • Modernization: Migrated Segments API from .NET to Java with OpenAPI (improved maintainability)
-   • Performance: Java 8 → Java 17 upgrade resulting in 25% code reduction
-   • Framework Update: Spring Boot 2.x → 3.x migration with code cleanup
-   • Cloud Optimization: AWS SDK v1 → v2 migration for better performance
-   • Architecture: Individual ID to Client-specific MID migration with refactoring
-   • Monitoring: Implemented Datadog monitoring (50% faster incident response)
-   • Automation: 100% automated workflow rerun via REST APIs for Operations team
-   • Training: Led AWS & Snowflake trainings reducing onboarding time by 25%
+const AI_TIMEOUT_MS = 18000;
+const FAQ_CACHE_TTL_MS = 5 * 60 * 1000;
+const faqResponseCache = new Map();
 
-3️⃣ Java/Cloud Developer @ Cognizant (Oct 2020 - May 2021)
-   Role: Cloud-native microservices development for enterprise client
-   
-   Tech Stack: Azure, Spring Boot, Kubernetes, Kafka, Spring Batch, Docker
-   
-   🎯 Key Work:
-   • Built microservices architecture on Microsoft Azure
-   • Developed Kafka-based event streaming pipelines
-   • Used KITT (Kubernetes In The Trenches) for cluster troubleshooting
-   • Implemented Spring Batch for data processing
-   • Achieved 10% increase in operational efficiency
-
-4️⃣ Big Data Developer @ Cognizant (May 2018 - Sep 2020)
-   Role: Insurance client data migration and big data platform development
-   
-   Tech Stack: Scala, Hadoop, Sqoop, HBase, Solr, Kafka, Spring Boot
-   
-   🎯 Key Achievements:
-   • Migrated 5TB+ data using Sqoop-based ETL pipelines
-   • Developed Scala application for HBase and Solr data loading
-   • Built Spring Boot REST APIs serving 100+ customer care executives
-   • Query Performance: 60% faster queries vs traditional MySQL
-   • Optimized Solr facets reducing search time by 30%
-
-5️⃣ IoT Developer @ TCS (Sep 2015 - May 2018)
-   Role: Industrial IoT platform development and maintenance
-   
-   Tech Stack: Java, MQTT (Mosquitto), Kafka, Spark, HBase, AngularJS, D3.js
-   
-   🎯 Key Achievements:
-   • Built IoT data ingestion system for 100+ industrial devices
-   • Implemented MQTT broker with Eclipse Mosquitto
-   • Real-time analytics with Kafka and Spark
-   • Predictive analytics: Reduced equipment downtime by 35%
-   • Developed monitoring dashboard with AngularJS and D3.js
-   • Created Device Management System (DMSS) for industrial IoT devices
-
-TECHNICAL SKILLS:
-- Programming Languages: Java, Python (Basic), JavaScript, Shell Scripts, SQL
-- Operating Systems: Mac, Linux
-- Databases: MySQL, PostgreSQL, Snowflake, HBase
-- Database Version Control: Liquibase
-- Code Version Control: Git, Bitbucket
-- Logging: Splunk, AWS CloudWatch
-- Monitoring: Dynatrace, Datadog
-- Servers: Tomcat, WildFly
-- Build Tools: Maven
-- DevOps: Docker, Kubernetes, Jenkins
-- Frameworks: Spring Boot, Hibernate
-- IoT Queueing: eMqttd, Mosquitto, PAHO
-- Code Analysis: SonarQube, Checkstyle, PMD, SpotBugs
-- Tracking: JIRA
-- Cloud: AWS Services, Snowflake, Client
-- Native Clouds
-- BigData: Kafka, Hbase, Sqoop, Solr, Spark, Airflow
-
-CORE COMPETENCIES:
-- Application Development
-- Cloud Architecture
-- Data Integration Strategies
-- Big Data/ Data Migration
-- IoT Implementation
-- Connected Smart Systems
-- Agile/ Waterfall Methodologies
-- Technical Roadmapping
-- Requirement Gathering & Analysis
-- Real-Time Data Processing/ Streaming
-- Predictive Analytics
-- Production Support
-- Stakeholder Engagement
-- Team Leadership & Mentoring
-
-🚀 MAJOR PROJECTS:
-
-1️⃣ Databridge - Enterprise Data Integration Platform (Dentsu, Jun 2021–Dec 2025)
-   Industry: AdTech | Scale: Enterprise-level identity solution
-   
-   📊 Project Scope:
-   • Core component of Dentsu's Merkury identity resolution platform
-   • Manages entire data ingestion and publishing pipeline
-   • Multi-destination support: SFTP, S3, API Endpoints, Snowflake Direct Connect
-   • Processes 100TB+ data daily with 99.9% accuracy
-   
-   💡 Impact:
-   • 90% reduction in failed publish waiting time through automation
-   • Automated workflow rerun system via REST APIs
-   • Enhanced security with private key authentication
-   
-   🛠️ Tech Stack: Java 17, Spring Boot 3, Snowflake, AWS (SWF, API Gateway, Lambda, 
-                  S3, SQS, SNS), Python, Airflow, Datadog
-
-2️⃣ Retail Cloud Migration - Azure Transformation (Cognizant)
-   Industry: Retail Finance | Migration Scale: Enterprise systems
-   
-   📊 Project Scope:
-   • Migrated mainframe financial systems to Microsoft Azure
-   • Zero-downtime migration strategy with cost optimization
-   • Database versioning with Liquibase
-   
-   💡 Impact:
-   • 99.9% uptime maintained during migration
-   • 10% operational efficiency increase
-   • Significant cloud cost reduction
-   • 50% reduction in post-deployment issues through automated testing
-   
-   🛠️ Tech Stack: Azure, Spring Boot, Spring Batch, MySQL, Liquibase, Docker
-
-3️⃣ Big Data Migration - Insurance Platform (Cognizant)
-   Industry: Insurance | Data Scale: 5TB+ migration
-   
-   📊 Project Scope:
-   • Migrated legacy MySQL data (5TB+) to Hadoop ecosystem
-   • Built Scala applications for data loading into HBase and Solr
-   • REST API platform for 100+ customer service agents
-   
-   💡 Impact:
-   • 60% faster query performance vs traditional MySQL
-   • 30% reduction in search time through Solr optimization
-   • Enabled real-time data access for customer service operations
-   
-   🛠️ Tech Stack: Scala, Hadoop, Sqoop, HBase, Solr, Kafka, Spring Boot, Spark
-
-4️⃣ IoT Analytics Platform - Industrial Monitoring (TCS)
-   Industry: Industrial IoT | Device Scale: 10,000+ connected devices
-   
-   📊 Project Scope:
-   • Real-time data processing from industrial IoT sensors
-   • MQTT-based device communication infrastructure
-   • Predictive maintenance and analytics engine
-   • Real-time monitoring dashboard
-   
-   💡 Impact:
-   • 35% reduction in equipment downtime through predictive analytics
-   • Real-time alerting and notification system
-   • Device Management System (DMSS) for industrial deployments
-   • 50% processing time reduction using in-memory tables
-   
-   🛠️ Tech Stack: Java, MQTT (Mosquitto), Kafka, Spark, HBase, Cassandra, 
-                  AngularJS, D3.js
-
-CERTIFICATIONS:
-- SnowPro Associate Platform Certified
-- Oracle Certified Java Programmer SE6
-- Awarded Interviewer pro certification from Dentsu Global Services
-- ITIL Foundation Certified Professional
-- Generative AI Fundamentals
-- AI in the Workplace Specialization
-- Artificial Intelligence and Machine Learning
-
-ACHIEVEMENTS:
-- Reduced system latency by 40% using Redis
-- Processed 5TB+ data with 99.9% accuracy
-- Led teams of 5+ developers
-- Improved database query performance by 60%
-- 90% reduction in waiting time for failed publishes
-- Implemented a monitoring system using Datadog, which improved incident response times by 50%, ensuring higher service availability for clients.
-- Drove trainings for new hires focused on AWS and Snowflake best practices, achieving a 25% reduction in onboarding time and increased team productivity.
-- Implemented a 100% automated workflow rerun process through REST API endpoints accessible to the Operations team.
-- Spearheaded integration of automated scripts for copying artifacts within S3 in deployment pipelines using Jenkins, reducing deployment times by 20% and minimizing human error during releases.
-- Successfully migrated 2 projects to cloud platforms, resulting in a 10% increase in operational efficiency and significant cost reduction.
-- Developed automated testing suites that improved application reliability, reducing post-deployment issues by 50%.
-- Optimized Apache Solr facets, reducing search time by 30%.
-- Introduced in-memory tables instead of querying HBase for Spark processing, reducing processing time by 50% and receiving formal appreciation.
-
-📋 RESPONSE GUIDELINES:
-
-STRUCTURE YOUR RESPONSES:
-1. Start with a direct answer to the question
-2. Provide 2-3 specific examples or details
-3. Include relevant metrics or achievements when applicable
-4. End with a helpful next step or call-to-action
-
-TONE & STYLE:
-✅ DO:
-• Be enthusiastic about Ramji's accomplishments
-• Use "Ramji" or "he" (not "I" - you're his assistant, not him)
-• Highlight quantifiable achievements (percentages, time saved, scale)
-• Match technical depth to the question's complexity
-• Use emojis strategically for visual breaks (max 3-4 per response)
-
-❌ DON'T:
-• Pretend to be Ramji speaking directly
-• Make up information not in this prompt
-• Use overly salesy or promotional language
-• Ignore the context of previous messages
-• Exceed 300 words per response
-
-SPECIFIC SCENARIOS:
-
-🎯 Technical Questions:
-• Mention specific technologies and versions
-• Include project context where he used them
-• Share measurable outcomes (performance improvements, scale)
-• Example: "Ramji has deep Java expertise, working with versions 8 through 17..."
-
-💼 Career/Experience Questions:
-• Highlight deep hands-on technical ownership and progression
-• Emphasise enterprise application development, backend systems, cloud-native engineering
-• Include team collaboration and cross-functional work
-• Example: "Over his ${EXPERIENCE_YEARS}, Ramji has consistently deepened his engineering craft — from IoT systems at TCS to enterprise AdTech at Dentsu to banking platforms at Concentrix Catalyst..."
-
-🚀 Project Questions:
-• Describe business impact and scale
-• Mention technologies and architecture
-• Share metrics (data volume, users, performance gains)
-• Example: "In the Databridge project, Ramji built a system processing 100TB+ daily..."
-
-🏆 Skills/Expertise Questions:
-• Categorize by domain (Backend, Cloud, Big Data, etc.)
-• Mention proficiency level and years of experience
-• Give real project examples
-• Example: "Ramji's cloud expertise centers on AWS and Azure, where he's..."
-
-💬 Contact/Hiring Questions:
-• Encourage using the contact form on this website
-• Mention LinkedIn for professional networking: ${LINKEDIN_PROFILE}
-• Note his location (Coimbatore, India) and current role
-• Example: "Interested in connecting with Ramji? The easiest way is..."
-
-❓ Unknown/Unclear Questions:
-• Be honest about limitations
-• Suggest checking his LinkedIn profile or contact form
-• Offer to answer related questions you DO know
-• Example: "I don't have that specific information, but I can tell you about..."
-
-🌟 CONVERSATION STARTERS (if user is vague):
-• "Are you interested in Ramji's technical skills, project experience, or career journey?"
-• "I can tell you about his work in AdTech, Big Data, IoT, or Cloud architecture - what interests you?"
-• "Would you like to know about specific technologies he works with, or his leadership experience?"
-
-LINKEDIN & CONTACT ROUTING:
-• For detailed resume/CV → "Check his LinkedIn: ${LINKEDIN_PROFILE}"
-• For professional networking → "Connect on LinkedIn: ${LINKEDIN_PROFILE}"
-• For job opportunities → "Use the contact form below or reach out via LinkedIn"
-• For endorsements/recommendations → "Visit his LinkedIn profile"
-• For technical discussions → "Feel free to ask me here, or reach out through the contact form"
-
-KEEP IT CONVERSATIONAL:
-• Ask follow-up questions when appropriate
-• Reference previous messages in the conversation
-• Use transitions like "Building on that..." or "Speaking of..."
-• End with engagement: "Would you like to know more about..." or "Any other questions about..."
-
-Remember: You're Ramji's helpful AI assistant, not Ramji himself. Represent him professionally while being approachable and informative!`;
+async function fetchWithTimeout(url, options = {}, timeoutMs = AI_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
 
 // Primary AI function using Groq (free tier: 14,400 requests/day, super fast!)
 async function callGroqAPI(messages) {
   console.log('[GROQ] 🚀 Attempting Groq API call...');
-  console.log('[GROQ] API Key present:', !!GROQ_API_KEY);
-  console.log('[GROQ] API Key length:', GROQ_API_KEY?.length || 0);
 
   try {
     // Groq uses OpenAI-compatible API format - super easy!
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const response = await fetchWithTimeout('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${GROQ_API_KEY}`,
@@ -365,7 +93,7 @@ async function callGroqAPI(messages) {
         temperature: 0.7,
         max_tokens: 300
       })
-    });
+    }, AI_TIMEOUT_MS);
 
     console.log('[GROQ] Response status:', response.status, response.statusText);
 
@@ -392,10 +120,9 @@ async function callGroqAPI(messages) {
 // Fallback AI function using OpenAI (backup when Groq fails)
 async function callOpenAI(messages) {
   console.log('[OPENAI] 🔄 Attempting OpenAI API call as fallback...');
-  console.log('[OPENAI] API Key present:', !!OPENAI_API_KEY);
 
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetchWithTimeout('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -409,7 +136,7 @@ async function callOpenAI(messages) {
         presence_penalty: 0.6,
         frequency_penalty: 0.3
       })
-    });
+    }, AI_TIMEOUT_MS);
 
     console.log('[OPENAI] Response status:', response.status, response.statusText);
 
@@ -479,27 +206,68 @@ function detectGeolocation(ip) {
 // Helper: Simple in-memory rate limiter by IP (for demo purposes)
 const ipRequestMap = new Map();
 const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute window
-const RATE_LIMIT_MAX_REQUESTS = 20; // Max 20 requests per minute per IP
+const RATE_LIMIT_MAX_REQUESTS = 25; // max requests/minute per IP
+const RATE_LIMIT_BURST_WINDOW_MS = 10000; // 10-second window
+const RATE_LIMIT_BURST_MAX_REQUESTS = 8; // max burst requests/10s per IP
+const RATE_LIMIT_COOLDOWN_MS = 2 * 60 * 1000; // 2-minute cooldown on repeated abuse
 
 function checkRateLimit(ip) {
   const now = Date.now();
-  const ipData = ipRequestMap.get(ip) || { requests: [], blocked: false };
+  const ipData = ipRequestMap.get(ip) || { requests: [], burst: [], blockedUntil: 0 };
+
+  if (ipData.blockedUntil > now) {
+    return {
+      limited: true,
+      reason: 'cooldown',
+      count: ipData.requests.length,
+      limit: RATE_LIMIT_MAX_REQUESTS,
+      retryAfter: Math.ceil((ipData.blockedUntil - now) / 1000)
+    };
+  }
 
   // Clean old requests outside the window
   ipData.requests = ipData.requests.filter(time => now - time < RATE_LIMIT_WINDOW_MS);
+  ipData.burst = ipData.burst.filter(time => now - time < RATE_LIMIT_BURST_WINDOW_MS);
 
-  // Check if rate limited
+  // Burst limiter
+  if (ipData.burst.length >= RATE_LIMIT_BURST_MAX_REQUESTS) {
+    ipData.blockedUntil = now + RATE_LIMIT_COOLDOWN_MS;
+    ipRequestMap.set(ip, ipData);
+    return {
+      limited: true,
+      reason: 'burst',
+      count: ipData.burst.length,
+      limit: RATE_LIMIT_BURST_MAX_REQUESTS,
+      retryAfter: Math.ceil(RATE_LIMIT_COOLDOWN_MS / 1000)
+    };
+  }
+
+  // Minute limiter
   if (ipData.requests.length >= RATE_LIMIT_MAX_REQUESTS) {
-    ipData.blocked = true;
-    return { limited: true, count: ipData.requests.length, limit: RATE_LIMIT_MAX_REQUESTS };
+    return {
+      limited: true,
+      reason: 'window',
+      count: ipData.requests.length,
+      limit: RATE_LIMIT_MAX_REQUESTS,
+      retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000)
+    };
   }
 
   // Add current request
   ipData.requests.push(now);
-  ipData.blocked = false;
+  ipData.burst.push(now);
+  ipData.blockedUntil = 0;
   ipRequestMap.set(ip, ipData);
 
-  return { limited: false, count: ipData.requests.length, limit: RATE_LIMIT_MAX_REQUESTS };
+  return {
+    limited: false,
+    reason: 'ok',
+    count: ipData.requests.length,
+    limit: RATE_LIMIT_MAX_REQUESTS,
+    burstCount: ipData.burst.length,
+    burstLimit: RATE_LIMIT_BURST_MAX_REQUESTS,
+    retryAfter: 0
+  };
 }
 
 // Helper: Calculate request body size
@@ -513,6 +281,29 @@ function getRequestBodySize(req) {
     return `~${size} bytes (estimated)`;
   }
   return 'Unknown';
+}
+
+function normalizeMessageForCache(message) {
+  return message.toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+function getCachedFaqResponse(message) {
+  const key = normalizeMessageForCache(message);
+  const entry = faqResponseCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.cachedAt > FAQ_CACHE_TTL_MS) {
+    faqResponseCache.delete(key);
+    return null;
+  }
+  return entry;
+}
+
+function setCachedFaqResponse(message, payload) {
+  const key = normalizeMessageForCache(message);
+  faqResponseCache.set(key, {
+    ...payload,
+    cachedAt: Date.now()
+  });
 }
 
 // Generate unique request ID for tracking
@@ -543,36 +334,35 @@ export default async function handler(req, res) {
   // Check rate limiting
   const rateLimitCheck = checkRateLimit(userIP);
 
-  console.log(`[API] ✅ Incoming ${req.method} request [ID: ${requestId}]`, {
-    requestId: requestId,
-    origin: req.headers.origin || 'unknown',
-    userIP: userIP,
-    userAgent: userAgent,
+  console.log(`[API] ✅ Incoming ${req.method} [${requestId}]`, {
+    requestId,
+    userIP,
     browser: browserInfo.browser,
     os: browserInfo.os,
     device: browserInfo.device,
-    geolocation: geolocation,
-    referer: referer,
-    host: host,
-    userId: userId,
     requestBodySize: bodySize,
     rateLimit: {
-      isLimited: rateLimitCheck.limited,
-      requestCount: rateLimitCheck.count,
-      limit: rateLimitCheck.limit,
-      windowMs: RATE_LIMIT_WINDOW_MS
-    },
-    timestamp: new Date().toISOString()
+      limited: rateLimitCheck.limited,
+      reason: rateLimitCheck.reason,
+      count: rateLimitCheck.count,
+      limit: rateLimitCheck.limit
+    }
   });
 
   // Block if rate limited
   if (rateLimitCheck.limited) {
-    console.warn(`[API] ⚠️ RATE LIMITED - IP: ${userIP}, RequestID: ${requestId}, Requests in window: ${rateLimitCheck.count}`);
+    console.warn(`[API] ⚠️ RATE LIMITED [${requestId}]`, {
+      userIP,
+      reason: rateLimitCheck.reason,
+      count: rateLimitCheck.count,
+      limit: rateLimitCheck.limit,
+      retryAfter: rateLimitCheck.retryAfter
+    });
     return res.status(429).json({
       error: 'Too many requests',
-      message: `Rate limit exceeded. Max ${RATE_LIMIT_MAX_REQUESTS} requests per minute.`,
-      retryAfter: Math.ceil(RATE_LIMIT_WINDOW_MS / 1000),
-      requestId: requestId
+      message: `Rate limit exceeded (${rateLimitCheck.reason}).`,
+      retryAfter: rateLimitCheck.retryAfter,
+      requestId
     });
   }
 
@@ -609,21 +399,12 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Message is required', requestId: requestId });
     }
 
-    // Log the actual user query
-    console.log(`[API] 📝 User Query Received [ID: ${requestId}]`, {
-      requestId: requestId,
-      userIP: userIP,
-      userId: userId,
-      message: message.trim(),
+    console.log(`[API] 📝 Query received [${requestId}]`, {
+      requestId,
+      userIP,
+      userId,
       messageLength: message.length,
-      conversationHistoryLength: conversationHistory.length,
-      conversationHistory: conversationHistory.map((msg, idx) => ({
-        index: idx,
-        role: msg.role,
-        contentLength: msg.content?.length || 0,
-        contentPreview: msg.content?.substring(0, 100) + (msg.content?.length > 100 ? '...' : '')
-      })),
-      timestamp: new Date().toISOString()
+      conversationHistoryLength: conversationHistory.length
     });
 
     // Limit message length
@@ -643,7 +424,15 @@ export default async function handler(req, res) {
         error: 'Service temporarily unavailable',
         fallback: true,
         reply: "I'm currently in offline mode. Please try again later or use the contact form below.",
-        requestId: requestId
+        requestId: requestId,
+        provider: 'Local Fallback',
+        providerMeta: {
+          primary: 'Groq',
+          active: 'Local Fallback',
+          groqStatus: 'not_configured',
+          groqFailure: null,
+          openaiUsed: false
+        }
       });
     }
 
@@ -651,6 +440,29 @@ export default async function handler(req, res) {
       groq: !!GROQ_API_KEY,
       openai: !!OPENAI_API_KEY
     });
+
+    // Cache only straightforward FAQ-style queries (no prior conversation context)
+    const cacheEligible = conversationHistory.length === 0 && message.trim().length <= 180;
+    if (cacheEligible) {
+      const cached = getCachedFaqResponse(message);
+      if (cached) {
+        console.log(`[API] ⚡ Cache hit [${requestId}]`, { provider: cached.provider });
+        return res.status(200).json({
+          requestId,
+          reply: cached.reply,
+          tokensUsed: 0,
+          provider: 'Cache',
+          providerMeta: {
+            primary: 'Groq',
+            active: 'Cache',
+            cacheSource: cached.provider,
+            groqStatus: 'not_attempted',
+            groqFailure: null,
+            openaiUsed: cached.provider === 'OpenAI'
+          }
+        });
+      }
+    }
 
     // Build conversation messages
     const messages = [
@@ -671,26 +483,27 @@ export default async function handler(req, res) {
     let reply;
     let tokensUsed = 0;
     let provider = 'Unknown';
+    let groqStatus = GROQ_API_KEY ? 'pending' : 'not_configured';
+    let groqFailure = '';
 
     // PRIORITY 1: Try Groq first (FREE, fast, 14,400 requests/day)
     if (GROQ_API_KEY) {
       try {
         console.log('[API] 🚀 Attempting Groq (Primary)...');
-        console.log('[API] 🔑 Groq API Key length:', GROQ_API_KEY?.length || 0);
-        console.log('[API] 🔑 Groq API Key prefix:', GROQ_API_KEY?.substring(0, 10) + '...');
         reply = await callGroqAPI(messages);
         provider = 'Groq';
+        groqStatus = 'success';
         console.log('[API] ✅ Groq success!');
       } catch (groqError) {
         console.error('[API] ❌ Groq failed:', groqError.message);
         console.error('[API] 🔍 Groq error stack:', groqError.stack);
+        groqStatus = 'failed';
+        groqFailure = groqError.message;
 
         // PRIORITY 2: Try OpenAI as fallback
         if (OPENAI_API_KEY) {
           try {
             console.log('[API] 🔄 Groq failed, trying OpenAI (Secondary)...');
-            console.log('[API] 🔑 OpenAI API Key length:', OPENAI_API_KEY?.length || 0);
-            console.log('[API] 🔑 OpenAI API Key prefix:', OPENAI_API_KEY?.substring(0, 10) + '...');
             const openaiResult = await callOpenAI(messages);
             reply = openaiResult.reply;
             tokensUsed = openaiResult.tokensUsed;
@@ -710,7 +523,6 @@ export default async function handler(req, res) {
     else if (OPENAI_API_KEY) {
       try {
         console.log('[API] 🔄 No Groq key, trying OpenAI directly...');
-        console.log('[API] 🔑 OpenAI API Key length:', OPENAI_API_KEY?.length || 0);
         const openaiResult = await callOpenAI(messages);
         reply = openaiResult.reply;
         tokensUsed = openaiResult.tokensUsed;
@@ -739,11 +551,25 @@ export default async function handler(req, res) {
         timestamp: new Date().toISOString()
       });
 
+      if (cacheEligible) {
+        setCachedFaqResponse(message, {
+          reply,
+          provider
+        });
+      }
+
       return res.status(200).json({
         requestId: requestId,
         reply: reply,
         tokensUsed: tokensUsed,
-        provider: provider
+        provider: provider,
+        providerMeta: {
+          primary: 'Groq',
+          active: provider,
+          groqStatus: groqStatus,
+          groqFailure: groqFailure || null,
+          openaiUsed: provider === 'OpenAI'
+        }
       });
     }
 
@@ -769,7 +595,15 @@ export default async function handler(req, res) {
       error: 'Failed to generate response',
       message: error.message,
       fallback: true,
-      reply: "I'm having trouble connecting right now. Please try again in a moment, or use the contact form below to reach Ramji directly."
+      reply: "I'm having trouble connecting right now. Please try again in a moment, or use the contact form below to reach Ramji directly.",
+      provider: 'Local Fallback',
+      providerMeta: {
+        primary: 'Groq',
+        active: 'Local Fallback',
+        groqStatus: groqStatus,
+        groqFailure: groqFailure || null,
+        openaiUsed: false
+      }
     });
   }
 }

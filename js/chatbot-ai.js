@@ -38,9 +38,22 @@ class AIChatbot {
         this.isProcessing = false;
     }
 
+    async fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+        try {
+            return await fetch(url, {
+                ...options,
+                signal: controller.signal
+            });
+        } finally {
+            clearTimeout(timeoutId);
+        }
+    }
+
     async sendMessage(userMessage) {
         if (this.isProcessing) {
-            return "⏳ Please wait for the current response...";
+            return { text: "⏳ Please wait for the current response..." };
         }
 
         try {
@@ -61,14 +74,13 @@ class AIChatbot {
 
             // Call the serverless API
             const startTime = Date.now();
-            const response = await fetch(this.apiEndpoint, {
+            const response = await this.fetchWithTimeout(this.apiEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(requestBody),
-                timeout: 15000 // 15 second timeout
-            });
+                body: JSON.stringify(requestBody)
+            }, 15000);
 
             const elapsed = Date.now() - startTime;
             console.log(`⏱️ [CHATBOT] API Response Time: ${elapsed}ms`);
@@ -94,13 +106,19 @@ class AIChatbot {
                     console.log('🔄 [CHATBOT] API suggests fallback - using intelligent local response');
                     this.isProcessing = false;
                     // Use intelligent local fallback instead of generic server message
-                    return this.getFallbackResponse(userMessage);
+                    return {
+                        text: this.getFallbackResponse(userMessage),
+                        sourceLine: this.getProviderSourceLine(errorData.provider, errorData.providerMeta)
+                    };
                 }
 
                 // Use fallback for any API error
                 console.log('🔄 [CHATBOT] Using local fallback response due to API error');
                 this.isProcessing = false;
-                return this.getFallbackResponse(userMessage);
+                return {
+                    text: this.getFallbackResponse(userMessage),
+                    sourceLine: this.getProviderSourceLine('Local Fallback')
+                };
             }
 
             // Parse successful response
@@ -131,7 +149,10 @@ class AIChatbot {
 
             this.isProcessing = false;
             console.log('✨ [CHATBOT] Successfully returning AI response');
-            return data.reply;
+            return {
+                text: data.reply,
+                sourceLine: this.getProviderSourceLine(data.provider, data.providerMeta)
+            };
 
         } catch (error) {
             console.error('💥 [CHATBOT] CRITICAL ERROR:', error);
@@ -147,6 +168,8 @@ class AIChatbot {
                 console.error('   3. Server is down');
                 console.error('   4. No internet connection');
                 console.error('   ℹ️  Check Network tab in DevTools for more details');
+            } else if (error.name === 'AbortError') {
+                console.error('⏱️ [CHATBOT] Request timed out (AbortController timeout)');
             } else if (error.name === 'SyntaxError') {
                 console.error('📄 [CHATBOT] JSON Parse Error - API returned invalid JSON');
             } else if (error.message.includes('timeout')) {
@@ -155,8 +178,38 @@ class AIChatbot {
 
             this.isProcessing = false;
             console.log('🔄 [CHATBOT] Falling back to local rule-based response');
-            return this.getFallbackResponse(userMessage);
+            return {
+                text: this.getFallbackResponse(userMessage),
+                sourceLine: this.getProviderSourceLine('Local Fallback')
+            };
         }
+    }
+
+    getProviderSourceLine(provider, providerMeta = {}) {
+        const activeProvider = providerMeta.active || provider || 'Unknown';
+        if (activeProvider === 'Groq') {
+            return 'ℹ️ AI Source: Groq';
+        }
+        if (activeProvider === 'OpenAI') {
+            if (providerMeta.groqStatus === 'failed') {
+                return 'ℹ️ AI Source: OpenAI (Groq failed, fallback used)';
+            }
+            if (providerMeta.groqStatus === 'not_configured') {
+                return 'ℹ️ AI Source: OpenAI (Groq not configured)';
+            }
+            return 'ℹ️ AI Source: OpenAI';
+        }
+        if (activeProvider === 'Cache') {
+            const cacheSource = providerMeta.cacheSource || 'AI';
+            return `ℹ️ AI Source: Cache (from ${cacheSource})`;
+        }
+        if (activeProvider === 'Local Fallback') {
+            if (providerMeta.groqStatus === 'failed') {
+                return 'ℹ️ AI Source: Local fallback (Groq failed and provider unavailable)';
+            }
+            return 'ℹ️ AI Source: Local fallback';
+        }
+        return `ℹ️ AI Source: ${activeProvider}`;
     }
 
     // Fallback to rule-based responses if API is unavailable
@@ -229,31 +282,6 @@ document.addEventListener('DOMContentLoaded', function() {
         suggestionsContainer: !!suggestionsContainer
     });
 
-    // Test API connectivity on load
-    console.log('🔌 [CHATBOT] Testing API connectivity...');
-    fetch(chatbot.apiEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: 'test' })
-    })
-    .then(response => {
-        console.log('✅ [CHATBOT] API Connection Test Result:', response.status, response.statusText);
-        if (response.ok) {
-            console.log('🟢 [CHATBOT] API is reachable and responding');
-        } else {
-            console.warn('🟡 [CHATBOT] API is reachable but returned error status:', response.status);
-        }
-    })
-    .catch(error => {
-        console.error('🔴 [CHATBOT] API Connection Test FAILED:', error.message);
-        console.error('   This means AI responses will NOT work. Fallback mode will be used.');
-        console.error('   Possible reasons:');
-        console.error('   1. Vercel deployment not set up');
-        console.error('   2. Wrong API endpoint URL');
-        console.error('   3. CORS not configured');
-        console.error('   4. Server/function is down');
-    });
-
     // Note: Welcome message is already in index.html, no need to add it here
 
     // Toggle chat window
@@ -319,7 +347,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Hide typing indicator and show response
         hideTypingIndicator();
-        addMessage(response, 'bot');
+        const responseText = typeof response === 'string' ? response : response.text;
+        const sourceLine = typeof response === 'string' ? '' : (response.sourceLine || '');
+        addMessage(sourceLine ? `${responseText}\n\n${sourceLine}` : responseText, 'bot');
     }
 
     // Event listeners
