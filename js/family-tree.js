@@ -15,7 +15,7 @@
     const searchStatus = document.getElementById('searchStatus');
     const recenterBtn = document.getElementById('recenterBtn');
     const reorganiseBtn = document.getElementById('reorganiseBtn');
-    const layoutStorageKey = 'familyTree.layout.v2';
+    const layoutStorageKey = 'familyTree.layout.v3';
     const connectorTooltip = document.createElement('div');
 
     if (!viewport || !stage || !canvas || !linesSvg || !nodesLayer) return;
@@ -24,8 +24,6 @@
     const canvasHeight = data.canvas?.height || 3600;
     const cardHalfWidth = 94;
     const cardHalfHeight = 84;
-    const minGapX = 212;
-    const minGapY = 182;
     let linkRenderFrame = null;
     let searchFocusTimer = null;
     let activeLinkPath = null;
@@ -55,7 +53,6 @@
     const coupleMeta = buildCoupleMetadata();
     buildClusteredLayout();
     loadSavedLayout();
-    resolveCollisions(16);
     renderNodes();
     renderLinks();
     applyZoom(1, null, null, false);
@@ -181,6 +178,9 @@
         const sameDepthTypes = new Set(['spouse', 'sibling', 'twin', 'cousin']);
         const depths = new Map();
         depths.set(data.rootId, 0);
+        const personBaseX = new Map(data.people.map(person => [person.id, Number.isFinite(person.x) ? person.x : canvasWidth / 2]));
+        const spouseByPerson = buildSpouseIndex();
+        const parentIndex = buildParentIndex();
 
         for (let i = 0; i < 30; i += 1) {
             let changed = false;
@@ -212,7 +212,7 @@
         const minDepth = allDepths.length ? Math.min(...allDepths) : 0;
         const depthOffset = 1 - minDepth;
         const groupedByDepth = new Map();
-        const assignedX = new Map();
+        const assignedCenterX = new Map();
 
         const groupAnchors = new Map([
             ['sudharshan-side', canvasWidth / 2 - 920],
@@ -229,32 +229,58 @@
         });
 
         const sortedDepths = Array.from(groupedByDepth.keys()).sort((a, b) => a - b);
-        const verticalSpacing = 295;
+        const verticalSpacing = 300;
         const topMargin = 300;
-        const horizontalSpacing = 226;
-        const spouseSpacing = 142;
+        const singleWidth = 196;
+        const spouseSpacing = 152;
+        const coupleWidth = spouseSpacing + 118;
+        const unitGap = 72;
         const groupGap = 118;
 
         sortedDepths.forEach(depth => {
             const ids = groupedByDepth.get(depth);
-            const entries = ids.map((id, idx) => {
-                const groupId = groupByPerson.get(id) || 'core';
+            const units = buildDepthUnits(ids, spouseByPerson, personBaseX);
+            const entries = units.map((unit, idx) => {
+                const groupId = dominantGroupId(unit.ids);
                 const groupAnchor = groupAnchors.get(groupId) ?? (canvasWidth / 2);
-                const parentLinks = data.links.filter(link => link.type === 'parent' && link.to === id);
-                const parentAnchors = parentLinks
-                    .map(link => assignedX.get(link.from))
-                    .filter(value => Number.isFinite(value));
-                const fallback = data.people.find(person => person.id === id)?.x ?? (canvasWidth / 2) + idx * 12;
-                const anchor = parentAnchors.length
-                    ? (parentAnchors.reduce((sum, value) => sum + value, 0) / parentAnchors.length) * 0.67 + groupAnchor * 0.33
-                    : fallback * 0.25 + groupAnchor * 0.75;
-                return { id, groupId, groupAnchor, anchor };
+                const parentAnchors = [];
+                unit.ids.forEach(personId => {
+                    const parentIds = parentIndex.get(personId) || [];
+                    const anchors = parentIds
+                        .map(parentId => assignedCenterX.get(parentId))
+                        .filter(value => Number.isFinite(value));
+                    if (anchors.length === 2 && areSpousePair(parentIds[0], parentIds[1], spouseByPerson)) {
+                        parentAnchors.push((anchors[0] + anchors[1]) / 2);
+                    } else if (anchors.length > 0) {
+                        parentAnchors.push(anchors.reduce((sum, value) => sum + value, 0) / anchors.length);
+                    }
+                });
+
+                const fallback = unit.ids
+                    .map(id => personBaseX.get(id) ?? (canvasWidth / 2) + idx * 8)
+                    .reduce((sum, value) => sum + value, 0) / Math.max(unit.ids.length, 1);
+
+                const parentAnchor = parentAnchors.length
+                    ? parentAnchors.reduce((sum, value) => sum + value, 0) / parentAnchors.length
+                    : null;
+
+                const anchor = parentAnchor !== null
+                    ? parentAnchor * 0.82 + groupAnchor * 0.18
+                    : fallback * 0.24 + groupAnchor * 0.76;
+
+                return {
+                    unit,
+                    groupId,
+                    groupAnchor,
+                    anchor,
+                    width: unit.type === 'couple' ? coupleWidth : singleWidth
+                };
             });
 
             entries.sort((a, b) => {
                 if (a.groupAnchor !== b.groupAnchor) return a.groupAnchor - b.groupAnchor;
                 if (a.anchor !== b.anchor) return a.anchor - b.anchor;
-                return a.id.localeCompare(b.id);
+                return a.unit.key.localeCompare(b.unit.key);
             });
 
             const y = topMargin + depth * verticalSpacing;
@@ -273,19 +299,16 @@
                 const bucket = groupBuckets.get(groupId);
                 bucket.sort((a, b) => a.anchor - b.anchor);
                 const anchor = groupAnchors.get(groupId) ?? (canvasWidth / 2);
-                const centeredStart = anchor - ((bucket.length - 1) * horizontalSpacing / 2);
+                const totalWidth = bucket.reduce((sum, entry) => sum + entry.width, 0) + (Math.max(bucket.length - 1, 0) * unitGap);
+                const centeredStart = anchor - (totalWidth / 2);
                 const startX = Math.max(centeredStart, cursorX);
-                const bucketIds = bucket.map(entry => entry.id);
-                bucket.forEach((entry, idx) => {
-                    const x = startX + idx * horizontalSpacing;
-                    assignedX.set(entry.id, x);
-                    defaultLayout[entry.id] = { x, y };
+                let nextX = startX;
+                bucket.forEach(entry => {
+                    const centerX = nextX + (entry.width / 2);
+                    placeUnit(entry.unit, centerX, y, spouseSpacing, assignedCenterX);
+                    nextX += entry.width + unitGap;
                 });
-                enforceSpouseAdjacency(bucketIds, startX, startX + ((bucket.length - 1) * horizontalSpacing), horizontalSpacing, spouseSpacing);
-                bucketIds.forEach(id => {
-                    assignedX.set(id, defaultLayout[id].x);
-                });
-                cursorX = startX + bucket.length * horizontalSpacing + groupGap;
+                cursorX = nextX + groupGap;
             });
         });
 
@@ -300,82 +323,86 @@
         });
     }
 
-    function enforceSpouseAdjacency(ids, minX, maxX, standardGap, spouseGap) {
-        if (ids.length < 2) return;
-        const idSet = new Set(ids);
-
+    function buildSpouseIndex() {
+        const spouseByPerson = new Map();
         data.links.forEach(link => {
             if (link.type !== 'spouse') return;
-            if (!idSet.has(link.from) || !idSet.has(link.to)) return;
-            const from = defaultLayout[link.from];
-            const to = defaultLayout[link.to];
-            if (!from || !to) return;
-            const mid = (from.x + to.x) / 2;
-            from.x = mid - (spouseGap / 2);
-            to.x = mid + (spouseGap / 2);
+            spouseByPerson.set(link.from, link.to);
+            spouseByPerson.set(link.to, link.from);
         });
-
-        data.links.forEach(link => {
-            if (link.type !== 'spouse') return;
-            if (!idSet.has(link.from) || !idSet.has(link.to)) return;
-            const spouseA = defaultLayout[link.from];
-            const spouseB = defaultLayout[link.to];
-            if (!spouseA || !spouseB) return;
-
-            const leftEdge = Math.min(spouseA.x, spouseB.x);
-            const rightEdge = Math.max(spouseA.x, spouseB.x);
-
-            ids.forEach(otherId => {
-                if (otherId === link.from || otherId === link.to) return;
-                const other = defaultLayout[otherId];
-                if (!other) return;
-                if (other.x <= leftEdge || other.x >= rightEdge) return;
-
-                const distanceToLeft = Math.abs(other.x - leftEdge);
-                const distanceToRight = Math.abs(rightEdge - other.x);
-                if (distanceToLeft <= distanceToRight) {
-                    other.x = leftEdge - standardGap;
-                } else {
-                    other.x = rightEdge + standardGap;
-                }
-            });
-        });
-
-        for (let loop = 0; loop < 5; loop += 1) {
-            const sorted = ids
-                .map(id => ({ id, x: defaultLayout[id].x }))
-                .sort((a, b) => a.x - b.x);
-
-            for (let i = 1; i < sorted.length; i += 1) {
-                const leftId = sorted[i - 1].id;
-                const rightId = sorted[i].id;
-                const left = defaultLayout[leftId];
-                const right = defaultLayout[rightId];
-                const requiredGap = areSpouses(leftId, rightId) ? spouseGap : standardGap;
-                if ((right.x - left.x) < requiredGap) {
-                    right.x = left.x + requiredGap;
-                }
-            }
-        }
-
-        const values = ids.map(id => defaultLayout[id].x);
-        const currentMin = Math.min(...values);
-        const currentMax = Math.max(...values);
-        let shift = 0;
-        if (currentMin < minX) shift = minX - currentMin;
-        if (currentMax + shift > maxX) shift -= (currentMax + shift - maxX);
-        if (shift !== 0) {
-            ids.forEach(id => {
-                defaultLayout[id].x += shift;
-            });
-        }
+        return spouseByPerson;
     }
 
-    function areSpouses(idA, idB) {
-        return data.links.some(link =>
-            link.type === 'spouse' &&
-            ((link.from === idA && link.to === idB) || (link.from === idB && link.to === idA))
-        );
+    function buildParentIndex() {
+        const parentsByChild = new Map();
+        data.links.forEach(link => {
+            if (link.type !== 'parent') return;
+            if (!parentsByChild.has(link.to)) parentsByChild.set(link.to, []);
+            const list = parentsByChild.get(link.to);
+            if (!list.includes(link.from)) list.push(link.from);
+        });
+        return parentsByChild;
+    }
+
+    function buildDepthUnits(ids, spouseByPerson, personBaseX) {
+        const idSet = new Set(ids);
+        const visited = new Set();
+        const sortedIds = [...ids].sort((a, b) => (personBaseX.get(a) ?? 0) - (personBaseX.get(b) ?? 0));
+        const units = [];
+
+        sortedIds.forEach(id => {
+            if (visited.has(id)) return;
+            const spouseId = spouseByPerson.get(id);
+            if (spouseId && idSet.has(spouseId) && !visited.has(spouseId)) {
+                const ordered = [id, spouseId].sort((a, b) => (personBaseX.get(a) ?? 0) - (personBaseX.get(b) ?? 0));
+                visited.add(ordered[0]);
+                visited.add(ordered[1]);
+                units.push({
+                    type: 'couple',
+                    ids: ordered,
+                    key: getLinkKey(ordered[0], ordered[1])
+                });
+            } else {
+                visited.add(id);
+                units.push({
+                    type: 'single',
+                    ids: [id],
+                    key: id
+                });
+            }
+        });
+
+        return units;
+    }
+
+    function placeUnit(unit, centerX, y, spouseSpacing, assignedCenterX) {
+        if (unit.type === 'couple') {
+            const [leftId, rightId] = unit.ids;
+            const leftX = centerX - (spouseSpacing / 2);
+            const rightX = centerX + (spouseSpacing / 2);
+            defaultLayout[leftId] = { x: leftX, y };
+            defaultLayout[rightId] = { x: rightX, y };
+            assignedCenterX.set(leftId, leftX);
+            assignedCenterX.set(rightId, rightX);
+            return;
+        }
+        const personId = unit.ids[0];
+        defaultLayout[personId] = { x: centerX, y };
+        assignedCenterX.set(personId, centerX);
+    }
+
+    function dominantGroupId(ids) {
+        const counts = new Map();
+        ids.forEach(id => {
+            const groupId = groupByPerson.get(id) || 'core';
+            counts.set(groupId, (counts.get(groupId) || 0) + 1);
+        });
+        return [...counts.entries()]
+            .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] || 'core';
+    }
+
+    function areSpousePair(idA, idB, spouseByPerson) {
+        return spouseByPerson.get(idA) === idB || spouseByPerson.get(idB) === idA;
     }
 
     function normalizeLayoutBounds(layout) {
@@ -401,39 +428,6 @@
             point.x = ((point.x - minX) * scaleX) + minTargetX;
             point.y = ((point.y - minY) * scaleY) + minTargetY;
         });
-    }
-
-    function resolveCollisions(iterations = 12) {
-        const people = Array.from(peopleMap.values());
-        for (let loop = 0; loop < iterations; loop += 1) {
-            let changed = false;
-            for (let i = 0; i < people.length; i += 1) {
-                for (let j = i + 1; j < people.length; j += 1) {
-                    const a = people[i];
-                    const b = people[j];
-                    const dx = b.x - a.x;
-                    const dy = b.y - a.y;
-                    const overlapX = minGapX - Math.abs(dx);
-                    const overlapY = minGapY - Math.abs(dy);
-                    if (overlapX <= 0 || overlapY <= 0) continue;
-                    changed = true;
-                    if (overlapX < overlapY) {
-                        const pushX = overlapX / 2 + 1;
-                        const directionX = dx >= 0 ? 1 : -1;
-                        a.x -= pushX * directionX;
-                        b.x += pushX * directionX;
-                    } else {
-                        const pushY = overlapY / 2 + 1;
-                        const directionY = dy >= 0 ? 1 : -1;
-                        a.y -= pushY * directionY;
-                        b.y += pushY * directionY;
-                    }
-                    clampPosition(a);
-                    clampPosition(b);
-                }
-            }
-            if (!changed) break;
-        }
     }
 
     function renderNodes() {
