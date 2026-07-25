@@ -1,6 +1,8 @@
 const KV_REST_API_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL || '';
 const KV_REST_API_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN || '';
 const PAGEVIEW_KEY = 'portfolio:visitor:pageviews';
+const VISITOR_COUNT_KEY = 'portfolio:visitor:submissions';
+const VISITOR_TYPE_PREFIX = 'portfolio:visitor:type:';
 
 function json(res, status, body) {
     res.statusCode = status;
@@ -12,18 +14,6 @@ function setCorsHeaders(res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-}
-
-function getClientIp(req) {
-    const forwardedFor = req.headers['x-forwarded-for'];
-    if (typeof forwardedFor === 'string' && forwardedFor.length > 0) {
-        return forwardedFor.split(',')[0].trim();
-    }
-    const realIp = req.headers['x-real-ip'];
-    if (typeof realIp === 'string' && realIp.length > 0) {
-        return realIp.trim();
-    }
-    return 'unknown';
 }
 
 function getRequestBody(req) {
@@ -105,8 +95,6 @@ export default async function handler(req, res) {
         return;
     }
 
-    const ip = getClientIp(req);
-    const userAgent = req.headers['user-agent'] || body.userAgent || 'unknown';
     const eventType = String(body.type || 'pageview');
     const visitorType = String(body.visitorType || body.visitor_type || '');
     const timestamp = new Date().toISOString();
@@ -115,9 +103,6 @@ export default async function handler(req, res) {
         eventType,
         visitorType,
         path: body.path || body.page || '',
-        referrer: body.referrer || '',
-        ip,
-        userAgent,
         timestamp
     }));
 
@@ -130,6 +115,15 @@ export default async function handler(req, res) {
         }
     }
 
+    if (eventType === 'visitor') {
+        try {
+            await upstashIncr(VISITOR_COUNT_KEY);
+            if (visitorType) await upstashIncr(`${VISITOR_TYPE_PREFIX}${visitorType}`);
+        } catch (error) {
+            console.error('[VISITOR] visitor count update failed:', error.message);
+        }
+    }
+
     try {
         await upstashSet('portfolio:visitor:last', {
             eventType,
@@ -138,8 +132,6 @@ export default async function handler(req, res) {
             name: body.name || body.visitor_name || '',
             reason: body.reason || body.visitor_reason || '',
             note: body.note || body.visitor_note || '',
-            ip,
-            userAgent,
             timestamp
         });
     } catch (error) {

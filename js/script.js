@@ -325,9 +325,7 @@ function setupVisitorCapturePopup() {
     const submitBtn = document.getElementById('visitorPopupSubmit');
     const visitorTypeSelect = document.getElementById('visitorTypeSelect');
     const familyTreeNavItem = document.getElementById('familyTreeNavItem');
-    const pageUrlInput = document.getElementById('visitorPageUrl');
     const visitedAtInput = document.getElementById('visitorVisitedAt');
-    const userAgentInput = document.getElementById('visitorUserAgent');
     if (!overlay || !form || !closeBtn || !submitBtn || !visitorTypeSelect) return;
 
     const popupSeenKey = 'visitorPopup.seen';
@@ -386,9 +384,7 @@ function setupVisitorCapturePopup() {
         localStorage.setItem(visitorTypeKey, selectedVisitorType);
         updateFamilyTreeVisibility(selectedVisitorType);
 
-        if (pageUrlInput) pageUrlInput.value = window.location.href;
         if (visitedAtInput) visitedAtInput.value = new Date().toISOString();
-        if (userAgentInput) userAgentInput.value = navigator.userAgent;
 
         try {
             const response = await fetch(form.action, {
@@ -424,7 +420,9 @@ function setupVisitorCapturePopup() {
 
     function updateFamilyTreeVisibility(visitorType) {
         if (!familyTreeNavItem) return;
-        familyTreeNavItem.hidden = visitorType !== 'family';
+        const shouldShow = visitorType === 'family';
+        familyTreeNavItem.hidden = !shouldShow;
+        familyTreeNavItem.classList.toggle('nav-link-hidden', !shouldShow);
     }
 
     function getVisitorMetricsEndpoint() {
@@ -440,7 +438,6 @@ function setupVisitorCapturePopup() {
         await sendVisitorMetric({
             type: 'pageview',
             path: window.location.pathname,
-            referrer: document.referrer || '',
             visitorType: visitorTypeSelect.value || localStorage.getItem(visitorTypeKey) || ''
         });
     }
