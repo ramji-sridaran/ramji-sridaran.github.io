@@ -315,6 +315,151 @@ function showNotification(message, type = 'success') {
 }
 
 // ==========================================
+// VISITOR POPUP CAPTURE
+// ==========================================
+function setupVisitorCapturePopup() {
+    const overlay = document.getElementById('visitorPopupOverlay');
+    const form = document.getElementById('visitorCaptureForm');
+    const closeBtn = document.getElementById('visitorPopupClose');
+    const closeIconBtn = document.getElementById('visitorPopupCloseIcon');
+    const submitBtn = document.getElementById('visitorPopupSubmit');
+    const visitorTypeSelect = document.getElementById('visitorTypeSelect');
+    const familyTreeNavItem = document.getElementById('familyTreeNavItem');
+    const pageUrlInput = document.getElementById('visitorPageUrl');
+    const visitedAtInput = document.getElementById('visitorVisitedAt');
+    const userAgentInput = document.getElementById('visitorUserAgent');
+    if (!overlay || !form || !closeBtn || !submitBtn || !visitorTypeSelect) return;
+
+    const popupSeenKey = 'visitorPopup.seen';
+    const popupSubmittedKey = 'visitorPopup.submitted';
+    const visitorTypeKey = 'visitorPopup.visitorType';
+    const pageviewKey = 'visitorMetrics.pageview.sent';
+    const alreadySubmitted = localStorage.getItem(popupSubmittedKey) === 'true';
+    const alreadySeenInSession = sessionStorage.getItem(popupSeenKey) === 'true';
+    const savedVisitorType = localStorage.getItem(visitorTypeKey) || '';
+
+    if (savedVisitorType) {
+        visitorTypeSelect.value = savedVisitorType;
+        updateFamilyTreeVisibility(savedVisitorType);
+    } else {
+        updateFamilyTreeVisibility('');
+    }
+
+    trackVisitorMetricOnce();
+
+    if (!alreadySubmitted && !alreadySeenInSession) {
+        window.setTimeout(() => {
+            overlay.classList.add('show');
+            overlay.setAttribute('aria-hidden', 'false');
+            sessionStorage.setItem(popupSeenKey, 'true');
+        }, 1800);
+    }
+
+    const closePopup = () => {
+        overlay.classList.remove('show');
+        overlay.setAttribute('aria-hidden', 'true');
+    };
+
+    closeBtn.addEventListener('click', closePopup);
+    if (closeIconBtn) closeIconBtn.addEventListener('click', closePopup);
+    overlay.addEventListener('click', event => {
+        if (event.target === overlay) closePopup();
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && overlay.classList.contains('show')) {
+            closePopup();
+        }
+    });
+
+    visitorTypeSelect.addEventListener('change', () => {
+        updateFamilyTreeVisibility(visitorTypeSelect.value);
+        localStorage.setItem(visitorTypeKey, visitorTypeSelect.value);
+    });
+
+    form.addEventListener('submit', async event => {
+        event.preventDefault();
+        submitBtn.disabled = true;
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Sending...';
+
+        const selectedVisitorType = visitorTypeSelect.value;
+        localStorage.setItem(visitorTypeKey, selectedVisitorType);
+        updateFamilyTreeVisibility(selectedVisitorType);
+
+        if (pageUrlInput) pageUrlInput.value = window.location.href;
+        if (visitedAtInput) visitedAtInput.value = new Date().toISOString();
+        if (userAgentInput) userAgentInput.value = navigator.userAgent;
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (response.ok) {
+                localStorage.setItem(popupSubmittedKey, 'true');
+                await sendVisitorMetric({
+                    type: 'visitor',
+                    visitorType: selectedVisitorType,
+                    name: form.querySelector('[name="visitor_name"]')?.value || '',
+                    reason: form.querySelector('[name="visitor_reason"]')?.value || '',
+                    note: form.querySelector('[name="visitor_note"]')?.value || ''
+                });
+                showNotification('✅ Thanks! Your details were sent.', 'success');
+                form.reset();
+                if (savedVisitorType) visitorTypeSelect.value = savedVisitorType;
+                closePopup();
+            } else {
+                showNotification('⚠️ Could not send details. Please try again.', 'error');
+            }
+        } catch (error) {
+            console.error('Visitor popup submission error:', error);
+            showNotification('⚠️ Could not send details. Please try again.', 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    });
+
+    function updateFamilyTreeVisibility(visitorType) {
+        if (!familyTreeNavItem) return;
+        familyTreeNavItem.hidden = visitorType !== 'family';
+    }
+
+    function getVisitorMetricsEndpoint() {
+        const currentDomain = window.location.hostname;
+        if (currentDomain.includes('vercel.app')) return '/api/visitor';
+        if (currentDomain === 'localhost' || currentDomain === '127.0.0.1') return 'http://localhost:3000/api/visitor';
+        return 'https://ramji-sridaran.vercel.app/api/visitor';
+    }
+
+    async function trackVisitorMetricOnce() {
+        if (sessionStorage.getItem(pageviewKey) === 'true') return;
+        sessionStorage.setItem(pageviewKey, 'true');
+        await sendVisitorMetric({
+            type: 'pageview',
+            path: window.location.pathname,
+            referrer: document.referrer || '',
+            visitorType: visitorTypeSelect.value || localStorage.getItem(visitorTypeKey) || ''
+        });
+    }
+
+    async function sendVisitorMetric(payload) {
+        try {
+            await fetch(getVisitorMetricsEndpoint(), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(payload),
+                keepalive: true
+            });
+        } catch (error) {
+            console.warn('Visitor metric ping failed:', error);
+        }
+    }
+}
+
+// ==========================================
 // SCROLL ANIMATIONS
 // ==========================================
 const observerOptions = {
@@ -334,6 +479,8 @@ const observer = new IntersectionObserver((entries) => {
 document.querySelectorAll('.project-card, .skill-category, .stat-card, .timeline-item').forEach(el => {
     observer.observe(el);
 });
+
+document.addEventListener('DOMContentLoaded', setupVisitorCapturePopup);
 
 // ==========================================
 // SCROLL TO TOP BUTTON

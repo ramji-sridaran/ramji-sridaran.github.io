@@ -79,6 +79,176 @@
             clip: rect(1px, 1px, 1px, 1px);
             white-space: nowrap;
         }
+
+        .visitor-popup-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 12000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.64);
+            backdrop-filter: blur(4px);
+        }
+
+        .visitor-popup-overlay.show {
+            display: flex;
+        }
+
+        .visitor-popup {
+            position: relative;
+            width: min(520px, 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: #ffffff;
+            color: #1f2937;
+            box-shadow: 0 24px 58px rgba(0, 0, 0, 0.28);
+            padding: 20px;
+        }
+
+        .visitor-popup h3 {
+            margin: 0 0 8px;
+            font-size: 1.35rem;
+            color: #1f2937;
+            background: none;
+            -webkit-text-fill-color: currentColor;
+        }
+
+        .visitor-popup-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 34px;
+            height: 34px;
+            border: 0;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: #334155;
+            font-size: 1.3rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .visitor-popup-close:hover {
+            background: #cbd5e1;
+        }
+
+        .visitor-popup p {
+            margin: 0 0 16px;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        .visitor-popup-grid {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .visitor-popup-grid select {
+            grid-column: 1 / -1;
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font: inherit;
+            color: #0f172a;
+            background: #f8fafc;
+        }
+
+        .visitor-popup-grid .full {
+            grid-column: 1 / -1;
+        }
+
+        .visitor-popup input,
+        .visitor-popup textarea {
+            width: 100%;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font: inherit;
+            color: #0f172a;
+            background: #f8fafc;
+        }
+
+        .visitor-popup textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .visitor-popup-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .visitor-popup-btn {
+            border: 0;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .visitor-popup-btn.secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .visitor-popup-btn.primary {
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+            color: #ffffff;
+        }
+
+        .visitor-popup-btn:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+
+        body[data-theme="dark"] .visitor-popup,
+        body[data-theme="bw"] .visitor-popup {
+            background: #111827;
+            color: #e5e7eb;
+            border-color: rgba(148, 163, 184, 0.28);
+        }
+
+        body[data-theme="dark"] .visitor-popup h3,
+        body[data-theme="bw"] .visitor-popup h3 {
+            color: #e5e7eb;
+        }
+
+        body[data-theme="dark"] .visitor-popup p,
+        body[data-theme="bw"] .visitor-popup p {
+            color: #94a3b8;
+        }
+
+        body[data-theme="dark"] .visitor-popup input,
+        body[data-theme="dark"] .visitor-popup select,
+        body[data-theme="dark"] .visitor-popup textarea,
+        body[data-theme="bw"] .visitor-popup input,
+        body[data-theme="bw"] .visitor-popup select,
+        body[data-theme="bw"] .visitor-popup textarea {
+            background: #1f2937;
+            color: #e5e7eb;
+            border-color: #374151;
+        }
+
+        body[data-theme="dark"] .visitor-popup-close,
+        body[data-theme="bw"] .visitor-popup-close {
+            background: #374151;
+            color: #e5e7eb;
+        }
+
+        body[data-theme="dark"] .visitor-popup-close:hover,
+        body[data-theme="bw"] .visitor-popup-close:hover {
+            background: #4b5563;
+        }
+
+        .nav-link-hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -95,7 +265,7 @@
             <li><a href="#certifications" class="nav-link">Certifications</a></li>
             <li><a href="#projects" class="nav-link">Projects</a></li>
             <li><a href="#experience" class="nav-link">Experience</a></li>
-            <li><a href="family-tree.html" class="nav-link">Family Tree</a></li>
+            <li id="familyTreeNavItem" class="nav-link-hidden"><a href="family-tree.html" class="nav-link">Family Tree</a></li>
             <li><a href="#contact" class="nav-link">Contact</a></li>
         </ul>
         <div class="toggle-buttons">
@@ -118,6 +288,39 @@
 </nav>
 
 <!-- Hero Section -->
+<div id="visitorPopupOverlay" class="visitor-popup-overlay" aria-hidden="true">
+    <div class="visitor-popup" role="dialog" aria-modal="true" aria-labelledby="visitorPopupTitle">
+        <button type="button" class="visitor-popup-close" id="visitorPopupCloseIcon" aria-label="Close visitor popup">×</button>
+        <h3 id="visitorPopupTitle">Leave a tiny hello 👋</h3>
+        <p>No detective work here — I won’t chase you down. It’s just nice to know you stopped by.</p>
+        <form id="visitorCaptureForm" action="https://api.web3forms.com/submit" method="POST">
+            <input type="hidden" name="access_key" value="c71935f4-bf9a-4171-98ad-d29fe292cdaf">
+            <input type="hidden" name="subject" value="New Portfolio Visitor">
+            <input type="hidden" name="source" value="Portfolio Visitor Popup">
+            <input type="hidden" name="page_url" id="visitorPageUrl">
+            <input type="hidden" name="visited_at" id="visitorVisitedAt">
+            <input type="hidden" name="user_agent" id="visitorUserAgent">
+            <div class="visitor-popup-grid">
+                <input type="text" name="visitor_name" placeholder="Your name" required>
+                <input type="text" name="visitor_reason" placeholder="Reason for visit" required>
+                <select name="visitor_type" id="visitorTypeSelect" required>
+                    <option value="" selected disabled>I’m here as...</option>
+                    <option value="family">Family</option>
+                    <option value="recruiter">Recruiter</option>
+                    <option value="friend">Friend</option>
+                    <option value="colleague">Colleague</option>
+                </select>
+                <input type="email" name="visitor_email" placeholder="Email (optional)">
+                <textarea class="full" name="visitor_note" placeholder="Anything else you’d like to share? (optional)"></textarea>
+            </div>
+            <div class="visitor-popup-actions">
+                <button type="button" class="visitor-popup-btn secondary" id="visitorPopupClose">Maybe later</button>
+                <button type="submit" class="visitor-popup-btn primary" id="visitorPopupSubmit">Send</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <section id="home" class="hero">
     <div class="hero-background-animation">
         <div class="gradient-orb orb-1"></div>
