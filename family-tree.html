@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ramji Family Tree</title>
+    <meta name="description" content="Interactive family tree for Ramji Sridaran">
+    <link rel="icon" type="image/x-icon" href="Resources/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/family-tree.css">
+</head>
+<body>
+<header class="tree-header">
+    <a class="back-link" href="index.html">← Back to Portfolio</a>
+    <h1>Family Tree</h1>
+    <div class="tree-actions">
+        <button id="treeThemeToggle" type="button" title="Switch to Light Theme">🌙 Dark</button>
+        <button id="zoomOutBtn" type="button" title="Zoom out">−</button>
+        <button id="zoomInBtn" type="button" title="Zoom in">+</button>
+        <input id="searchInput" type="text" placeholder="Search by name or relation" aria-label="Search family member">
+        <button id="searchBtn" type="button">Search</button>
+        <button id="reorganiseBtn" type="button">Reorganise</button>
+        <button id="recenterBtn" type="button">Recenter</button>
+    </div>
+</header>
+
+<main class="tree-page">
+    <p id="searchStatus" class="search-status" aria-live="polite"></p>
+    <section id="treeViewport" class="tree-viewport" aria-label="Interactive family tree">
+        <div id="treeStage" class="tree-stage">
+            <div id="treeCanvas" class="tree-canvas">
+                <svg id="treeLines" class="tree-lines" aria-hidden="true"></svg>
+                <div id="treeNodes" class="tree-nodes"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="js/family-tree-data.js"></script>
+<script src="js/family-tree.js"></script>
+</body>
+</html>
