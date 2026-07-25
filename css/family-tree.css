@@ -156,6 +156,43 @@ body {
     font-size: 0.9rem;
 }
 
+.tree-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin: 0 0 10px;
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+
+.tree-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-line {
+    display: inline-block;
+    width: 18px;
+    height: 0;
+    border-top: 3px solid var(--line);
+}
+
+.legend-line.spouse { border-top-style: dashed; border-top-color: #8c5ca8; }
+.legend-line.sibling { border-top-style: dashed; border-top-color: #5b8ecf; }
+.legend-line.twin { border-top-style: dotted; border-top-color: #5ea79e; }
+.legend-line.adopted { border-top-style: dotted; border-top-color: #5c7fb3; }
+.legend-line.step { border-top-style: dashed; border-top-color: #9a7b5d; }
+.legend-line.unknown { border-top-style: dashed; border-top-color: #848ca1; }
+
+.legend-badge {
+    border-radius: 999px;
+    border: 1px solid var(--button-border);
+    padding: 0 6px;
+    font-style: normal;
+    background: color-mix(in srgb, var(--panel) 70%, var(--accent) 30%);
+}
+
 .tree-viewport {
     width: 100%;
     height: calc(100vh - 92px);
@@ -235,6 +272,21 @@ body {
     stroke: color-mix(in srgb, var(--line) 82%, #f59e0b 18%);
 }
 
+.tree-link.adopted {
+    stroke: color-mix(in srgb, var(--line) 80%, #3b82f6 20%);
+    stroke-dasharray: 3 5;
+}
+
+.tree-link.step {
+    stroke: color-mix(in srgb, var(--line) 80%, #b45309 20%);
+    stroke-dasharray: 10 6;
+}
+
+.tree-link.unknown {
+    stroke: color-mix(in srgb, var(--line) 92%, #6b7280 8%);
+    stroke-dasharray: 4 9;
+}
+
 .tree-link:hover {
     stroke-width: 5;
     opacity: 1;
@@ -291,7 +343,7 @@ body {
     margin-top: -84px;
     border: 1px solid var(--group-color-border);
     border-radius: 16px;
-    background: linear-gradient(160deg, var(--group-color-start), var(--group-color-end));
+    background: var(--group-color-start);
     color: var(--tile-text);
     display: flex;
     flex-direction: column;
@@ -299,7 +351,7 @@ body {
     justify-content: flex-start;
     padding: 12px 10px 10px;
     text-align: center;
-    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.14);
     pointer-events: auto;
     cursor: grab;
     user-select: none;
@@ -317,12 +369,12 @@ body {
 
 .person-card:hover {
     --card-scale: 1.03;
-    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
 }
 
 .person-card.self {
     border-width: 2px;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.36);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
 .person-card.dragging {
@@ -332,11 +384,17 @@ body {
 }
 
 .person-card.reorganizing {
-    box-shadow: 0 20px 40px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.2);
 }
 
 .person-card.search-focus {
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7), 0 20px 40px rgba(0, 0, 0, 0.36);
+}
+
+.person-card.selected {
+    box-shadow:
+        0 0 0 2px color-mix(in srgb, var(--accent) 52%, #ffffff 48%),
+        0 10px 24px rgba(0, 0, 0, 0.18);
 }
 
 .person-card.link-focus {
@@ -355,7 +413,7 @@ body {
 .person-card.has-couple {
     box-shadow:
         inset 0 0 0 2px color-mix(in srgb, var(--couple-color) 55%, transparent 45%),
-        0 12px 26px rgba(0, 0, 0, 0.28);
+        0 8px 16px rgba(0, 0, 0, 0.14);
 }
 
 .person-photo,
@@ -410,6 +468,16 @@ body {
     color: var(--tile-text-muted);
     font-size: 0.8rem;
     line-height: 1.25;
+}
+
+.person-meta {
+    margin-top: 4px;
+    font-size: 0.72rem;
+    color: color-mix(in srgb, var(--tile-text-muted) 92%, #1f2937 8%);
+}
+
+.person-card.hidden-branch {
+    display: none;
 }
 
 @keyframes card-enter {

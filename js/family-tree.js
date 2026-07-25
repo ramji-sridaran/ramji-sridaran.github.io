@@ -15,6 +15,8 @@
     const searchStatus = document.getElementById('searchStatus');
     const recenterBtn = document.getElementById('recenterBtn');
     const reorganiseBtn = document.getElementById('reorganiseBtn');
+    const collapseBranchBtn = document.getElementById('collapseBranchBtn');
+    const expandAllBtn = document.getElementById('expandAllBtn');
     const layoutStorageKey = 'familyTree.layout.v3';
     const connectorTooltip = document.createElement('div');
 
@@ -27,6 +29,9 @@
     let linkRenderFrame = null;
     let searchFocusTimer = null;
     let activeLinkPath = null;
+    let selectedPersonId = data.rootId;
+    const collapsedRoots = new Set();
+    let hiddenBranchIds = new Set();
 
     let zoomScale = 1;
     const zoomMin = 0.5;
@@ -51,6 +56,7 @@
     const groupColorMap = buildGroupColors();
     const personColorMap = buildPersonColorMap();
     const coupleMeta = buildCoupleMetadata();
+    const childIndex = buildChildIndex();
     buildClusteredLayout();
     loadSavedLayout();
     renderNodes();
@@ -59,6 +65,7 @@
     applyTreeTheme(getThemeState());
     centerOnPerson(data.rootId, 'auto');
     setSearchStatus('Tip: search by name or relation.');
+    updateCollapseButtonLabel();
 
     recenterBtn?.addEventListener('click', () => centerOnPerson(data.rootId, 'smooth'));
     reorganiseBtn?.addEventListener('click', () => {
@@ -69,6 +76,8 @@
     searchInput?.addEventListener('keydown', event => {
         if (event.key === 'Enter') handleSearch();
     });
+    collapseBranchBtn?.addEventListener('click', toggleCollapseSelectedBranch);
+    expandAllBtn?.addEventListener('click', expandAllBranches);
     treeThemeToggle?.addEventListener('click', toggleTreeTheme);
     zoomInBtn?.addEventListener('click', () => applyZoom(zoomScale + zoomStep));
     zoomOutBtn?.addEventListener('click', () => applyZoom(zoomScale - zoomStep));
@@ -88,7 +97,9 @@
             handleSearch();
         },
         zoomIn: () => applyZoom(zoomScale + zoomStep),
-        zoomOut: () => applyZoom(zoomScale - zoomStep)
+        zoomOut: () => applyZoom(zoomScale - zoomStep),
+        collapseSelectedBranch: toggleCollapseSelectedBranch,
+        expandAllBranches
     };
 
     function buildGroupMetadata() {
@@ -132,46 +143,98 @@
 
     function buildPersonColorMap() {
         const map = new Map();
+        const palettePool = Array.from(groupColorMap.values());
+        const familyMembers = new Map();
+        const parentsByChild = new Map();
+
+        data.links.forEach(link => {
+            if (link.type !== 'parent') return;
+            if (!parentsByChild.has(link.to)) parentsByChild.set(link.to, []);
+            const list = parentsByChild.get(link.to);
+            if (!list.includes(link.from)) list.push(link.from);
+        });
+
+        parentsByChild.forEach((parents, childId) => {
+            const parentIds = [...parents].sort((a, b) => a.localeCompare(b));
+            const familyKey = parentIds.length > 0 ? `fam:${parentIds.join('+')}` : `fam:${childId}`;
+            if (!familyMembers.has(familyKey)) familyMembers.set(familyKey, new Set());
+            familyMembers.get(familyKey).add(childId);
+            parentIds.forEach(parentId => familyMembers.get(familyKey).add(parentId));
+        });
+
+        data.links.forEach(link => {
+            if (link.type !== 'spouse') return;
+            const familyKey = `couple:${getLinkKey(link.from, link.to)}`;
+            if (!familyMembers.has(familyKey)) familyMembers.set(familyKey, new Set());
+            familyMembers.get(familyKey).add(link.from);
+            familyMembers.get(familyKey).add(link.to);
+        });
+
+        const assigned = new Set();
+        const orderedFamilies = [...familyMembers.entries()].sort((a, b) => b[1].size - a[1].size);
+        orderedFamilies.forEach(([familyKey, members]) => {
+            const palette = palettePool[stableHash(familyKey) % palettePool.length];
+            members.forEach(personId => {
+                if (assigned.has(personId)) return;
+                map.set(personId, palette);
+                assigned.add(personId);
+            });
+        });
 
         data.people.forEach(person => {
+            if (map.has(person.id)) return;
             const groupId = groupByPerson.get(person.id) || 'core';
             const palette = groupColorMap.get(groupId);
             if (palette) map.set(person.id, palette);
         });
 
-        data.links.forEach(link => {
-            if (link.type !== 'spouse') return;
-            const sharedPalette = map.get(link.from) || map.get(link.to);
-            if (!sharedPalette) return;
-            map.set(link.from, sharedPalette);
-            map.set(link.to, sharedPalette);
-        });
-
         return map;
+    }
+
+    function stableHash(value) {
+        let hash = 0;
+        for (let index = 0; index < value.length; index += 1) {
+            hash = ((hash << 5) - hash) + value.charCodeAt(index);
+            hash |= 0;
+        }
+        return Math.abs(hash);
     }
 
     function buildCoupleMetadata() {
         const byPerson = new Map();
+        const byId = new Map();
         const byLinkKey = new Map();
         const spouseLinks = data.links.filter(link => link.type === 'spouse');
         let coupleIndex = 1;
 
         spouseLinks.forEach(link => {
-            const existing = byPerson.get(link.from) || byPerson.get(link.to);
             const partnerPalette = personColorMap.get(link.from) || personColorMap.get(link.to);
             const color = partnerPalette?.border || '#9a8fb8';
-            const couple = existing || { id: `C${coupleIndex}`, color };
-            if (!existing) coupleIndex += 1;
-            byPerson.set(link.from, couple);
-            byPerson.set(link.to, couple);
+            const couple = { id: `C${coupleIndex}`, color };
+            coupleIndex += 1;
+            byId.set(couple.id, couple);
+
+            const fromCouples = byPerson.get(link.from) || [];
+            const toCouples = byPerson.get(link.to) || [];
+            fromCouples.push(couple.id);
+            toCouples.push(couple.id);
+            byPerson.set(link.from, fromCouples);
+            byPerson.set(link.to, toCouples);
             byLinkKey.set(getLinkKey(link.from, link.to), couple.color);
         });
 
-        return { byPerson, byLinkKey };
+        return { byPerson, byId, byLinkKey };
     }
 
     function getLinkKey(personA, personB) {
         return [personA, personB].sort((a, b) => a.localeCompare(b)).join('::');
+    }
+
+    function getPrimaryCoupleForLink(personA, personB) {
+        const coupleIdsA = coupleMeta.byPerson.get(personA) || [];
+        const coupleIdsB = new Set(coupleMeta.byPerson.get(personB) || []);
+        const matchedId = coupleIdsA.find(id => coupleIdsB.has(id));
+        return matchedId ? coupleMeta.byId.get(matchedId) : null;
     }
 
     function buildClusteredLayout() {
@@ -273,7 +336,9 @@
                     groupId,
                     groupAnchor,
                     anchor,
-                    width: unit.type === 'couple' ? coupleWidth : singleWidth
+                    width: unit.type === 'spouse-cluster'
+                        ? Math.max(coupleWidth, singleWidth + (unit.ids.length - 1) * spouseSpacing)
+                        : singleWidth
                 };
             });
 
@@ -327,8 +392,10 @@
         const spouseByPerson = new Map();
         data.links.forEach(link => {
             if (link.type !== 'spouse') return;
-            spouseByPerson.set(link.from, link.to);
-            spouseByPerson.set(link.to, link.from);
+            if (!spouseByPerson.has(link.from)) spouseByPerson.set(link.from, new Set());
+            if (!spouseByPerson.has(link.to)) spouseByPerson.set(link.to, new Set());
+            spouseByPerson.get(link.from).add(link.to);
+            spouseByPerson.get(link.to).add(link.from);
         });
         return spouseByPerson;
     }
@@ -344,6 +411,17 @@
         return parentsByChild;
     }
 
+    function buildChildIndex() {
+        const childrenByParent = new Map();
+        data.links.forEach(link => {
+            if (link.type !== 'parent') return;
+            if (!childrenByParent.has(link.from)) childrenByParent.set(link.from, []);
+            const list = childrenByParent.get(link.from);
+            if (!list.includes(link.to)) list.push(link.to);
+        });
+        return childrenByParent;
+    }
+
     function buildDepthUnits(ids, spouseByPerson, personBaseX) {
         const idSet = new Set(ids);
         const visited = new Set();
@@ -352,18 +430,28 @@
 
         sortedIds.forEach(id => {
             if (visited.has(id)) return;
-            const spouseId = spouseByPerson.get(id);
-            if (spouseId && idSet.has(spouseId) && !visited.has(spouseId)) {
-                const ordered = [id, spouseId].sort((a, b) => (personBaseX.get(a) ?? 0) - (personBaseX.get(b) ?? 0));
-                visited.add(ordered[0]);
-                visited.add(ordered[1]);
+            const stack = [id];
+            const component = [];
+
+            while (stack.length > 0) {
+                const current = stack.pop();
+                if (visited.has(current)) continue;
+                visited.add(current);
+                component.push(current);
+                const spouses = spouseByPerson.get(current) || new Set();
+                spouses.forEach(spouseId => {
+                    if (idSet.has(spouseId) && !visited.has(spouseId)) stack.push(spouseId);
+                });
+            }
+
+            if (component.length > 1) {
+                const ordered = component.sort((a, b) => (personBaseX.get(a) ?? 0) - (personBaseX.get(b) ?? 0));
                 units.push({
-                    type: 'couple',
+                    type: 'spouse-cluster',
                     ids: ordered,
-                    key: getLinkKey(ordered[0], ordered[1])
+                    key: ordered.join('::')
                 });
             } else {
-                visited.add(id);
                 units.push({
                     type: 'single',
                     ids: [id],
@@ -376,14 +464,14 @@
     }
 
     function placeUnit(unit, centerX, y, spouseSpacing, assignedCenterX) {
-        if (unit.type === 'couple') {
-            const [leftId, rightId] = unit.ids;
-            const leftX = centerX - (spouseSpacing / 2);
-            const rightX = centerX + (spouseSpacing / 2);
-            defaultLayout[leftId] = { x: leftX, y };
-            defaultLayout[rightId] = { x: rightX, y };
-            assignedCenterX.set(leftId, leftX);
-            assignedCenterX.set(rightId, rightX);
+        if (unit.type === 'spouse-cluster') {
+            const span = (unit.ids.length - 1) * spouseSpacing;
+            const startX = centerX - (span / 2);
+            unit.ids.forEach((id, index) => {
+                const x = startX + index * spouseSpacing;
+                defaultLayout[id] = { x, y };
+                assignedCenterX.set(id, x);
+            });
             return;
         }
         const personId = unit.ids[0];
@@ -402,7 +490,7 @@
     }
 
     function areSpousePair(idA, idB, spouseByPerson) {
-        return spouseByPerson.get(idA) === idB || spouseByPerson.get(idB) === idA;
+        return Boolean(spouseByPerson.get(idA)?.has(idB) || spouseByPerson.get(idB)?.has(idA));
     }
 
     function normalizeLayoutBounds(layout) {
@@ -433,26 +521,32 @@
     function renderNodes() {
         nodesLayer.innerHTML = '';
         cardMap.clear();
+        hiddenBranchIds = computeHiddenBranchIds();
 
         let index = 0;
         peopleMap.forEach(person => {
             const card = document.createElement('article');
             card.className = `person-card${person.id === data.rootId ? ' self' : ''}`;
             card.dataset.personId = person.id;
+            if (person.id === selectedPersonId) card.classList.add('selected');
+            if (hiddenBranchIds.has(person.id)) card.classList.add('hidden-branch');
             const palette = personColorMap.get(person.id);
             if (palette) {
                 card.style.setProperty('--group-color-start', palette.start);
                 card.style.setProperty('--group-color-end', palette.end);
                 card.style.setProperty('--group-color-border', palette.border);
             }
-            const couple = coupleMeta.byPerson.get(person.id);
-            if (couple) {
+            const coupleIds = coupleMeta.byPerson.get(person.id) || [];
+            const primaryCouple = coupleIds.length ? coupleMeta.byId.get(coupleIds[0]) : null;
+            const coupleColor = primaryCouple?.color;
+            if (coupleColor) {
                 card.classList.add('has-couple');
-                card.style.setProperty('--couple-color', couple.color);
+                card.style.setProperty('--couple-color', coupleColor);
             }
             card.style.setProperty('--entry-delay', `${index * 20}ms`);
             applyCardPosition(card, person);
             enableCardDragging(card, person);
+            card.addEventListener('click', () => selectPerson(person.id));
             cardMap.set(person.id, card);
 
             if (person.photo) {
@@ -478,11 +572,21 @@
             relation.textContent = person.relation || '';
             card.appendChild(relation);
 
-            if (couple) {
+            const metaText = buildMetaText(person);
+            if (metaText) {
+                const meta = document.createElement('p');
+                meta.className = 'person-meta';
+                meta.textContent = metaText;
+                card.appendChild(meta);
+            }
+
+            if (coupleIds.length > 0) {
                 const badge = document.createElement('span');
                 badge.className = 'couple-badge';
-                badge.textContent = `❤ ${couple.id}`;
-                badge.title = `Couple ${couple.id}`;
+                badge.textContent = coupleIds.length === 1 ? `❤ ${coupleIds[0]}` : `❤ x${coupleIds.length}`;
+                badge.title = coupleIds.length === 1
+                    ? `Couple ${coupleIds[0]}`
+                    : `Multiple couples: ${coupleIds.join(', ')}`;
                 card.appendChild(badge);
             }
 
@@ -503,6 +607,7 @@
         linkRenderFrame = null;
         hideConnectorTooltip();
         clearLinkFocus();
+        hiddenBranchIds = computeHiddenBranchIds();
         linesSvg.innerHTML = '';
         linesSvg.appendChild(buildArrowMarkers());
 
@@ -510,6 +615,7 @@
             const from = peopleMap.get(link.from);
             const to = peopleMap.get(link.to);
             if (!from || !to) continue;
+            if (hiddenBranchIds.has(from.id) || hiddenBranchIds.has(to.id)) continue;
 
             const dx = Math.abs(to.x - from.x);
             const curveStrength = Math.max(45, Math.min(190, Math.round(dx * 0.28)));
@@ -517,20 +623,22 @@
             const control2X = from.x < to.x ? to.x - curveStrength : to.x + curveStrength;
 
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            path.setAttribute('class', `tree-link ${link.type || ''}`);
+            const variantClass = normalizeText(link.variant || '');
+            path.setAttribute('class', `tree-link ${link.type || ''} ${variantClass}`.trim());
             path.setAttribute('d', `M ${from.x} ${from.y} C ${control1X} ${from.y}, ${control2X} ${to.y}, ${to.x} ${to.y}`);
             path.dataset.relationship = link.type || 'relation';
+            if (variantClass) path.dataset.variant = variantClass;
             path.style.pointerEvents = 'visibleStroke';
             let coupleId = null;
             if (link.type === 'spouse') {
-                const couple = coupleMeta.byPerson.get(link.from) || coupleMeta.byPerson.get(link.to);
+                const couple = getPrimaryCoupleForLink(link.from, link.to);
                 const coupleColor = coupleMeta.byLinkKey.get(getLinkKey(link.from, link.to));
                 if (couple) {
                     coupleId = couple.id;
                 }
                 if (coupleColor) path.style.stroke = coupleColor;
             }
-            const description = describeLink(from, to, link.type, coupleId);
+            const description = describeLink(from, to, link.type, coupleId, variantClass);
             path.addEventListener('pointerenter', event => {
                 showConnectorTooltip(description, event.clientX, event.clientY);
                 focusLinkedCards(from.id, to.id, path);
@@ -593,34 +701,104 @@
         });
     }
 
-    function describeLink(from, to, type, coupleId = null) {
+    function describeLink(from, to, type, coupleId = null, variant = '') {
         const relationType = type || 'relation';
+        const variantText = variant ? ` (${variant})` : '';
         if (relationType === 'parent') {
             const parentRole = inferParentRole(from);
             if (parentRole !== 'parent') {
-                return `${from.name} is ${possessive(to.name)} ${parentRole}.`;
+                return `${from.name} is ${possessive(to.name)} ${parentRole}${variantText}.`;
             }
             const childRole = inferChildRole(to);
             if (childRole !== 'child') {
-                return `${to.name} is ${possessive(from.name)} ${childRole}.`;
+                return `${to.name} is ${possessive(from.name)} ${childRole}${variantText}.`;
             }
-            return `${from.name} is ${possessive(to.name)} parent.`;
+            return `${from.name} is ${possessive(to.name)} parent${variantText}.`;
         }
         if (relationType === 'spouse') {
             return coupleId
-                ? `${from.name} and ${to.name} are spouses (Couple ${coupleId}).`
-                : `${from.name} and ${to.name} are spouses.`;
+                ? `${from.name} and ${to.name} are spouses${variantText} (Couple ${coupleId}).`
+                : `${from.name} and ${to.name} are spouses${variantText}.`;
         }
         if (relationType === 'sibling') {
-            return `${from.name} and ${to.name} are siblings.`;
+            return `${from.name} and ${to.name} are siblings${variantText}.`;
         }
         if (relationType === 'twin') {
-            return `${from.name} and ${to.name} are twins.`;
+            return `${from.name} and ${to.name} are twins${variantText}.`;
         }
         if (relationType === 'cousin') {
-            return `${from.name} and ${to.name} are cousins.`;
+            return `${from.name} and ${to.name} are cousins${variantText}.`;
         }
-        return `${from.name} is related to ${to.name}.`;
+        return `${from.name} is related to ${to.name}${variantText}.`;
+    }
+
+    function buildMetaText(person) {
+        const parts = [];
+        if (person.birthYear) parts.push(`b. ${person.birthYear}`);
+        if (person.deathYear) parts.push(`d. ${person.deathYear}`);
+        const gender = normalizeText(person.gender || '');
+        if (gender === 'male') parts.push('♂');
+        if (gender === 'female') parts.push('♀');
+        if (gender === 'other') parts.push('⚧');
+        return parts.join(' · ');
+    }
+
+    function selectPerson(personId) {
+        selectedPersonId = personId;
+        cardMap.forEach((card, id) => card.classList.toggle('selected', id === personId));
+        updateCollapseButtonLabel();
+    }
+
+    function toggleCollapseSelectedBranch() {
+        if (!selectedPersonId) return;
+        if (collapsedRoots.has(selectedPersonId)) {
+            collapsedRoots.delete(selectedPersonId);
+            setSearchStatus(`Expanded ${peopleMap.get(selectedPersonId)?.name || 'branch'}.`);
+        } else {
+            collapsedRoots.add(selectedPersonId);
+            setSearchStatus(`Collapsed descendants of ${peopleMap.get(selectedPersonId)?.name || 'selected person'}.`);
+        }
+        renderNodes();
+        renderLinks();
+        updateCollapseButtonLabel();
+    }
+
+    function expandAllBranches() {
+        collapsedRoots.clear();
+        setSearchStatus('Expanded all branches.');
+        renderNodes();
+        renderLinks();
+        updateCollapseButtonLabel();
+    }
+
+    function computeHiddenBranchIds() {
+        const hidden = new Set();
+        collapsedRoots.forEach(rootId => {
+            const descendants = getDescendants(rootId);
+            descendants.forEach(id => hidden.add(id));
+        });
+        return hidden;
+    }
+
+    function getDescendants(rootId) {
+        const visited = new Set();
+        const queue = [...(childIndex.get(rootId) || [])];
+        while (queue.length > 0) {
+            const current = queue.shift();
+            if (visited.has(current)) continue;
+            visited.add(current);
+            (childIndex.get(current) || []).forEach(next => {
+                if (!visited.has(next)) queue.push(next);
+            });
+        }
+        return visited;
+    }
+
+    function updateCollapseButtonLabel() {
+        if (!collapseBranchBtn) return;
+        const selectedName = peopleMap.get(selectedPersonId)?.name || 'Selected';
+        const isCollapsed = collapsedRoots.has(selectedPersonId);
+        collapseBranchBtn.textContent = isCollapsed ? `Expand ${selectedName}` : `Collapse ${selectedName}`;
     }
 
     function possessive(name) {
@@ -840,6 +1018,7 @@
 
     function focusPerson(person) {
         clearSearchFocus();
+        selectPerson(person.id);
         centerOnPerson(person.id, 'smooth');
         const card = cardMap.get(person.id);
         if (!card) return;

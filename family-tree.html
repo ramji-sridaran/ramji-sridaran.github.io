@@ -23,11 +23,23 @@
         <button id="searchBtn" type="button">Search</button>
         <button id="reorganiseBtn" type="button">Reorganise</button>
         <button id="recenterBtn" type="button">Recenter</button>
+        <button id="collapseBranchBtn" type="button" title="Collapse selected person's descendants">Collapse Branch</button>
+        <button id="expandAllBtn" type="button" title="Show all collapsed branches">Expand All</button>
     </div>
 </header>
 
 <main class="tree-page">
     <p id="searchStatus" class="search-status" aria-live="polite"></p>
+    <div class="tree-legend" aria-label="Family tree legend">
+        <span><i class="legend-line parent"></i>Parent</span>
+        <span><i class="legend-line spouse"></i>Spouse</span>
+        <span><i class="legend-line sibling"></i>Sibling</span>
+        <span><i class="legend-line twin"></i>Twin</span>
+        <span><i class="legend-line adopted"></i>Adopted</span>
+        <span><i class="legend-line step"></i>Step</span>
+        <span><i class="legend-line unknown"></i>Unknown</span>
+        <span><i class="legend-badge">❤ C1</i>Couple reference</span>
+    </div>
     <section id="treeViewport" class="tree-viewport" aria-label="Interactive family tree">
         <div id="treeStage" class="tree-stage">
             <div id="treeCanvas" class="tree-canvas">

@@ -1,5 +1,11 @@
 # Family Tree Design Instructions
 
+## Governance
+
+* This file is the **single source of truth** for all family-tree related changes.
+* Any future code or data update must follow these standards unless this file is updated first.
+* When standards and existing implementation differ, update implementation to match this file.
+
 ## Overall Goal
 
 Create a visually clean, intuitive, and professional family tree that is easy to navigate, even for large families. Prioritize readability, consistency, and logical organization over fitting everything into the smallest possible space.
@@ -120,3 +126,22 @@ Before finalizing the family tree, verify that:
 * Spacing is uniform.
 * Colors are soft and visually balanced.
 * The tree remains easy to understand even for someone seeing it for the first time.
+
+## Current implementation notes
+
+* Branch controls:
+  * Select a person tile, then use **Collapse [Name]** to hide descendants.
+  * Use **Expand All** to restore all hidden branches.
+* Relationship hover:
+  * Hover a connector line to see a contextual relationship sentence.
+  * The two related person tiles are highlighted during hover.
+* Optional person fields supported in `people`:
+  * `birthYear` (number or string)
+  * `deathYear` (number or string)
+  * `gender` (`male`, `female`, `other`)
+* Optional relationship variants in `links`:
+  * `variant: "adopted"`
+  * `variant: "step"`
+  * `variant: "unknown"`
+* Multiple spouse links are supported and kept aligned in the same generation row.
+* Avoid adding marital-status labels such as "Unmarried" unless explicitly requested.
