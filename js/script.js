@@ -314,6 +314,78 @@ function showNotification(message, type = 'success') {
     }, 4000);
 }
 
+const VISITOR_METRICS_CLIENT_ID_KEY = 'visitorMetrics.clientId';
+const VISITOR_METRICS_EXCLUDED_KEY = 'visitorMetrics.excluded';
+const VISITOR_METRICS_PAGEVIEW_KEY = 'visitorMetrics.pageview.sent';
+const VISITOR_METRICS_VISITOR_TYPES = ['family', 'recruiter', 'friend', 'colleague'];
+
+function getVisitorMetricsEndpoint() {
+    const currentDomain = window.location.hostname;
+    if (currentDomain.includes('vercel.app')) return '/api/visitor';
+    if (currentDomain === 'localhost' || currentDomain === '127.0.0.1') return 'http://localhost:3000/api/visitor';
+    return 'https://ramji-sridaran.vercel.app/api/visitor';
+}
+
+function getVisitorClientId() {
+    const existingId = localStorage.getItem(VISITOR_METRICS_CLIENT_ID_KEY);
+    if (existingId) return existingId;
+
+    const nextId = window.crypto && typeof window.crypto.randomUUID === 'function'
+        ? window.crypto.randomUUID()
+        : `visitor-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    localStorage.setItem(VISITOR_METRICS_CLIENT_ID_KEY, nextId);
+    return nextId;
+}
+
+function isVisitorMetricsExcluded() {
+    return localStorage.getItem(VISITOR_METRICS_EXCLUDED_KEY) === 'true';
+}
+
+function setVisitorMetricsExcluded(excluded) {
+    localStorage.setItem(VISITOR_METRICS_EXCLUDED_KEY, excluded ? 'true' : 'false');
+}
+
+function normalizeVisitorType(value) {
+    const normalized = String(value || '').toLowerCase();
+    return VISITOR_METRICS_VISITOR_TYPES.includes(normalized) ? normalized : '';
+}
+
+async function sendVisitorMetric(payload, options = {}) {
+    if (!options.bypassExclusion && isVisitorMetricsExcluded()) return null;
+
+    const body = {
+        ...payload,
+        clientId: getVisitorClientId()
+    };
+
+    const response = await fetch(getVisitorMetricsEndpoint(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(body),
+        keepalive: true
+    });
+
+    let data = null;
+    try {
+        data = await response.json();
+    } catch (error) {
+        data = null;
+    }
+
+    return { response, data };
+}
+
+async function fetchVisitorMetricsSummary() {
+    const response = await fetch(getVisitorMetricsEndpoint(), {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+    });
+    if (!response.ok) {
+        throw new Error(`Metrics request failed: ${response.status}`);
+    }
+    return response.json();
+}
+
 // ==========================================
 // VISITOR POPUP CAPTURE
 // ==========================================
@@ -331,7 +403,7 @@ function setupVisitorCapturePopup() {
     const popupSeenKey = 'visitorPopup.seen';
     const popupSubmittedKey = 'visitorPopup.submitted';
     const visitorTypeKey = 'visitorPopup.visitorType';
-    const pageviewKey = 'visitorMetrics.pageview.sent';
+    const pageviewKey = VISITOR_METRICS_PAGEVIEW_KEY;
     const alreadySubmitted = localStorage.getItem(popupSubmittedKey) === 'true';
     const alreadySeenInSession = sessionStorage.getItem(popupSeenKey) === 'true';
     const savedVisitorType = localStorage.getItem(visitorTypeKey) || '';
@@ -425,35 +497,150 @@ function setupVisitorCapturePopup() {
         familyTreeNavItem.classList.toggle('nav-link-hidden', !shouldShow);
     }
 
-    function getVisitorMetricsEndpoint() {
-        const currentDomain = window.location.hostname;
-        if (currentDomain.includes('vercel.app')) return '/api/visitor';
-        if (currentDomain === 'localhost' || currentDomain === '127.0.0.1') return 'http://localhost:3000/api/visitor';
-        return 'https://ramji-sridaran.vercel.app/api/visitor';
-    }
-
     async function trackVisitorMetricOnce() {
+        if (isVisitorMetricsExcluded()) return;
         if (sessionStorage.getItem(pageviewKey) === 'true') return;
         sessionStorage.setItem(pageviewKey, 'true');
         await sendVisitorMetric({
             type: 'pageview',
             path: window.location.pathname,
-            visitorType: visitorTypeSelect.value || localStorage.getItem(visitorTypeKey) || ''
+            visitorType: normalizeVisitorType(visitorTypeSelect.value || localStorage.getItem(visitorTypeKey) || '')
+        });
+    }
+}
+
+function setupVisitorMetricsWidget() {
+    const container = document.getElementById('visitorMetricsContainer');
+    const toggleBtn = document.getElementById('visitorMetricsToggle');
+    const windowEl = document.getElementById('visitorMetricsWindow');
+    const closeBtn = document.getElementById('visitorMetricsClose');
+    const refreshBtn = document.getElementById('visitorMetricsRefresh');
+    const ownershipBtn = document.getElementById('visitorMetricsOwnershipToggle');
+    const pageviewsEl = document.getElementById('visitorMetricsPageviews');
+    const submissionsEl = document.getElementById('visitorMetricsSubmissions');
+    const badgeEl = document.getElementById('visitorMetricsBadge');
+    const typesEl = document.getElementById('visitorMetricsTypes');
+    const ownerStatusEl = document.getElementById('visitorMetricsOwnerStatus');
+
+    if (!container || !toggleBtn || !windowEl || !closeBtn || !ownershipBtn || !pageviewsEl || !submissionsEl || !badgeEl || !typesEl || !ownerStatusEl) return;
+
+    const summaryState = {
+        open: false,
+        data: null,
+        excluded: isVisitorMetricsExcluded()
+    };
+
+    function renderTypeRows(byType = {}) {
+        const labels = [
+            ['family', 'Family'],
+            ['recruiter', 'Recruiter'],
+            ['friend', 'Friend'],
+            ['colleague', 'Colleague']
+        ];
+
+        typesEl.innerHTML = '';
+        labels.forEach(([key, label]) => {
+            const count = Number(byType[key] ?? 0) || 0;
+            const row = document.createElement('div');
+            row.className = 'visitor-metrics-type-row';
+            row.innerHTML = `<span>${label}</span><strong>${count}</strong>`;
+            typesEl.appendChild(row);
         });
     }
 
-    async function sendVisitorMetric(payload) {
-        try {
-            await fetch(getVisitorMetricsEndpoint(), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify(payload),
-                keepalive: true
-            });
-        } catch (error) {
-            console.warn('Visitor metric ping failed:', error);
+    function renderSummary(data) {
+        const pageviews = Number(data?.pageviews ?? data?.count ?? 0) || 0;
+        const submissions = Number(data?.submissions ?? 0) || 0;
+        const byType = data?.byType || {};
+
+        pageviewsEl.textContent = String(pageviews);
+        submissionsEl.textContent = String(submissions);
+        badgeEl.textContent = String(pageviews);
+        renderTypeRows(byType);
+        summaryState.data = data;
+    }
+
+    function renderOwnershipState() {
+        if (summaryState.excluded) {
+            ownerStatusEl.textContent = 'This browser is excluded from visitor counts.';
+            ownershipBtn.textContent = 'Include my visits again';
+        } else {
+            ownerStatusEl.textContent = 'This browser is currently included in visitor counts.';
+            ownershipBtn.textContent = 'Exclude my visits on this device';
         }
     }
+
+    function setOpen(open) {
+        summaryState.open = open;
+        windowEl.classList.toggle('active', open);
+        windowEl.setAttribute('aria-hidden', open ? 'false' : 'true');
+        toggleBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+            loadSummary().catch(error => {
+                console.warn('Visitor metrics load failed:', error);
+            });
+        }
+    }
+
+    async function loadSummary() {
+        const data = await fetchVisitorMetricsSummary();
+        renderSummary(data);
+        renderOwnershipState();
+    }
+
+    async function updateOwnership(excluded) {
+        ownershipBtn.disabled = true;
+        try {
+            const { response, data } = await sendVisitorMetric({
+                type: excluded ? 'device-exclude' : 'device-include'
+            }, { bypassExclusion: true });
+
+            if (!response || !response.ok) {
+                throw new Error(`Ownership update failed: ${response?.status || 'network error'}`);
+            }
+
+            summaryState.excluded = excluded;
+            setVisitorMetricsExcluded(excluded);
+            renderOwnershipState();
+
+            if (data?.removed !== undefined) {
+                showNotification(excluded ? `✅ Your browser has been excluded. Removed ${Number(data.removed) || 0} visits.` : '✅ Your browser is counting again.', 'success');
+            } else {
+                showNotification(excluded ? '✅ Your browser has been excluded.' : '✅ Your browser is counting again.', 'success');
+            }
+
+            await loadSummary();
+        } catch (error) {
+            console.error('Visitor ownership update failed:', error);
+            showNotification('⚠️ Could not update visitor counts for this browser.', 'error');
+        } finally {
+            ownershipBtn.disabled = false;
+        }
+    }
+
+    toggleBtn.addEventListener('click', () => setOpen(!summaryState.open));
+    closeBtn.addEventListener('click', () => setOpen(false));
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => loadSummary().catch(error => {
+            console.warn('Visitor metrics refresh failed:', error);
+        }));
+    }
+    ownershipBtn.addEventListener('click', () => updateOwnership(!summaryState.excluded));
+
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && summaryState.open) {
+            setOpen(false);
+        }
+    });
+
+    windowEl.addEventListener('click', event => {
+        if (event.target === windowEl) setOpen(false);
+    });
+
+    renderOwnershipState();
+    loadSummary().catch(error => {
+        console.warn('Visitor metrics initial load failed:', error);
+    });
 }
 
 // ==========================================
@@ -478,6 +665,7 @@ document.querySelectorAll('.project-card, .skill-category, .stat-card, .timeline
 });
 
 document.addEventListener('DOMContentLoaded', setupVisitorCapturePopup);
+document.addEventListener('DOMContentLoaded', setupVisitorMetricsWidget);
 
 // ==========================================
 // SCROLL TO TOP BUTTON

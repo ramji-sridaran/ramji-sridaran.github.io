@@ -246,6 +246,234 @@
             background: #4b5563;
         }
 
+        .visitor-metrics-container {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            z-index: 11999;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .visitor-metrics-toggle {
+            width: 64px;
+            height: 64px;
+            border: 0;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0f766e, #0ea5e9);
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 8px 28px rgba(14, 165, 233, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .visitor-metrics-toggle:hover {
+            transform: scale(1.06);
+            box-shadow: 0 10px 34px rgba(14, 165, 233, 0.45);
+        }
+
+        .visitor-metrics-icon {
+            font-size: 1.35rem;
+        }
+
+        .visitor-metrics-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            min-width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            padding: 0 6px;
+            background: #ec4899;
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35);
+        }
+
+        .visitor-metrics-window {
+            position: absolute;
+            left: 0;
+            bottom: 78px;
+            width: 340px;
+            max-width: calc(100vw - 40px);
+            border-radius: 18px;
+            background: #ffffff;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            box-shadow: 0 18px 52px rgba(15, 23, 42, 0.2);
+            overflow: hidden;
+            display: none;
+        }
+
+        .visitor-metrics-window.active {
+            display: block;
+        }
+
+        .visitor-metrics-header {
+            padding: 16px 16px 12px;
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            gap: 12px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.09), rgba(15, 118, 110, 0.09));
+        }
+
+        .visitor-metrics-header h3 {
+            margin: 0;
+            font-size: 1.05rem;
+            color: #0f172a;
+            background: none;
+            -webkit-text-fill-color: currentColor;
+        }
+
+        .visitor-metrics-header p {
+            margin: 4px 0 0;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+
+        .visitor-metrics-close {
+            width: 32px;
+            height: 32px;
+            border: 0;
+            border-radius: 999px;
+            background: #e2e8f0;
+            color: #334155;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .visitor-metrics-body {
+            padding: 14px 16px 16px;
+        }
+
+        .visitor-metrics-summary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .visitor-metrics-stat {
+            padding: 12px;
+            border-radius: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .visitor-metrics-stat strong {
+            display: block;
+            font-size: 1.35rem;
+            color: #0f172a;
+            line-height: 1.1;
+        }
+
+        .visitor-metrics-stat span {
+            display: block;
+            margin-top: 4px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .visitor-metrics-section {
+            margin-top: 12px;
+        }
+
+        .visitor-metrics-section h4 {
+            margin: 0 0 8px;
+            font-size: 0.9rem;
+            color: #0f172a;
+        }
+
+        .visitor-metrics-types {
+            display: grid;
+            gap: 8px;
+        }
+
+        .visitor-metrics-type-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #0f172a;
+        }
+
+        .visitor-metrics-type-row strong {
+            font-size: 1rem;
+        }
+
+        .visitor-metrics-ownership {
+            width: 100%;
+            border: 0;
+            border-radius: 12px;
+            padding: 11px 14px;
+            background: linear-gradient(135deg, #0f766e, #0ea5e9);
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .visitor-metrics-ownership:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+
+        .visitor-metrics-footnote {
+            margin: 12px 0 0;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        body[data-theme="dark"] .visitor-metrics-window,
+        body[data-theme="bw"] .visitor-metrics-window {
+            background: #111827;
+            border-color: rgba(148, 163, 184, 0.25);
+        }
+
+        body[data-theme="dark"] .visitor-metrics-header,
+        body[data-theme="bw"] .visitor-metrics-header {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(15, 118, 110, 0.08));
+        }
+
+        body[data-theme="dark"] .visitor-metrics-header h3,
+        body[data-theme="bw"] .visitor-metrics-header h3,
+        body[data-theme="dark"] .visitor-metrics-section h4,
+        body[data-theme="bw"] .visitor-metrics-section h4,
+        body[data-theme="dark"] .visitor-metrics-stat strong,
+        body[data-theme="bw"] .visitor-metrics-stat strong,
+        body[data-theme="dark"] .visitor-metrics-type-row,
+        body[data-theme="bw"] .visitor-metrics-type-row {
+            color: #e5e7eb;
+        }
+
+        body[data-theme="dark"] .visitor-metrics-header p,
+        body[data-theme="bw"] .visitor-metrics-header p,
+        body[data-theme="dark"] .visitor-metrics-stat span,
+        body[data-theme="bw"] .visitor-metrics-stat span,
+        body[data-theme="dark"] .visitor-metrics-footnote,
+        body[data-theme="bw"] .visitor-metrics-footnote {
+            color: #94a3b8;
+        }
+
+        body[data-theme="dark"] .visitor-metrics-close,
+        body[data-theme="bw"] .visitor-metrics-close,
+        body[data-theme="dark"] .visitor-metrics-stat,
+        body[data-theme="bw"] .visitor-metrics-stat,
+        body[data-theme="dark"] .visitor-metrics-type-row,
+        body[data-theme="bw"] .visitor-metrics-type-row {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
         .nav-link-hidden {
             display: none !important;
         }
@@ -1401,6 +1629,46 @@
                     <span class="powered-by">Powered by Groq, OpenAI. How does this work?</span>
                 </a>
             </div>
+        </div>
+    </div>
+</div>
+
+<div id="visitorMetricsContainer" class="visitor-metrics-container">
+    <button id="visitorMetricsToggle" class="visitor-metrics-toggle" aria-label="Open visitor metrics" aria-expanded="false">
+        <span class="visitor-metrics-icon">📊</span>
+        <span class="visitor-metrics-badge" id="visitorMetricsBadge">0</span>
+    </button>
+    <div id="visitorMetricsWindow" class="visitor-metrics-window" aria-hidden="true">
+        <div class="visitor-metrics-header">
+            <div>
+                <h3>Visitor snapshot</h3>
+                <p>Anonymous totals by category</p>
+            </div>
+            <button type="button" class="visitor-metrics-close" id="visitorMetricsClose" aria-label="Close visitor metrics">×</button>
+        </div>
+        <div class="visitor-metrics-body">
+            <div class="visitor-metrics-summary">
+                <div class="visitor-metrics-stat">
+                    <strong id="visitorMetricsPageviews">0</strong>
+                    <span>Pageviews</span>
+                </div>
+                <div class="visitor-metrics-stat">
+                    <strong id="visitorMetricsSubmissions">0</strong>
+                    <span>Visitor notes</span>
+                </div>
+            </div>
+            <div class="visitor-metrics-section">
+                <h4>Visitor categories</h4>
+                <div id="visitorMetricsTypes" class="visitor-metrics-types"></div>
+            </div>
+            <div class="visitor-metrics-section">
+                <p id="visitorMetricsOwnerStatus" class="visitor-metrics-footnote">This browser is currently included in visitor counts.</p>
+                <button type="button" id="visitorMetricsOwnershipToggle" class="visitor-metrics-ownership">Exclude my visits on this device</button>
+            </div>
+            <div class="visitor-metrics-section">
+                <button type="button" id="visitorMetricsRefresh" class="visitor-metrics-close" style="width:auto;padding:0 12px;height:32px;">Refresh</button>
+            </div>
+            <p class="visitor-metrics-footnote">Counts are kept anonymous and grouped by visitor category only.</p>
         </div>
     </div>
 </div>
