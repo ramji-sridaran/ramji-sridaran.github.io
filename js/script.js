@@ -1,3 +1,9 @@
+// Enable scroll-reveal start-state as early as the deferred script runs.
+// Paired with the observer at the bottom of this file (setupScrollReveal).
+// If this script fails to load, the class is never set and all content stays
+// visible — a safe no-JS fallback.
+if (document.body) document.body.classList.add('js-reveal-ready');
+
 // ==========================================
 // NAVIGATION & HAMBURGER MENU
 // ==========================================
@@ -644,25 +650,98 @@ function setupVisitorMetricsWidget() {
 }
 
 // ==========================================
-// SCROLL ANIMATIONS
+// SCROLL ANIMATIONS (reveal-on-scroll)
 // ==========================================
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
-};
+// Single IntersectionObserver that fades + slides each section/card into view
+// the first time it crosses into the viewport. Content is visible by default
+// (see CSS): the hidden start-state only applies once `js-reveal-ready` is set
+// on <body>, so no-JS / old-browser visitors always see static content.
+(function setupScrollReveal() {
+    const revealSelector =
+        '.reveal-on-scroll, .project-card, .skill-category, .cert-card, .stat-card, .timeline-item';
+    const elements = Array.from(document.querySelectorAll(revealSelector));
+    if (!elements.length) return;
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
+    const body = document.body;
+    // Signal to CSS that JS is present and will drive the reveal.
+    body.classList.add('js-reveal-ready');
+
+    const reduceMotion =
+        window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // No motion / no observer support: reveal everything immediately.
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+        elements.forEach(el => el.classList.add('visible', 'in-view'));
+        return;
+    }
+
+    // Stagger cards that share a parent (skills, certs, projects, timeline)
+    // so grids cascade in rather than popping at once. Section-level elements
+    // are left un-staggered.
+    const groupCounts = new Map();
+    elements.forEach(el => {
+        if (el.tagName === 'SECTION') return;
+        const parent = el.parentElement;
+        if (!parent) return;
+        const index = groupCounts.get(parent) || 0;
+        if (index > 0) {
+            el.style.transitionDelay = Math.min(index * 70, 420) + 'ms';
         }
+        groupCounts.set(parent, index + 1);
     });
-}, observerOptions);
 
-// Observe all cards and content sections
-document.querySelectorAll('.project-card, .skill-category, .stat-card, .timeline-item').forEach(el => {
-    observer.observe(el);
-});
+    const reveal = (el) => {
+        // Keep legacy `visible` class alongside `in-view` for compatibility.
+        el.classList.add('visible', 'in-view');
+        observer.unobserve(el);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            // Reveal when the element crosses into view, OR when it has already
+            // scrolled past the top of the viewport (guards against very fast /
+            // programmatic scrolling where the crossing frame can be missed, so
+            // nothing is ever left permanently invisible).
+            if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
+                reveal(entry.target);
+            }
+        });
+    }, { threshold: 0.15, rootMargin: '0px 0px -80px 0px' });
+
+    elements.forEach(el => observer.observe(el));
+
+    // Safety net for very fast / programmatic scrolling, where the observer's
+    // threshold-crossing frame can be skipped entirely: an rAF-throttled sweep
+    // reveals any element whose top has reached ~15% into the viewport. The CSS
+    // transition-delay stagger still applies, so grids keep cascading in.
+    let ticking = false;
+    const sweep = () => {
+        ticking = false;
+        const trigger = window.innerHeight * 0.85;
+        let pending = false;
+        elements.forEach(el => {
+            if (el.classList.contains('in-view')) return;
+            if (el.getBoundingClientRect().top < trigger) {
+                reveal(el);
+            } else {
+                pending = true;
+            }
+        });
+        if (!pending) {
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', onScroll);
+        }
+    };
+    const onScroll = () => {
+        if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(sweep);
+        }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    window.addEventListener('load', () => requestAnimationFrame(sweep), { once: true });
+})();
 
 document.addEventListener('DOMContentLoaded', setupVisitorCapturePopup);
 document.addEventListener('DOMContentLoaded', setupVisitorMetricsWidget);
@@ -776,106 +855,35 @@ if (heroSection) {
 // THEME & COMPACT MODE TOGGLE
 // ==========================================
 const themeToggle = document.getElementById('themeToggle');
-const compactToggle = document.getElementById('compactToggle');
-const bwToggle = document.getElementById('bwToggle');
 const themeStylesheet = document.getElementById('theme-stylesheet');
 
-// Initialize theme and compact mode based on localStorage
+// Initialize theme based on localStorage
 function initializeTheme() {
     const savedTheme = localStorage.getItem('theme') || 'light';
-    const savedCompact = localStorage.getItem('compactMode');
-    const savedBW = localStorage.getItem('bwMode') === 'true';
-    // Default to compact mode (true) if not set
-    const isCompact = savedCompact === null ? true : savedCompact === 'true';
-    applyTheme(savedTheme, isCompact, savedBW);
+    applyTheme(savedTheme);
 }
 
-function applyTheme(theme, isCompact = false, isBW = false) {
-    let stylePath;
-
-    // Black & White mode overrides other themes (only in compact)
-    if (isBW) {
-        stylePath = 'css/styles-bw-compact.css';
-    } else {
-        const isDark = theme === 'dark';
-        if (isCompact) {
-            stylePath = isDark ? 'css/styles-dark-compact.css' : 'css/styles-light-compact.css';
-        } else {
-            stylePath = isDark ? 'css/styles-dark.css' : 'css/styles-light.css';
-        }
-    }
+function applyTheme(theme) {
+    const isDark = theme === 'dark';
+    const stylePath = isDark ? 'css/styles-dark.css' : 'css/styles-light.css';
 
     themeStylesheet.href = stylePath;
     localStorage.setItem('theme', theme);
-    localStorage.setItem('compactMode', isCompact);
-    localStorage.setItem('bwMode', isBW);
     if (document.body) {
-        document.body.dataset.theme = isBW ? 'bw' : theme;
+        document.body.dataset.theme = theme;
     }
 
     // Update theme toggle icon
     if (themeToggle) {
-        const isDark = theme === 'dark';
         themeToggle.querySelector('.theme-icon').textContent = isDark ? '☀️' : '🌙';
         themeToggle.title = isDark ? 'Switch to Light Theme' : 'Switch to Dark Theme';
-        themeToggle.style.opacity = isBW ? '0.5' : '1';
-    }
-
-    // Update compact toggle state
-    if (compactToggle) {
-        if (isCompact) {
-            compactToggle.classList.add('active');
-            compactToggle.title = 'Switch to Big screen Mode';
-        } else {
-            compactToggle.classList.remove('active');
-            compactToggle.title = 'Switch to Compact Mode';
-        }
-        compactToggle.style.opacity = isBW ? '0.5' : '1';
-    }
-
-    // Update B&W toggle state
-    if (bwToggle) {
-        if (isBW) {
-            bwToggle.classList.add('active');
-            bwToggle.title = 'Switch to Color Mode';
-        } else {
-            bwToggle.classList.remove('active');
-            bwToggle.title = 'Switch to Black & White Mode';
-        }
     }
 }
 
 function toggleTheme() {
     const currentTheme = localStorage.getItem('theme') || 'dark';
-    const isCompact = localStorage.getItem('compactMode') === 'true';
-    const isBW = localStorage.getItem('bwMode') === 'true';
-    if (!isBW) {
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        applyTheme(newTheme, isCompact, false);
-    }
-}
-
-function toggleCompactMode() {
-    const currentTheme = localStorage.getItem('theme') || 'dark';
-    const isCompact = localStorage.getItem('compactMode') === 'true';
-    const isBW = localStorage.getItem('bwMode') === 'true';
-    if (!isBW) {
-        applyTheme(currentTheme, !isCompact, false);
-    }
-}
-
-function toggleBWMode() {
-    const isBW = localStorage.getItem('bwMode') === 'true';
-
-    if (isBW) {
-        // Exiting B&W mode - default to light-compact theme
-        applyTheme('dark', true, false);
-    } else {
-        // Entering B&W mode
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        const isCompact = localStorage.getItem('compactMode') === 'true';
-        applyTheme(currentTheme, isCompact, true);
-    }
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(newTheme);
 }
 
 // Initialize theme on page load
@@ -886,13 +894,210 @@ if (themeToggle) {
     themeToggle.addEventListener('click', toggleTheme);
 }
 
-if (compactToggle) {
-    compactToggle.addEventListener('click', toggleCompactMode);
-}
+// ==========================================
+// COLOR PALETTE PICKER
+// ------------------------------------------
+// Self-contained, additive feature. Applies an orthogonal "accent color"
+// layer (via [data-palette] on <html>) on top of whichever light/dark/compact
+// theme is active. Does NOT touch the theme/compact toggle logic above.
+// ==========================================
+(function initColorPalettePicker() {
+    const PALETTES = [
+        { id: 'aurora-blue',    name: 'Aurora Blue', star: true, primary: '#2563EB', secondary: '#3B82F6', accent: '#06B6D4', bg: '#F8FAFC' },
+        { id: 'midnight-cyan',  name: 'Midnight Cyan',           primary: '#06B6D4', secondary: '#38BDF8', accent: '#67E8F9', bg: '#0F172A' },
+        { id: 'emerald-glass',  name: 'Emerald Glass',           primary: '#10B981', secondary: '#34D399', accent: '#6EE7B7', bg: '#F0FDF4' },
+        { id: 'indigo-neon',    name: 'Indigo Neon',             primary: '#4F46E5', secondary: '#6366F1', accent: '#A855F7', bg: '#F9FAFB' },
+        { id: 'royal-purple',   name: 'Royal Purple',            primary: '#7C3AED', secondary: '#9333EA', accent: '#C084FC', bg: '#FAF5FF' },
+        { id: 'ocean-slate',    name: 'Ocean Slate',             primary: '#0284C7', secondary: '#0EA5E9', accent: '#38BDF8', bg: '#F1F5F9' },
+        { id: 'forest-mint',    name: 'Forest Mint',             primary: '#15803D', secondary: '#22C55E', accent: '#86EFAC', bg: '#F7FEE7' },
+        { id: 'crimson-sunset', name: 'Crimson Sunset',          primary: '#DC2626', secondary: '#F97316', accent: '#FBBF24', bg: '#FFF7ED' },
+        { id: 'sand-navy',      name: 'Sand & Navy',             primary: '#1E3A8A', secondary: '#3B82F6', accent: '#F59E0B', bg: '#FFFBEB' },
+        { id: 'graphite-gold',  name: 'Graphite Gold',           primary: '#1F2937', secondary: '#374151', accent: '#F59E0B', bg: '#F9FAFB' },
+        { id: 'classic-blue',   name: 'Classic Blue',             primary: '#2D5A8C', secondary: '#00C9A7', accent: '#805AD5', bg: '#F7FAFC' },
+        { id: 'classic-dark',   name: 'Classic Dark',             primary: '#3B82F6', secondary: '#06B6D4', accent: '#10B981', bg: '#0F172A' }
+    ];
+    const STORAGE_KEY = 'colorPalette';
+    const paletteToggle = document.getElementById('paletteToggle');
+    if (!paletteToggle) return;
 
-if (bwToggle) {
-    bwToggle.addEventListener('click', toggleBWMode);
-}
+    let activePalette = localStorage.getItem(STORAGE_KEY) || '';
+    let lastFocused = null;
+
+    // Apply (or clear) the active palette on <html>.
+    function applyPalette(id) {
+        if (id) {
+            document.documentElement.setAttribute('data-palette', id);
+        } else {
+            document.documentElement.removeAttribute('data-palette');
+        }
+        activePalette = id || '';
+        paletteToggle.classList.toggle('active', !!activePalette);
+    }
+
+    function persistPalette(id) {
+        if (id) {
+            localStorage.setItem(STORAGE_KEY, id);
+        } else {
+            localStorage.removeItem(STORAGE_KEY);
+        }
+    }
+
+    // Build the popup DOM once.
+    const overlay = document.createElement('div');
+    overlay.className = 'palette-popup-overlay';
+
+    const popup = document.createElement('div');
+    popup.className = 'palette-popup';
+    popup.setAttribute('role', 'dialog');
+    popup.setAttribute('aria-modal', 'true');
+    popup.setAttribute('aria-label', 'Choose a color palette');
+    overlay.appendChild(popup);
+
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'palette-popup-close';
+    closeBtn.setAttribute('aria-label', 'Close palette picker');
+    closeBtn.innerHTML = '&times;';
+    popup.appendChild(closeBtn);
+
+    const heading = document.createElement('h3');
+    heading.textContent = 'Color Palette';
+    popup.appendChild(heading);
+
+    const sub = document.createElement('p');
+    sub.className = 'palette-sub';
+    sub.textContent = 'Pick an accent palette. Works on top of the current light/dark theme.';
+    popup.appendChild(sub);
+
+    const grid = document.createElement('div');
+    grid.className = 'palette-grid';
+    popup.appendChild(grid);
+
+    const cardById = {};
+    PALETTES.forEach(function (p) {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'palette-card';
+        card.dataset.paletteId = p.id;
+        card.setAttribute('aria-pressed', 'false');
+        card.setAttribute('aria-label', 'Apply ' + p.name + ' palette');
+
+        const chips = document.createElement('div');
+        chips.className = 'palette-chips';
+        [p.primary, p.secondary, p.accent, p.bg].forEach(function (c) {
+            const chip = document.createElement('span');
+            chip.style.background = c;
+            chips.appendChild(chip);
+        });
+        card.appendChild(chips);
+
+        const nameRow = document.createElement('div');
+        nameRow.className = 'palette-card-name';
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = p.name + (p.star ? ' \u2B50' : '');
+        const check = document.createElement('span');
+        check.className = 'palette-card-check';
+        check.setAttribute('aria-hidden', 'true');
+        check.textContent = '\u2713';
+        nameRow.appendChild(nameSpan);
+        nameRow.appendChild(check);
+        card.appendChild(nameRow);
+
+        card.addEventListener('click', function () {
+            applyPalette(p.id);
+            persistPalette(p.id);
+            refreshActiveStates();
+        });
+
+        grid.appendChild(card);
+        cardById[p.id] = card;
+    });
+
+    const resetRow = document.createElement('div');
+    resetRow.className = 'palette-reset-row';
+    const resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'palette-reset-btn';
+    resetBtn.textContent = 'Reset to default';
+    resetBtn.addEventListener('click', function () {
+        applyPalette('');
+        persistPalette('');
+        refreshActiveStates();
+    });
+    resetRow.appendChild(resetBtn);
+    popup.appendChild(resetRow);
+
+    document.body.appendChild(overlay);
+
+    function refreshActiveStates() {
+        Object.keys(cardById).forEach(function (id) {
+            const isActive = id === activePalette;
+            cardById[id].classList.toggle('active', isActive);
+            cardById[id].setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+    }
+
+    function openPopup() {
+        lastFocused = document.activeElement;
+        refreshActiveStates();
+        overlay.classList.add('show');
+        paletteToggle.setAttribute('aria-expanded', 'true');
+        const activeCard = activePalette && cardById[activePalette];
+        (activeCard || closeBtn).focus();
+        document.addEventListener('keydown', onKeydown);
+    }
+
+    function closePopup() {
+        overlay.classList.remove('show');
+        paletteToggle.setAttribute('aria-expanded', 'false');
+        document.removeEventListener('keydown', onKeydown);
+        if (lastFocused && typeof lastFocused.focus === 'function') {
+            lastFocused.focus();
+        }
+    }
+
+    function isOpen() {
+        return overlay.classList.contains('show');
+    }
+
+    function onKeydown(e) {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            closePopup();
+        } else if (e.key === 'Tab' && isOpen()) {
+            // Simple focus trap within the popup.
+            const focusable = popup.querySelectorAll('button');
+            if (!focusable.length) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first.focus();
+            }
+        }
+    }
+
+    paletteToggle.addEventListener('click', function () {
+        isOpen() ? closePopup() : openPopup();
+    });
+    paletteToggle.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            isOpen() ? closePopup() : openPopup();
+        }
+    });
+
+    closeBtn.addEventListener('click', closePopup);
+    overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closePopup();
+    });
+
+    // Restore saved palette on load (default = no override).
+    applyPalette(activePalette);
+})();
 
 // ==========================================
 // PROJECT HIGHLIGHTING FROM EXPERIENCE LINKS

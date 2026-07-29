@@ -32,6 +32,8 @@
 
     <!-- Stylesheets -->
     <link id="theme-stylesheet" rel="stylesheet" href="css/styles-dark.css">
+    <!-- Accent color palettes: MUST load after the theme stylesheet so [data-palette] overrides :root brand tokens -->
+    <link rel="stylesheet" href="css/color-pallette.css">
     <link rel="stylesheet" href="css/creative-enhancements.css">
     <link rel="stylesheet" href="css/chatbot.css">
     <link rel="stylesheet" href="css/chatbot-enhanced.css">
@@ -207,42 +209,34 @@
             cursor: wait;
         }
 
-        body[data-theme="dark"] .visitor-popup,
-        body[data-theme="bw"] .visitor-popup {
+        body[data-theme="dark"] .visitor-popup {
             background: #111827;
             color: #e5e7eb;
             border-color: rgba(148, 163, 184, 0.28);
         }
 
-        body[data-theme="dark"] .visitor-popup h3,
-        body[data-theme="bw"] .visitor-popup h3 {
+        body[data-theme="dark"] .visitor-popup h3 {
             color: #e5e7eb;
         }
 
-        body[data-theme="dark"] .visitor-popup p,
-        body[data-theme="bw"] .visitor-popup p {
+        body[data-theme="dark"] .visitor-popup p {
             color: #94a3b8;
         }
 
         body[data-theme="dark"] .visitor-popup input,
         body[data-theme="dark"] .visitor-popup select,
-        body[data-theme="dark"] .visitor-popup textarea,
-        body[data-theme="bw"] .visitor-popup input,
-        body[data-theme="bw"] .visitor-popup select,
-        body[data-theme="bw"] .visitor-popup textarea {
+        body[data-theme="dark"] .visitor-popup textarea {
             background: #1f2937;
             color: #e5e7eb;
             border-color: #374151;
         }
 
-        body[data-theme="dark"] .visitor-popup-close,
-        body[data-theme="bw"] .visitor-popup-close {
+        body[data-theme="dark"] .visitor-popup-close {
             background: #374151;
             color: #e5e7eb;
         }
 
-        body[data-theme="dark"] .visitor-popup-close:hover,
-        body[data-theme="bw"] .visitor-popup-close:hover {
+        body[data-theme="dark"] .visitor-popup-close:hover {
             background: #4b5563;
         }
 
@@ -433,46 +427,272 @@
             color: #64748b;
         }
 
-        body[data-theme="dark"] .visitor-metrics-window,
-        body[data-theme="bw"] .visitor-metrics-window {
+        body[data-theme="dark"] .visitor-metrics-window {
             background: #111827;
             border-color: rgba(148, 163, 184, 0.25);
         }
 
-        body[data-theme="dark"] .visitor-metrics-header,
-        body[data-theme="bw"] .visitor-metrics-header {
+        body[data-theme="dark"] .visitor-metrics-header {
             background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(15, 118, 110, 0.08));
         }
 
         body[data-theme="dark"] .visitor-metrics-header h3,
-        body[data-theme="bw"] .visitor-metrics-header h3,
         body[data-theme="dark"] .visitor-metrics-section h4,
-        body[data-theme="bw"] .visitor-metrics-section h4,
         body[data-theme="dark"] .visitor-metrics-stat strong,
-        body[data-theme="bw"] .visitor-metrics-stat strong,
-        body[data-theme="dark"] .visitor-metrics-type-row,
-        body[data-theme="bw"] .visitor-metrics-type-row {
+        body[data-theme="dark"] .visitor-metrics-type-row {
             color: #e5e7eb;
         }
 
         body[data-theme="dark"] .visitor-metrics-header p,
-        body[data-theme="bw"] .visitor-metrics-header p,
         body[data-theme="dark"] .visitor-metrics-stat span,
-        body[data-theme="bw"] .visitor-metrics-stat span,
-        body[data-theme="dark"] .visitor-metrics-footnote,
-        body[data-theme="bw"] .visitor-metrics-footnote {
+        body[data-theme="dark"] .visitor-metrics-footnote {
             color: #94a3b8;
         }
 
         body[data-theme="dark"] .visitor-metrics-close,
-        body[data-theme="bw"] .visitor-metrics-close,
         body[data-theme="dark"] .visitor-metrics-stat,
-        body[data-theme="bw"] .visitor-metrics-stat,
-        body[data-theme="dark"] .visitor-metrics-type-row,
-        body[data-theme="bw"] .visitor-metrics-type-row {
+        body[data-theme="dark"] .visitor-metrics-type-row {
             background: #1f2937;
             border-color: #374151;
         }
+
+        /* ==========================================
+           COLOR PALETTE PICKER
+           ========================================== */
+        .palette-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            position: relative;
+            background: rgba(124, 58, 237, 0.15);
+            border: 1px solid rgba(124, 58, 237, 0.4);
+            transition: var(--transition, all 0.3s cubic-bezier(0.4, 0, 0.2, 1));
+        }
+
+        .palette-toggle:hover {
+            background: rgba(124, 58, 237, 0.28);
+            border-color: rgba(124, 58, 237, 0.7);
+            transform: scale(1.08) rotate(15deg);
+        }
+
+        .palette-toggle:focus-visible {
+            outline: 2px solid var(--primary-color, #7c3aed);
+            outline-offset: 2px;
+        }
+
+        .palette-toggle.active {
+            background: rgba(124, 58, 237, 0.3);
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+
+        .palette-icon {
+            display: inline-block;
+            transition: transform 0.4s ease;
+            line-height: 1;
+        }
+
+        .palette-toggle:active .palette-icon {
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .palette-toggle { width: 38px; height: 38px; font-size: 1.1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .palette-toggle { width: 36px; height: 36px; font-size: 1rem; }
+        }
+
+        .palette-popup-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 12500;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 90px 16px 24px;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(3px);
+        }
+
+        .palette-popup-overlay.show {
+            display: flex;
+        }
+
+        .palette-popup {
+            position: relative;
+            width: min(560px, 100%);
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: #ffffff;
+            color: #1f2937;
+            box-shadow: 0 24px 58px rgba(0, 0, 0, 0.28);
+            padding: 20px 20px 24px;
+            animation: palettePopIn 0.18s ease-out;
+        }
+
+        @keyframes palettePopIn {
+            from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .palette-popup h3 {
+            margin: 0 0 4px;
+            font-size: 1.25rem;
+            color: #1f2937;
+            background: none;
+            -webkit-text-fill-color: currentColor;
+        }
+
+        .palette-popup .palette-sub {
+            margin: 0 0 16px;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .palette-popup-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 34px;
+            height: 34px;
+            border: 0;
+            border-radius: 50%;
+            background: #e2e8f0;
+            color: #334155;
+            font-size: 1.3rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .palette-popup-close:hover {
+            background: #cbd5e1;
+        }
+
+        .palette-grid {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+
+        .palette-card {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            background: #f8fafc;
+            cursor: pointer;
+            text-align: left;
+            font: inherit;
+            color: inherit;
+            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .palette-card:hover {
+            transform: translateY(-2px);
+            border-color: #94a3b8;
+            box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+        }
+
+        .palette-card:focus-visible {
+            outline: 2px solid #7c3aed;
+            outline-offset: 2px;
+        }
+
+        .palette-card.active {
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.35);
+        }
+
+        .palette-chips {
+            display: flex;
+            gap: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            height: 40px;
+        }
+
+        .palette-chips span {
+            flex: 1;
+        }
+
+        .palette-card-name {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .palette-card-check {
+            color: #7c3aed;
+            font-weight: 700;
+            opacity: 0;
+        }
+
+        .palette-card.active .palette-card-check {
+            opacity: 1;
+        }
+
+        .palette-reset-row {
+            margin-top: 16px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .palette-reset-btn {
+            border: 1px solid #cbd5e1;
+            background: transparent;
+            color: #475569;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .palette-reset-btn:hover {
+            background: #f1f5f9;
+        }
+
+        /* Dark theme-aware popup styling (mirrors the visitor-popup pattern) */
+        body[data-theme="dark"] .palette-popup {
+            background: #0f172a;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        body[data-theme="dark"] .palette-popup h3 { color: #f1f5f9; }
+        body[data-theme="dark"] .palette-popup .palette-sub { color: #94a3b8; }
+
+        body[data-theme="dark"] .palette-popup-close {
+            background: #1e293b;
+            color: #cbd5e1;
+        }
+        body[data-theme="dark"] .palette-popup-close:hover { background: #334155; }
+
+        body[data-theme="dark"] .palette-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        body[data-theme="dark"] .palette-card:hover { border-color: #64748b; }
+
+        body[data-theme="dark"] .palette-reset-btn {
+            border-color: #334155;
+            color: #cbd5e1;
+        }
+        body[data-theme="dark"] .palette-reset-btn:hover { background: #1e293b; }
 
         .nav-link-hidden {
             display: none !important;
@@ -500,11 +720,8 @@
             <div class="theme-toggle" id="themeToggle" title="Toggle Theme">
                 <span class="theme-icon">🌙</span>
             </div>
-            <div class="compact-toggle" id="compactToggle" title="Toggle Compact Mode">
-                <span class="compact-icon">⚡</span>
-            </div>
-            <div class="bw-toggle" id="bwToggle" title="Black & White Mode">
-                <span class="bw-icon">◐</span>
+            <div class="palette-toggle" id="paletteToggle" title="Choose Color Palette" role="button" tabindex="0" aria-haspopup="dialog" aria-expanded="false">
+                <span class="palette-icon">🎨</span>
             </div>
         </div>
         <div class="hamburger">
@@ -703,9 +920,9 @@
 <!-- About Section -->
 <section id="about" class="about">
     <div class="container">
-        <h2 class="section-title">About Me</h2>
+        <h2 class="section-title reveal-on-scroll">About Me</h2>
         <div class="about-content-wrapper">
-            <div class="about-text">
+            <div class="about-text reveal-on-scroll">
 <!--                <p>-->
 <!--                    I'm a results-driven engineer specializing in <strong>Java</strong>, <strong>AWS</strong>, <strong>Snowflake</strong>,-->
 <!--                    and <strong>Distributed Systems</strong>. I build scalable cloud-native applications and data-->
@@ -762,7 +979,7 @@
 <!-- Skills Section -->
 <section id="skills" class="skills">
     <div class="container">
-        <h2 class="section-title">Skills & Expertise</h2>
+        <h2 class="section-title reveal-on-scroll">Skills & Expertise</h2>
         <div class="skill-legend">
             <div class="legend-item">
                 <span class="badge expert-badge">Expert</span>
@@ -847,7 +1064,7 @@
 <!-- Certifications Section -->
 <section id="certifications" class="certifications">
     <div class="container">
-        <h2 class="section-title">Certifications</h2>
+        <h2 class="section-title reveal-on-scroll">Certifications</h2>
         <div class="certifications-grid">
             <div class="cert-card">
                 <a href="Resources/certifications/InterviewerPro.pdf" target="_blank" class="cert-pdf-link" title="Click to view PDF certificate">
@@ -945,7 +1162,7 @@
 <!-- Projects Section -->
 <section id="projects" class="projects">
     <div class="container">
-        <h2 class="section-title">Featured Projects</h2>
+        <h2 class="section-title reveal-on-scroll">Featured Projects</h2>
         <div class="projects-grid">
             <article class="project-card" data-project="1" id="chiller">
                 <div class="project-image project-image-clickable" data-page="Resources/diagrams/IoT_Flow.svg"
@@ -1195,7 +1412,7 @@
 <!-- Experience Section -->
 <section id="experience" class="experience">
     <div class="container">
-        <h2 class="section-title">Professional Experience</h2>
+        <h2 class="section-title reveal-on-scroll">Professional Experience</h2>
         <div class="timeline">
 
             <!-- Hobby Project - Latest Work -->
@@ -1338,13 +1555,13 @@
 <!-- Contact Section -->
 <section id="contact" class="contact">
     <div class="container">
-        <h2 class="section-title">Let's Connect & Create Magic ✨</h2>
-        <div class="contact-intro">
+        <h2 class="section-title reveal-on-scroll">Let's Connect & Create Magic ✨</h2>
+        <div class="contact-intro reveal-on-scroll">
             <p class="contact-tagline">Have an exciting opportunity? Want to collaborate on something amazing? Or just
                 want to chat about tech, design patterns, and innovation?</p>
             <p class="contact-subtitle">I'm just one message away. Let's build something incredible together!</p>
         </div>
-        <div class="contact-content">
+        <div class="contact-content reveal-on-scroll">
             <div class="contact-info">
                 <h3>Reach Out</h3>
                 <p class="contact-description">Whether it's a full-time role, a cool project, or just a coffee chat, I'm

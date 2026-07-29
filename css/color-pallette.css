@@ -1,0 +1,156 @@
+/* ==========================================================================
+   Portfolio Accent Color Palettes
+   --------------------------------------------------------------------------
+   These palettes override ONLY the site's brand/accent tokens
+   (--primary-color, --secondary-color, --accent-color). The light/dark
+   background structure stays controlled by the existing theme
+   stylesheets + themeToggle. A palette is an orthogonal
+   "accent color" layer applied on top of whichever theme is active.
+
+   Usage (set on <html>):
+       document.documentElement.setAttribute("data-palette", "aurora-blue");
+
+   This stylesheet MUST be linked AFTER the active theme stylesheet so that
+   [data-palette="..."] (attribute selector) overrides the theme's
+   ":root { --primary-color: ... }" via source order. --primary-color-hover,
+   --secondary-color-hover and --shadow-accent are exposed for optional use
+   by hover/shadow states across the site (buttons, links, badges, etc).
+
+   Mapping from the original curated tokens:
+       --primary   -> --primary-color
+       --secondary -> --secondary-color
+       --accent    -> --accent-color
+   ========================================================================== */
+
+
+/* 1. Aurora Blue (Recommended) */
+[data-palette="aurora-blue"] {
+    --primary-color: #2563EB;
+    --secondary-color: #3B82F6;
+    --accent-color: #06B6D4;
+    --primary-color-hover: #1D4ED8;
+    --secondary-color-hover: color-mix(in srgb, var(--secondary-color) 80%, black);
+    --accent-color-hover: color-mix(in srgb, var(--accent-color) 80%, black);
+    --shadow-accent: rgba(37, 99, 235, 0.28);
+}
+
+/* 2. Midnight Cyan */
+[data-palette="midnight-cyan"] {
+    --primary-color: #06B6D4;
+    --secondary-color: #38BDF8;
+    --accent-color: #67E8F9;
+    --primary-color-hover: #0891B2;
+    --secondary-color-hover: color-mix(in srgb, var(--secondary-color) 80%, black);
+    --accent-color-hover: color-mix(in srgb, var(--accent-color) 80%, black);
+    --shadow-accent: rgba(6, 182, 212, 0.28);
+}
+
+/* 3. Emerald Glass */
+[data-palette="emerald-glass"] {
+    --primary-color: #10B981;
+    --secondary-color: #34D399;
+    --accent-color: #6EE7B7;
+    --primary-color-hover: #059669;
+    --secondary-color-hover: color-mix(in srgb, var(--secondary-color) 80%, black);
+    --accent-color-hover: color-mix(in srgb, var(--accent-color) 80%, black);
+    --shadow-accent: rgba(16, 185, 129, 0.28);
+}
+
+/* 4. Indigo Neon */
+[data-palette="indigo-neon"] {
+    --primary-color: #4F46E5;
+    --secondary-color: #6366F1;
+    --accent-color: #A855F7;
+    --primary-color-hover: #4338CA;
+    --secondary-color-hover: color-mix(in srgb, var(--secondary-color) 80%, black);
+    --accent-color-hover: color-mix(in srgb, var(--accent-color) 80%, black);
+    --shadow-accent: rgba(79, 70, 229, 0.28);
+}
+
+/* 5. Royal Purple */
+[data-palette="royal-purple"] {
+    --primary-color: #7C3AED;
+    --secondary-color: #9333EA;
+    --accent-color: #C084FC;
+    --primary-color-hover: #6D28D9;
+    --secondary-color-hover: color-mix(in srgb, var(--secondary-color) 80%, black);
+    --accent-color-hover: color-mix(in srgb, var(--accent-color) 80%, black);
+    --shadow-accent: rgba(124, 58, 237, 0.28);
+}
+
+/* 6. Ocean Slate */
+[data-palette="ocean-slate"] {
+    --primary-color: #0284C7;
+    --secondary-color: #0EA5E9;
+    --accent-color: #38BDF8;
+    --primary-color-hover: #0369A1;
+    --secondary-color-hover: color-mix(in srgb, var(--secondary-color) 80%, black);
+    --accent-color-hover: color-mix(in srgb, var(--accent-color) 80%, black);
+    --shadow-accent: rgba(2, 132, 199, 0.28);
+}
+
+/* 7. Forest Mint */
+[data-palette="forest-mint"] {
+    --primary-color: #15803D;
+    --secondary-color: #22C55E;
+    --accent-color: #86EFAC;
+    --primary-color-hover: #166534;
+    --secondary-color-hover: color-mix(in srgb, var(--secondary-color) 80%, black);
+    --accent-color-hover: color-mix(in srgb, var(--accent-color) 80%, black);
+    --shadow-accent: rgba(21, 128, 61, 0.28);
+}
+
+/* 8. Crimson Sunset */
+[data-palette="crimson-sunset"] {
+    --primary-color: #DC2626;
+    --secondary-color: #F97316;
+    --accent-color: #FBBF24;
+    --primary-color-hover: #B91C1C;
+    --secondary-color-hover: color-mix(in srgb, var(--secondary-color) 80%, black);
+    --accent-color-hover: color-mix(in srgb, var(--accent-color) 80%, black);
+    --shadow-accent: rgba(220, 38, 38, 0.28);
+}
+
+/* 9. Sand & Navy */
+[data-palette="sand-navy"] {
+    --primary-color: #1E3A8A;
+    --secondary-color: #3B82F6;
+    --accent-color: #F59E0B;
+    --primary-color-hover: #1E40AF;
+    --secondary-color-hover: color-mix(in srgb, var(--secondary-color) 80%, black);
+    --accent-color-hover: color-mix(in srgb, var(--accent-color) 80%, black);
+    --shadow-accent: rgba(30, 58, 138, 0.28);
+}
+
+/* 10. Graphite Gold */
+[data-palette="graphite-gold"] {
+    --primary-color: #1F2937;
+    --secondary-color: #374151;
+    --accent-color: #F59E0B;
+    --primary-color-hover: #111827;
+    --secondary-color-hover: color-mix(in srgb, var(--secondary-color) 80%, black);
+    --accent-color-hover: color-mix(in srgb, var(--accent-color) 80%, black);
+    --shadow-accent: rgba(31, 41, 55, 0.28);
+}
+
+/* 11. Classic Blue (the site's original light-theme brand colors) */
+[data-palette="classic-blue"] {
+    --primary-color: #2D5A8C;
+    --secondary-color: #00C9A7;
+    --accent-color: #805AD5;
+    --primary-color-hover: #24466F;
+    --secondary-color-hover: #1ABC9C;
+    --accent-color-hover: #6B46C1;
+    --shadow-accent: rgba(45, 90, 140, 0.28);
+}
+
+/* 12. Classic Dark (the site's original dark-theme brand colors) */
+[data-palette="classic-dark"] {
+    --primary-color: #3B82F6;
+    --secondary-color: #06B6D4;
+    --accent-color: #10B981;
+    --primary-color-hover: #2563EB;
+    --secondary-color-hover: #0891B2;
+    --accent-color-hover: #059669;
+    --shadow-accent: rgba(59, 130, 246, 0.28);
+}

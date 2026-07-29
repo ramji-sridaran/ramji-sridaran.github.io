@@ -474,9 +474,7 @@
 
 /* Dark Theme Support - Keep chatbot colors consistent */
 body[data-theme="dark"] .chatbot-window,
-body[data-theme="dark"] .chatbot-window *,
-body[data-theme="bw"] .chatbot-window,
-body[data-theme="bw"] .chatbot-window * {
+body[data-theme="dark"] .chatbot-window * {
     /* Override theme colors for chatbot */
 }
 
@@ -543,66 +541,16 @@ body[data-theme="dark"] .user-message .message-content strong {
     color: white !important;
 }
 
-/* Black & White Theme Support - Keep chatbot colors consistent */
-body[data-theme="bw"] .chatbot-window {
-    background: #ffffff !important;
-}
 
-body[data-theme="bw"] .chatbot-messages {
-    background: #f9fafb !important;
-}
 
-body[data-theme="bw"] .message-content {
-    background: white !important;
-    color: #1f2937 !important;
-}
 
-body[data-theme="bw"] .bot-message .message-content {
-    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
-    border: 1px solid #bfdbfe !important;
-    color: #1f2937 !important;
-}
 
-body[data-theme="bw"] .user-message .message-content {
-    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important;
-    color: white !important;
-}
 
-body[data-theme="bw"] .chatbot-suggestions {
-    background: white !important;
-    border-top-color: #e5e7eb !important;
-}
 
-body[data-theme="bw"] .suggestion-chip {
-    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
-    border-color: #d1d5db !important;
-    color: #374151 !important;
-}
 
-body[data-theme="bw"] .chatbot-input-container {
-    background: white !important;
-    border-top-color: #e5e7eb !important;
-}
 
-body[data-theme="bw"] .chatbot-input {
-    background: white !important;
-    border-color: #e5e7eb !important;
-    color: #1f2937 !important;
-}
 
-body[data-theme="bw"] .chatbot-input::placeholder {
-    color: #9ca3af !important;
-}
 
-body[data-theme="bw"] .powered-by {
-    color: #9ca3af !important;
-}
 
-body[data-theme="bw"] .message-content strong {
-    color: #1e40af !important;
-}
 
-body[data-theme="bw"] .user-message .message-content strong {
-    color: white !important;
-}
 

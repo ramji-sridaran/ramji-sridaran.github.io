@@ -1045,8 +1045,6 @@
     }
 
     function getThemeState() {
-        const isBW = localStorage.getItem('bwMode') === 'true';
-        if (isBW) return 'bw';
         return localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
     }
 
@@ -1060,22 +1058,14 @@
             treeThemeToggle.disabled = false;
             return;
         }
-        if (themeState === 'light') {
-            treeThemeToggle.textContent = '☀️ Light';
-            treeThemeToggle.title = 'Switch to Dark Theme';
-            treeThemeToggle.classList.add('theme-on-light');
-            treeThemeToggle.disabled = false;
-            return;
-        }
-        treeThemeToggle.textContent = '◐ B&W';
-        treeThemeToggle.title = 'B&W mode is controlled from the main page';
-        treeThemeToggle.classList.remove('theme-on-light');
-        treeThemeToggle.disabled = true;
+        treeThemeToggle.textContent = '☀️ Light';
+        treeThemeToggle.title = 'Switch to Dark Theme';
+        treeThemeToggle.classList.add('theme-on-light');
+        treeThemeToggle.disabled = false;
     }
 
     function toggleTreeTheme() {
         const currentTheme = getThemeState();
-        if (currentTheme === 'bw') return;
         const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
         localStorage.setItem('theme', nextTheme);
         applyTreeTheme(nextTheme);

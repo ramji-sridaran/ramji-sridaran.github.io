@@ -446,132 +446,109 @@
 }
 
 /* ── Light-theme canvas background ── */
-body[data-theme="light"] .fv-canvas-wrapper,
-body[data-theme="bw"] .fv-canvas-wrapper { background: #f0f2f5; }
+body[data-theme="light"] .fv-canvas-wrapper { background: #f0f2f5; }
 
-/* ── Light/BW theme popup palette ── */
-body[data-theme="light"] #imageModal,
-body[data-theme="bw"] #imageModal {
+/* ── Light theme popup palette ── */
+body[data-theme="light"] #imageModal {
     background: rgba(248, 250, 252, 0.9);
 }
 
-body[data-theme="light"] .fv-container,
-body[data-theme="bw"] .fv-container {
+body[data-theme="light"] .fv-container {
     background: #ffffff;
     box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(148, 163, 184, 0.25);
 }
 
-body[data-theme="light"] .fv-header,
-body[data-theme="bw"] .fv-header {
+body[data-theme="light"] .fv-header {
     background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
     border-bottom-color: rgba(148, 163, 184, 0.35);
 }
 
-body[data-theme="light"] .fv-title,
-body[data-theme="bw"] .fv-title {
+body[data-theme="light"] .fv-title {
     color: #0f172a;
 }
 
-body[data-theme="light"] .fv-meta,
-body[data-theme="bw"] .fv-meta {
+body[data-theme="light"] .fv-meta {
     color: #64748b;
 }
 
-body[data-theme="light"] .fv-btn,
-body[data-theme="bw"] .fv-btn {
+body[data-theme="light"] .fv-btn {
     background: #ffffff;
     color: #475569;
     border-color: rgba(148, 163, 184, 0.4);
 }
 
-body[data-theme="light"] .fv-btn:hover,
-body[data-theme="bw"] .fv-btn:hover {
+body[data-theme="light"] .fv-btn:hover {
     background: rgba(99, 102, 241, 0.1);
     color: #4338ca;
     border-color: rgba(99, 102, 241, 0.35);
 }
 
-body[data-theme="light"] .fv-sidebar,
-body[data-theme="bw"] .fv-sidebar {
+body[data-theme="light"] .fv-sidebar {
     background: #f8fafc;
     border-left-color: rgba(148, 163, 184, 0.28);
 }
 
-body[data-theme="light"] .fv-sidebar-tabs,
-body[data-theme="bw"] .fv-sidebar-tabs {
+body[data-theme="light"] .fv-sidebar-tabs {
     border-bottom-color: rgba(148, 163, 184, 0.28);
 }
 
-body[data-theme="light"] .fv-tab,
-body[data-theme="bw"] .fv-tab {
+body[data-theme="light"] .fv-tab {
     color: #64748b;
 }
 
-body[data-theme="light"] .fv-tab:hover,
-body[data-theme="bw"] .fv-tab:hover {
+body[data-theme="light"] .fv-tab:hover {
     color: #334155;
 }
 
-body[data-theme="light"] .fv-tab.active,
-body[data-theme="bw"] .fv-tab.active {
+body[data-theme="light"] .fv-tab.active {
     color: #4338ca;
     border-bottom-color: #4338ca;
 }
 
-body[data-theme="light"] .fv-section-label,
-body[data-theme="bw"] .fv-section-label {
+body[data-theme="light"] .fv-section-label {
     color: #64748b;
 }
 
-body[data-theme="light"] .fv-company-badge,
-body[data-theme="bw"] .fv-company-badge {
+body[data-theme="light"] .fv-company-badge {
     background: #e2e8f0;
     color: #1e293b;
     border-color: rgba(148, 163, 184, 0.45);
 }
 
-body[data-theme="light"] .fv-period-badge,
-body[data-theme="bw"] .fv-period-badge {
+body[data-theme="light"] .fv-period-badge {
     color: #475569;
 }
 
-body[data-theme="light"] .fv-overview-text,
-body[data-theme="bw"] .fv-overview-text {
+body[data-theme="light"] .fv-overview-text {
     color: #334155;
 }
 
-body[data-theme="light"] .fv-tech-chip,
-body[data-theme="bw"] .fv-tech-chip {
+body[data-theme="light"] .fv-tech-chip {
     background: #eef2ff;
     color: #3730a3;
     border-color: rgba(99, 102, 241, 0.25);
 }
 
-body[data-theme="light"] .fv-tech-chip:hover,
-body[data-theme="bw"] .fv-tech-chip:hover {
+body[data-theme="light"] .fv-tech-chip:hover {
     background: #e0e7ff;
 }
 
-body[data-theme="light"] .fv-highlights-list li,
-body[data-theme="bw"] .fv-highlights-list li {
+body[data-theme="light"] .fv-highlights-list li {
     color: #334155;
     background: #ffffff;
     border-color: rgba(148, 163, 184, 0.35);
 }
 
-body[data-theme="light"] .fv-highlights-list li:hover,
-body[data-theme="bw"] .fv-highlights-list li:hover {
+body[data-theme="light"] .fv-highlights-list li:hover {
     background: #f1f5f9;
     border-color: rgba(99, 102, 241, 0.25);
 }
 
-body[data-theme="light"] .fv-highlights-list li::before,
-body[data-theme="bw"] .fv-highlights-list li::before {
+body[data-theme="light"] .fv-highlights-list li::before {
     color: #4338ca;
 }
 
-body[data-theme="light"] .fv-hint,
-body[data-theme="bw"] .fv-hint {
+body[data-theme="light"] .fv-hint {
     color: #334155;
     background: rgba(226, 232, 240, 0.95);
 }
